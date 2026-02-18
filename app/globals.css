@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+code {
+  font-family: 'Space Mono', monospace;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    /* Football Field Theme - Dark with Field Green Accents */
+    --background: 120 15% 5%;
+    --foreground: 0 0% 98%;
+    --card: 120 12% 9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 120 12% 9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 120 70% 45%;
+    --primary-foreground: 0 0% 3%;
+    --secondary: 120 10% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 120 8% 24%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 120 70% 50%;
+    --accent-foreground: 0 0% 3%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 120 10% 18%;
+    --input: 120 10% 14%;
+    --ring: 120 70% 45%;
+    --chart-1: 120 70% 45%;
+    --chart-2: 120 65% 40%;
+    --chart-3: 120 60% 35%;
+    --chart-4: 100 70% 50%;
+    --chart-5: 140 75% 55%;
+    --radius: 0.75rem;
+    --sidebar-background: 120 12% 7%;
+    --sidebar-foreground: 0 0% 92%;
+    --sidebar-primary: 120 70% 45%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 120 70% 45%;
+    --sidebar-accent-foreground: 0 0% 3%;
+    --sidebar-border: 120 10% 18%;
+    --sidebar-ring: 120 70% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Sports App Animations */
+@layer utilities {
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+
+  /* Sports-specific styles */
+  .sports-card {
+    @apply rounded-2xl border border-border/40 bg-card backdrop-blur-sm transition-all duration-300;
+  }
+
+  .sports-card-hover {
+    @apply hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:bg-card/90;
+  }
+
+  .stat-badge {
+    @apply inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary;
+  }
+
+  .score-display {
+    @apply text-center;
+  }
+
+  .score-large {
+    @apply text-5xl md:text-6xl font-black text-primary;
+  }
+
+  .status-scheduled {
+    @apply flex items-center gap-2 rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold text-blue-400;
+  }
+
+  .status-finished {
+    @apply flex items-center gap-2 rounded-full bg-green-500/20 px-3 py-1 text-xs font-bold text-green-400;
+  }
+}
