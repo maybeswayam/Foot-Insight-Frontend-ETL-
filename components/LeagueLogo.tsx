@@ -75,8 +75,8 @@ export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProp
   // Display logo with white background for better visibility
   return (
     <span 
-      className={`inline-flex items-center justify-center bg-white rounded-md p-0.5 ${className}`}
-      style={{ width: `${size + 4}px`, height: `${size + 4}px` }}
+      className={`inline-flex items-center justify-center bg-white ${className}`}
+      style={{ width: `${size}px`, height: `${size}px` }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
