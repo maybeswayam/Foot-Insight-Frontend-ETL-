@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { LeagueLogo } from '@/components/LeagueLogo'
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -14,11 +15,11 @@ const navigation = [
 ]
 
 const leagues = [
-  { name: 'Premier League', href: '/leagues/premier-league', logo: 'PL', color: 'text-purple-400', bg: 'bg-purple-500/15' },
-  { name: 'La Liga', href: '/leagues/la-liga', logo: 'LL', color: 'text-orange-400', bg: 'bg-orange-500/15' },
-  { name: 'Bundesliga', href: '/leagues/bundesliga', logo: 'BL', color: 'text-red-400', bg: 'bg-red-500/15' },
-  { name: 'Serie A', href: '/leagues/serie-a', logo: 'SA', color: 'text-blue-400', bg: 'bg-blue-500/15' },
-  { name: 'Ligue 1', href: '/leagues/ligue-1', logo: 'L1', color: 'text-cyan-400', bg: 'bg-cyan-500/15' },
+  { name: 'Premier League', href: '/leagues/premier-league', slug: 'premier-league' as const },
+  { name: 'La Liga', href: '/leagues/la-liga', slug: 'la-liga' as const },
+  { name: 'Bundesliga', href: '/leagues/bundesliga', slug: 'bundesliga' as const },
+  { name: 'Serie A', href: '/leagues/serie-a', slug: 'serie-a' as const },
+  { name: 'Ligue 1', href: '/leagues/ligue-1', slug: 'ligue-1' as const },
 ]
 
 export function Header() {
@@ -107,7 +108,7 @@ export function Header() {
                           : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                       }`}
                     >
-                      <span className={`${league.bg} ${league.color} px-2 py-0.5 rounded text-xs font-black`}>{league.logo}</span>
+                      <LeagueLogo league={league.slug} size={20} />
                       {league.name}
                     </Link>
                   ))}
@@ -185,7 +186,7 @@ export function Header() {
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <span className={`${league.bg} ${league.color} px-2 py-0.5 rounded text-xs font-black`}>{league.logo}</span>
+                      <LeagueLogo league={league.slug} size={18} />
                       {league.name}
                     </Link>
                   ))}
