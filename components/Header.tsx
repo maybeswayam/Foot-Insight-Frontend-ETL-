@@ -1,0 +1,216 @@
+'use client'
+
+import Link from 'next/link'
+import { useState, useRef, useEffect } from 'react'
+import { Menu, X, ChevronDown } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+
+const navigation = [
+  { name: 'Home', href: '/' },
+  { name: 'World Cup 2022', href: '/worldcup' },
+  { name: 'Teams', href: '/teams' },
+  { name: 'Players', href: '/players' },
+  { name: 'Accolades', href: '/accolades' },
+]
+
+const leagues = [
+  { name: 'All Matches', href: '/matches', emoji: '📊' },
+  { name: 'Premier League', href: '/leagues/premier-league', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name: 'La Liga', href: '/leagues/la-liga', emoji: '🇪🇸' },
+  { name: 'Bundesliga', href: '/leagues/bundesliga', emoji: '🇩🇪' },
+  { name: 'Serie A', href: '/leagues/serie-a', emoji: '🇮🇹' },
+  { name: 'Ligue 1', href: '/leagues/ligue-1', emoji: '🇫🇷' },
+]
+
+export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [leagueDropdownOpen, setLeagueDropdownOpen] = useState(false)
+  const [mobileLeagueOpen, setMobileLeagueOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname === href || pathname.startsWith(href + '/')
+  }
+
+  const isLeagueActive = pathname.startsWith('/leagues') || pathname === '/matches' || pathname.startsWith('/matches/')
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setLeagueDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Close dropdown on route change
+  useEffect(() => {
+    setLeagueDropdownOpen(false)
+    setMobileMenuOpen(false)
+    setMobileLeagueOpen(false)
+  }, [pathname])
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between gap-8">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-green-400 flex items-center justify-center shadow-lg shadow-green-500/30">
+              <span className="text-sm font-black text-slate-900">⚽</span>
+            </div>
+            <span className="text-lg font-black text-foreground hidden sm:inline">FOOTBALL</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex gap-1 ml-auto items-center">
+            {navigation.slice(0, 2).map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                  isActive(item.href)
+                    ? 'text-primary bg-primary/10 border border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+
+            {/* Leagues Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setLeagueDropdownOpen(!leagueDropdownOpen)}
+                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all flex items-center gap-1 ${
+                  isLeagueActive
+                    ? 'text-primary bg-primary/10 border border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                }`}
+              >
+                Leagues
+                <ChevronDown size={14} className={`transition-transform ${leagueDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {leagueDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-56 rounded-xl border border-border/60 bg-background/98 backdrop-blur-lg shadow-xl shadow-black/20 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {leagues.map((league) => (
+                    <Link
+                      key={league.href}
+                      href={league.href}
+                      className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all ${
+                        isActive(league.href)
+                          ? 'text-primary bg-primary/10'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                      }`}
+                    >
+                      <span className="text-base">{league.emoji}</span>
+                      {league.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {navigation.slice(2).map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                  isActive(item.href)
+                    ? 'text-primary bg-primary/10 border border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <nav className="border-t border-border/40 py-3 md:hidden animate-slide-up">
+            <div className="flex flex-col gap-1">
+              {navigation.slice(0, 2).map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`block px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                    isActive(item.href)
+                      ? 'text-primary bg-primary/10 border border-primary/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+
+              {/* Mobile Leagues Accordion */}
+              <button
+                onClick={() => setMobileLeagueOpen(!mobileLeagueOpen)}
+                className={`flex items-center justify-between px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                  isLeagueActive
+                    ? 'text-primary bg-primary/10 border border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                }`}
+              >
+                Leagues
+                <ChevronDown size={14} className={`transition-transform ${mobileLeagueOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {mobileLeagueOpen && (
+                <div className="ml-4 flex flex-col gap-1 border-l-2 border-border/40 pl-3">
+                  {leagues.map((league) => (
+                    <Link
+                      key={league.href}
+                      href={league.href}
+                      className={`flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
+                        isActive(league.href)
+                          ? 'text-primary bg-primary/10'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                      }`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <span>{league.emoji}</span>
+                      {league.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {navigation.slice(2).map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`block px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                    isActive(item.href)
+                      ? 'text-primary bg-primary/10 border border-primary/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        )}
+      </div>
+    </header>
+  )
+}
