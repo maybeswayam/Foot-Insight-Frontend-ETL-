@@ -72,16 +72,21 @@ export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProp
     )
   }
 
-  // Try local logo first (PNG then SVG), fallback to gradient badge
+  // Display logo with white background for better visibility
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={imgSrc}
-      alt={league}
-      width={size}
-      height={size}
-      className={`object-contain ${className}`}
-      onError={handleError}
-    />
+    <span 
+      className={`inline-flex items-center justify-center bg-white rounded-md p-0.5 ${className}`}
+      style={{ width: `${size + 4}px`, height: `${size + 4}px` }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={imgSrc}
+        alt={league}
+        width={size}
+        height={size}
+        className="object-contain"
+        onError={handleError}
+      />
+    </span>
   )
 }

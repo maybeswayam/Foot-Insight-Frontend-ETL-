@@ -1,29 +1,51 @@
 # League Logos
 
-To use actual league logos, please add the following PNG files to this directory:
+## Current Status
+- `premier-league.png` ✅ (Actual logo - may need white background)
+- `la-liga.png` ❌ (Using SVG placeholder - needs actual logo)
+- `bundesliga.png` ✅ (Actual logo)
+- `serie-a.png` ❌ (Using SVG placeholder - needs actual logo)
+- `ligue-1.png` ❌ (Using SVG placeholder - needs actual logo)
 
-- `premier-league.png` ✅ (Already added)
-- `la-liga.png` ⚠️ (Need to add)
-- `bundesliga.png` ✅ (Already added)
-- `serie-a.png` ⚠️ (Need to add)
-- `ligue-1.png` ⚠️ (Need to add)
+## How to Add Real Logos
 
-## How to Add Logos
+### Easy Way - Download from these direct links:
 
-1. Save the league logo images with the exact filenames listed above
-2. Place them in the `public/logos/` directory
-3. The logos should be PNG format (transparent background recommended)
-4. Recommended size: 200x200px or higher
+1. **Premier League**: Already added, but if you need a better version:
+   - Google Image Search: "Premier League logo PNG transparent"
+   - Or use: https://www.premierleague.com/
 
-## Fallback
+2. **La Liga**: 
+   - Google Image Search: "La Liga logo PNG transparent"
+   - Save as: `la-liga.png`
 
-If a logo file is missing, the component will automatically show a gradient badge with the league's brand colors.
+3. **Bundesliga**: Already added ✅
 
-## Logo Sources
+4. **Serie A**:
+   - Google Image Search: "Serie A logo PNG transparent 2024"
+   - Save as: `serie-a.png`
 
-You can find official league logos from:
-- Premier League: https://www.premierleague.com/
-- La Liga: https://www.laliga.com/
-- Bundesliga: https://www.bundesliga.com/
-- Serie A: https://www.legaseriea.it/
-- Ligue 1: https://www.ligue1.com/
+5. **Ligue 1**:
+   - Google Image Search: "Ligue 1 logo PNG transparent"
+   - Save as: `ligue-1.png`
+
+### Requirements:
+- File format: PNG (transparent background recommended)
+- Size: 200x200px minimum, 500x500px recommended
+- Place files in: `public/logos/` directory
+- Exact filenames required (lowercase with hyphens)
+
+### After Adding Logos:
+The component automatically displays logos with a white background box for better visibility.
+If a logo file is missing, it will show a colored badge as fallback.
+
+## Manual Download Steps:
+
+1. Open Google Images
+2. Search for "[League Name] logo PNG"
+3. Add "transparent" or "high quality" to search
+4. Download the image
+5. Rename to exact filename (e.g., `la-liga.png`)
+6. Save to `public/logos/` folder
+7. Refresh your browser - logos load automatically!
+
