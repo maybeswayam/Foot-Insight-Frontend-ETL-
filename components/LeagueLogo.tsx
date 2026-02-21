@@ -8,22 +8,43 @@ interface LeagueLogoProps {
   className?: string
 }
 
-// High-quality league logos from a reliable CDN
-const LEAGUE_LOGOS: Record<string, string> = {
-  'premier-league': 'https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg',
-  'la-liga': 'https://upload.wikimedia.org/wikipedia/commons/1/13/LaLiga_EA_Sports_2023_Vertical_Logo.svg',
-  'bundesliga': 'https://upload.wikimedia.org/wikipedia/en/d/df/Bundesliga_logo_%282017%29.svg',
-  'serie-a': 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Serie_A_logo_2022.svg',
-  'ligue-1': 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Ligue_1_Logo.svg',
-}
-
-// Fallback colored badges if images fail to load
-const LEAGUE_FALLBACKS: Record<string, { logo: string; color: string; bg: string }> = {
-  'premier-league': { logo: 'PL', color: 'text-purple-400', bg: 'bg-purple-500/20' },
-  'la-liga': { logo: 'LL', color: 'text-orange-400', bg: 'bg-orange-500/20' },
-  'bundesliga': { logo: 'BL', color: 'text-red-400', bg: 'bg-red-500/20' },
-  'serie-a': { logo: 'SA', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-  'ligue-1': { logo: 'L1', color: 'text-cyan-400', bg: 'bg-cyan-500/20' },
+// Fallback gradient badges with league branding colors
+const LEAGUE_FALLBACKS: Record<string, { 
+  text: string
+  color: string
+  bg: string
+  border: string 
+}> = {
+  'premier-league': { 
+    text: 'PL', 
+    color: 'text-white', 
+    bg: 'bg-gradient-to-br from-purple-600 to-pink-500',
+    border: 'border border-purple-400/30'
+  },
+  'la-liga': { 
+    text: 'LL', 
+    color: 'text-white', 
+    bg: 'bg-gradient-to-br from-orange-500 to-red-500',
+    border: 'border border-orange-400/30'
+  },
+  'bundesliga': { 
+    text: 'BL', 
+    color: 'text-white', 
+    bg: 'bg-gradient-to-br from-red-600 to-black',
+    border: 'border border-red-400/30'
+  },
+  'serie-a': { 
+    text: 'SA', 
+    color: 'text-white', 
+    bg: 'bg-gradient-to-br from-blue-600 to-cyan-500',
+    border: 'border border-blue-400/30'
+  },
+  'ligue-1': { 
+    text: 'L1', 
+    color: 'text-white', 
+    bg: 'bg-gradient-to-br from-cyan-500 to-blue-600',
+    border: 'border border-cyan-400/30'
+  },
 }
 
 export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProps) {
@@ -33,10 +54,10 @@ export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProp
     const fallback = LEAGUE_FALLBACKS[league]
     return (
       <span
-        className={`${fallback.bg} ${fallback.color} px-2 py-0.5 rounded text-xs font-black inline-flex items-center justify-center ${className}`}
+        className={`${fallback.bg} ${fallback.color} ${fallback.border} px-2 py-0.5 rounded-md text-xs font-black inline-flex items-center justify-center shadow-sm ${className}`}
         style={{ minWidth: `${size}px`, height: `${size}px` }}
       >
-        {fallback.logo}
+        {fallback.text}
       </span>
     )
   }
@@ -44,7 +65,7 @@ export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProp
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={LEAGUE_LOGOS[league]}
+      src={`/api/league-logo?league=${league}`}
       alt={league}
       width={size}
       height={size}
