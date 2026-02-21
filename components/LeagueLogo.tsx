@@ -49,6 +49,16 @@ const LEAGUE_FALLBACKS: Record<string, {
 
 export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProps) {
   const [errored, setErrored] = useState(false)
+  const [imgSrc, setImgSrc] = useState(`/logos/${league}.png`)
+
+  const handleError = () => {
+    // Try SVG if PNG fails
+    if (imgSrc.endsWith('.png')) {
+      setImgSrc(`/logos/${league}.svg`)
+    } else {
+      setErrored(true)
+    }
+  }
 
   if (errored) {
     const fallback = LEAGUE_FALLBACKS[league]
@@ -62,15 +72,16 @@ export function LeagueLogo({ league, size = 24, className = '' }: LeagueLogoProp
     )
   }
 
+  // Try local logo first (PNG then SVG), fallback to gradient badge
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`/api/league-logo?league=${league}`}
+      src={imgSrc}
       alt={league}
       width={size}
       height={size}
       className={`object-contain ${className}`}
-      onError={() => setErrored(true)}
+      onError={handleError}
     />
   )
 }

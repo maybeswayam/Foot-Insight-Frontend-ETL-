@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="serieA" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00AEEF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#002A5C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Blue triangle/mountain shape -->
+  <path d="M100,30 L160,140 L40,140 Z" fill="url(#serieA)"/>
+  <path d="M100,70 L130,130 L70,130 Z" fill="#002A5C"/>
+  <!-- Text -->
+  <text x="100" y="175" font-size="28" font-weight="bold" text-anchor="middle" fill="#002A5C">SERIE A</text>
+  <!-- Italian flag bar -->
+  <rect x="50" y="185" width="33" height="8" fill="#009246"/>
+  <rect x="83" y="185" width="34" height="8" fill="#fff"/>
+  <rect x="117" y="185" width="33" height="8" fill="#CE2B37"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240">
+  <rect width="200" height="240" fill="#013065"/>
+  <!-- Hexagon -->
+  <path d="M100,50 L140,75 L140,125 L100,150 L60,125 L60,75 Z" fill="#C8FF00" stroke="#C8FF00" stroke-width="2"/>
+  <path d="M100,65 L130,82 L130,118 L100,135 L70,118 L70,82 Z" fill="#013065"/>
+  <!-- Text -->
+  <text x="100" y="190" font-size="42" font-weight="bold" text-anchor="middle" fill="white">LIGUE 1</text>
+  <text x="100" y="220" font-size="18" font-weight="normal" text-anchor="middle" fill="#C8FF00">Uber Eats</text>
+</svg>

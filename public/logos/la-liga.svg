@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Colorful circle background -->
+  <circle cx="100" cy="100" r="90" fill="#f0f0f0"/>
+  <!-- Colored segments -->
+  <path d="M100,10 L120,30 A90,90 0 0,1 180,80 L160,90 Z" fill="#EA0E18"/>
+  <path d="M180,80 L190,100 A90,90 0 0,1 160,170 L145,155 Z" fill="#F99D1C"/>
+  <path d="M160,170 L140,180 A90,90 0 0,1 40,180 L55,165 Z" fill="#76BC21"/>
+  <path d="M40,180 L20,170 A90,90 0 0,1 10,100 L30,105 Z" fill="#009EE3"/>
+  <path d="M10,100 L20,80 A90,90 0 0,1 80,20 L90,35 Z" fill="#ED174A"/>
+  <path d="M80,20 L100,10 L120,30 L100,45 Z" fill="#FABD00"/>
+  <!-- Center -->
+  <circle cx="100" cy="100" r="35" fill="white"/>
+  <text x="100" y="115" font-size="32" font-weight="bold" text-anchor="middle" fill="#333">LL</text>
+</svg>
