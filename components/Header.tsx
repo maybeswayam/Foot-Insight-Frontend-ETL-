@@ -14,12 +14,11 @@ const navigation = [
 ]
 
 const leagues = [
-  { name: 'All Matches', href: '/matches', emoji: '📊' },
-  { name: 'Premier League', href: '/leagues/premier-league', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-  { name: 'La Liga', href: '/leagues/la-liga', emoji: '🇪🇸' },
-  { name: 'Bundesliga', href: '/leagues/bundesliga', emoji: '🇩🇪' },
-  { name: 'Serie A', href: '/leagues/serie-a', emoji: '🇮🇹' },
-  { name: 'Ligue 1', href: '/leagues/ligue-1', emoji: '🇫🇷' },
+  { name: 'Premier League', href: '/leagues/premier-league', logo: 'PL', color: 'text-purple-400', bg: 'bg-purple-500/15' },
+  { name: 'La Liga', href: '/leagues/la-liga', logo: 'LL', color: 'text-orange-400', bg: 'bg-orange-500/15' },
+  { name: 'Bundesliga', href: '/leagues/bundesliga', logo: 'BL', color: 'text-red-400', bg: 'bg-red-500/15' },
+  { name: 'Serie A', href: '/leagues/serie-a', logo: 'SA', color: 'text-blue-400', bg: 'bg-blue-500/15' },
+  { name: 'Ligue 1', href: '/leagues/ligue-1', logo: 'L1', color: 'text-cyan-400', bg: 'bg-cyan-500/15' },
 ]
 
 export function Header() {
@@ -34,7 +33,7 @@ export function Header() {
     return pathname === href || pathname.startsWith(href + '/')
   }
 
-  const isLeagueActive = pathname.startsWith('/leagues') || pathname === '/matches' || pathname.startsWith('/matches/')
+  const isLeagueActive = pathname.startsWith('/leagues')
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -108,7 +107,7 @@ export function Header() {
                           : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                       }`}
                     >
-                      <span className="text-base">{league.emoji}</span>
+                      <span className={`${league.bg} ${league.color} px-2 py-0.5 rounded text-xs font-black`}>{league.logo}</span>
                       {league.name}
                     </Link>
                   ))}
@@ -186,7 +185,7 @@ export function Header() {
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <span>{league.emoji}</span>
+                      <span className={`${league.bg} ${league.color} px-2 py-0.5 rounded text-xs font-black`}>{league.logo}</span>
                       {league.name}
                     </Link>
                   ))}
