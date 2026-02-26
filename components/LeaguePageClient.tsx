@@ -8,6 +8,7 @@ import {
   ArrowUpRight, ArrowDownRight, Minus
 } from 'lucide-react'
 import { TeamLogo } from '@/components/TeamLogo'
+import { LeagueLogo } from '@/components/LeagueLogo'
 
 /* ────────── Types ────────── */
 
@@ -519,7 +520,7 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
               .map(l => (
                 <Link key={l.slug} href={`/leagues/${l.slug}`}>
                   <div className="sports-card sports-card-hover p-4 flex items-center gap-3 h-full">
-                    <span className="text-2xl">{l.emoji}</span>
+                    <LeagueLogo league={l.slug as any} size={24} />
                     <div>
                       <p className="text-sm font-bold text-foreground">{l.name}</p>
                       <p className="text-[10px] text-muted-foreground">View standings & stats</p>

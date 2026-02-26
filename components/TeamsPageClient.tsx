@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, Trophy, Shield, Target, ChevronRight, Star } from 'lucide-react'
 import { TeamLogo } from '@/components/TeamLogo'
+import { LeagueLogo } from '@/components/LeagueLogo'
 
 /* ────────── Types ────────── */
 
@@ -176,7 +177,11 @@ export default function TeamsPageClient({ leagueGroups }: Props) {
               <div className={`rounded-t-2xl border ${theme.border} bg-gradient-to-r ${theme.gradient} p-5`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{group.emoji}</span>
+                    {group.slug && group.slug !== 'worldcup' ? (
+                      <LeagueLogo league={group.slug as any} size={28} />
+                    ) : (
+                      <span className="text-2xl">{group.emoji}</span>
+                    )}
                     <div>
                       <h2 className="text-xl font-black text-foreground tracking-tight">{group.competition}</h2>
                       <p className="text-xs text-muted-foreground font-bold">

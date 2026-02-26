@@ -87,6 +87,7 @@ class ImageService {
   /**
    * Fetch player data from TheSportsDB by player name
    * Returns the player photo URL
+   * Applies name normalization: strips Jr./Sr. suffixes, tries alternate queries
    */
   async fetchPlayerPhotoByName(playerName: string): Promise<string> {
     const cacheKey = `player-name-${playerName}`
@@ -100,33 +101,52 @@ class ImageService {
       this.cache.delete(cacheKey)
     }
 
-    try {
-      const response = await fetch(
-        `${THESPORTSDB_BASE_URL}/${THESPORTSDB_API_KEY}/searchplayers.php?p=${encodeURIComponent(playerName)}`,
-        { signal: AbortSignal.timeout(5000) }
-      )
+    // Build list of name variants to try
+    const namesToTry: string[] = [playerName]
 
-      if (!response.ok) {
-        return this.defaultPlayerPhoto
-      }
+    // Strip Jr. / Sr. / III / II suffixes
+    const stripped = playerName
+      .replace(/\s+(Jr\.?|Sr\.?|III|II|IV)$/i, '')
+      .trim()
+    if (stripped !== playerName) namesToTry.push(stripped)
 
-      const data = await response.json()
-
-      if (data.player && data.player.length > 0) {
-        const photoUrl = data.player[0].strCutout || data.player[0].strThumb || this.defaultPlayerPhoto
-
-        // Cache the result
-        this.cache.set(cacheKey, {
-          url: photoUrl,
-          timestamp: Date.now(),
-        })
-
-        return photoUrl
-      }
-    } catch {
-      // Network / timeout / JSON-parse error – return default silently
+    // Try first name only for single-name players (e.g. "Neymar Jr." -> try "Neymar")
+    const parts = stripped.split(/\s+/)
+    if (parts.length >= 2) {
+      // Try without accents as a last resort
+      const noAccent = stripped.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      if (noAccent !== stripped) namesToTry.push(noAccent)
+    }
+    if (parts.length === 1 || stripped !== playerName) {
+      // For single-word derived names, also try just the first word
+      if (parts.length >= 2) namesToTry.push(parts[0])
     }
 
+    for (const name of namesToTry) {
+      try {
+        const response = await fetch(
+          `${THESPORTSDB_BASE_URL}/${THESPORTSDB_API_KEY}/searchplayers.php?p=${encodeURIComponent(name)}`,
+          { signal: AbortSignal.timeout(5000) }
+        )
+
+        if (!response.ok) continue
+
+        const data = await response.json()
+
+        if (data.player && data.player.length > 0) {
+          const photoUrl = data.player[0].strCutout || data.player[0].strThumb
+          if (photoUrl) {
+            this.cache.set(cacheKey, { url: photoUrl, timestamp: Date.now() })
+            return photoUrl
+          }
+        }
+      } catch {
+        // Network / timeout / JSON-parse error – try next variant
+      }
+    }
+
+    // Cache the miss so we don't retry immediately
+    this.cache.set(cacheKey, { url: this.defaultPlayerPhoto, timestamp: Date.now() })
     return this.defaultPlayerPhoto
   }
 

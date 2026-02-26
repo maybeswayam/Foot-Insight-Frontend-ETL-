@@ -7,6 +7,7 @@ import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorState } from '@/components/ErrorState'
 import { PlayerPhoto } from '@/components/PlayerPhoto'
 import { TeamLogo } from '@/components/TeamLogo'
+import { LeagueLogo } from '@/components/LeagueLogo'
 import { apiClient } from '@/lib/api'
 import { formatPosition } from '@/lib/utils'
 import type {
@@ -163,7 +164,7 @@ export default function AccoladesPage() {
       </>
     )
 
-  const tabs: { value: Tab; label: string; emoji: string }[] = [
+  const tabs: { value: Tab; label: string; emoji: string; slug?: 'premier-league' | 'la-liga' | 'bundesliga' | 'serie-a' | 'ligue-1' }[] = [
     { value: 'world-cup', label: 'World Cup', emoji: '🏆' },
     ...data.leagueAccolades
       .filter((l) => l.competition !== 'FIFA World Cup')
@@ -171,6 +172,7 @@ export default function AccoladesPage() {
         value: l.competition as Tab,
         label: LEAGUE_SHORT[l.competition] ?? l.competition,
         emoji: LEAGUE_EMOJI[l.competition] ?? '⚽',
+        slug: LEAGUE_SLUG[l.competition],
       })),
   ]
 
@@ -205,7 +207,11 @@ export default function AccoladesPage() {
                       : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'
                   }`}
                 >
-                  <span>{t.emoji}</span>
+                  {t.slug ? (
+                    <LeagueLogo league={t.slug} size={18} />
+                  ) : (
+                    <span>{t.emoji}</span>
+                  )}
                   {t.label}
                 </button>
               ))}
