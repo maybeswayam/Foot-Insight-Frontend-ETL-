@@ -8,6 +8,29 @@ import { useEffect, useState } from 'react'
 const photoCache = new Map<string, string>()
 const inflight = new Map<string, Promise<string>>()
 
+/** Simple concurrency limiter to avoid overwhelming TheSportsDB */
+const MAX_CONCURRENT = 4
+let activeRequests = 0
+const queue: Array<() => void> = []
+
+function enqueue(): Promise<void> {
+  if (activeRequests < MAX_CONCURRENT) {
+    activeRequests++
+    return Promise.resolve()
+  }
+  return new Promise((resolve) => {
+    queue.push(() => {
+      activeRequests++
+      resolve()
+    })
+  })
+}
+
+function dequeue() {
+  activeRequests--
+  if (queue.length > 0) queue.shift()!()
+}
+
 const DEFAULT_PHOTO =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Crect fill="%231a1a2e" width="120" height="120" rx="16"/%3E%3Ccircle cx="60" cy="42" r="18" fill="%2322c55e" opacity="0.3"/%3E%3Cpath d="M 35 75 Q 35 60 60 60 Q 85 60 85 75 L 85 100 L 35 100 Z" fill="%2322c55e" opacity="0.2"/%3E%3C/svg%3E'
 
@@ -16,6 +39,7 @@ async function fetchPhoto(playerName: string): Promise<string> {
   if (inflight.has(playerName)) return inflight.get(playerName)!
 
   const promise = (async () => {
+    await enqueue()
     try {
       const res = await fetch(
         `/api/player-photo?name=${encodeURIComponent(playerName)}`,
@@ -28,6 +52,7 @@ async function fetchPhoto(playerName: string): Promise<string> {
     } catch {
       return DEFAULT_PHOTO
     } finally {
+      dequeue()
       inflight.delete(playerName)
     }
   })()
