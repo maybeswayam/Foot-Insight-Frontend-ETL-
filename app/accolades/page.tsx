@@ -49,6 +49,14 @@ const LEAGUE_EMOJI: Record<string, string> = {
   'Ligue 1': '🇫🇷',
 }
 
+const LEAGUE_SLUG: Record<string, 'premier-league' | 'la-liga' | 'bundesliga' | 'serie-a' | 'ligue-1' | undefined> = {
+  'Premier League': 'premier-league',
+  'La Liga': 'la-liga',
+  Bundesliga: 'bundesliga',
+  'Serie A': 'serie-a',
+  'Ligue 1': 'ligue-1',
+}
+
 const PLAYER_AWARD_CONFIG = [
   {
     key: 'topScorers' as const,
