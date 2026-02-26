@@ -32,6 +32,118 @@ const POS_COLOR: Record<string, { bg: string; text: string; border: string }> = 
 
 const MEDAL = ['bg-yellow-500 text-yellow-950', 'bg-gray-300 text-gray-800', 'bg-orange-400 text-orange-950']
 
+/* ── Stars of the ERA ──────────────────────────── */
+const STARS_OF_ERA = [
+  {
+    name: 'Lionel Messi',
+    nickname: 'La Pulga',
+    nationality: 'Argentina',
+    position: 'Forward',
+    clubs: 'Barcelona · PSG · Inter Miami',
+    gradient: 'from-sky-500 via-blue-600 to-indigo-700',
+    accent: 'text-sky-400',
+    borderAccent: 'border-sky-500/30 hover:border-sky-400/50',
+    signature: '8× Ballon d\'Or',
+    stats: [
+      { label: 'Career Goals', value: '838+' },
+      { label: 'Career Assists', value: '374+' },
+      { label: 'Ballon d\'Or', value: '8' },
+      { label: 'Champions League', value: '4' },
+    ],
+    fact: 'Most goals in a calendar year — 91 in 2012. 672 goals for Barcelona alone. World Cup winner 2022.',
+  },
+  {
+    name: 'Cristiano Ronaldo',
+    nickname: 'CR7',
+    nationality: 'Portugal',
+    position: 'Forward',
+    clubs: 'Man United · Real Madrid · Juventus',
+    gradient: 'from-red-500 via-red-600 to-rose-800',
+    accent: 'text-red-400',
+    borderAccent: 'border-red-500/30 hover:border-red-400/50',
+    signature: '5× Ballon d\'Or',
+    stats: [
+      { label: 'Career Goals', value: '900+' },
+      { label: 'Intl Goals', value: '130+' },
+      { label: 'Champions League', value: '5' },
+      { label: 'UCL Goals', value: '140' },
+    ],
+    fact: 'All-time top international scorer. Most Champions League goals in history. Scored in 5 different World Cups.',
+  },
+  {
+    name: 'Neymar Jr.',
+    nickname: 'O Jogo Bonito',
+    nationality: 'Brazil',
+    position: 'Forward',
+    clubs: 'Santos · Barcelona · PSG',
+    gradient: 'from-yellow-400 via-green-500 to-green-700',
+    accent: 'text-yellow-400',
+    borderAccent: 'border-yellow-500/30 hover:border-yellow-400/50',
+    signature: 'Champions League Winner',
+    stats: [
+      { label: 'Career Goals', value: '439+' },
+      { label: 'Career Assists', value: '278+' },
+      { label: 'Brazil Goals', value: '79' },
+      { label: 'Trophies', value: '30+' },
+    ],
+    fact: 'Part of the legendary MSN trio at Barcelona (2014-17). Olympic Gold medalist. 2nd highest scorer in Brazil history.',
+  },
+  {
+    name: 'Luka Modrić',
+    nickname: 'The Maestro',
+    nationality: 'Croatia',
+    position: 'Midfielder',
+    clubs: 'Dinamo Zagreb · Tottenham · Real Madrid',
+    gradient: 'from-slate-300 via-white to-blue-400',
+    accent: 'text-slate-300',
+    borderAccent: 'border-slate-400/30 hover:border-slate-300/50',
+    signature: '2018 Ballon d\'Or',
+    stats: [
+      { label: 'Real Madrid Apps', value: '534+' },
+      { label: 'Champions League', value: '6' },
+      { label: 'La Liga Titles', value: '4' },
+      { label: 'Croatia Caps', value: '175+' },
+    ],
+    fact: 'Won the 2018 Ballon d\'Or — breaking the Messi-Ronaldo duopoly. Led Croatia to their first ever World Cup final.',
+  },
+  {
+    name: 'Luis Suárez',
+    nickname: 'El Pistolero',
+    nationality: 'Uruguay',
+    position: 'Forward',
+    clubs: 'Ajax · Liverpool · Barcelona · Atlético',
+    gradient: 'from-sky-400 via-sky-500 to-sky-700',
+    accent: 'text-sky-400',
+    borderAccent: 'border-sky-500/30 hover:border-sky-400/50',
+    signature: 'European Golden Shoe',
+    stats: [
+      { label: 'Career Goals', value: '540+' },
+      { label: 'Barcelona Goals', value: '198' },
+      { label: 'Liverpool Goals', value: '82' },
+      { label: 'La Liga Titles', value: '1' },
+    ],
+    fact: 'Part of the MSN trio scoring 364 goals in 3 seasons. Won the PL Golden Boot at Liverpool with 31 goals in 2013-14.',
+  },
+  {
+    name: 'Andrés Iniesta',
+    nickname: 'Don Andrés',
+    nationality: 'Spain',
+    position: 'Midfielder',
+    clubs: 'Barcelona · Vissel Kobe',
+    gradient: 'from-red-500 via-yellow-500 to-red-600',
+    accent: 'text-yellow-400',
+    borderAccent: 'border-yellow-500/30 hover:border-yellow-400/50',
+    signature: 'World Cup Final Goal',
+    stats: [
+      { label: 'Barcelona Apps', value: '674' },
+      { label: 'Champions League', value: '4' },
+      { label: 'La Liga Titles', value: '9' },
+      { label: 'Spain Caps', value: '131' },
+    ],
+    fact: 'Scored Spain\'s winning goal in the 2010 World Cup Final. Named Best Player at Euro 2012. Tiki-taka personified.',
+  },
+]
+
 export default function PlayersPage() {
   const [players, setPlayers]   = useState<Player[]>([])
   const [loading, setLoading]   = useState(true)
@@ -143,6 +255,87 @@ export default function PlayersPage() {
               statLabel="xG"
               decimal
             />
+          </div>
+        </section>
+
+        {/* ═══════ STARS OF THE ERA ═══════ */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="flex flex-col gap-2 mb-6">
+            <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+              Stars of the ERA
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              The legends who defined modern football — jaw-dropping career stats.
+            </p>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {STARS_OF_ERA.map((star) => (
+              <div
+                key={star.name}
+                className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg`}
+              >
+                <div className={`h-1.5 bg-gradient-to-r ${star.gradient}`} />
+
+                <div className="p-5 space-y-4">
+                  {/* Header with photo */}
+                  <div className="flex items-start gap-4">
+                    <PlayerPhoto
+                      playerName={star.name}
+                      size={72}
+                      rounded
+                      className="border-2 border-border/30 shrink-0 shadow-lg"
+                    />
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors leading-tight">
+                        {star.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground italic">
+                        &quot;{star.nickname}&quot; · {star.position}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <CountryFlag country={star.nationality} size={20} />
+                        <span className="text-xs text-muted-foreground">{star.nationality}</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground tracking-wide">
+                        {star.clubs}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Signature badge */}
+                  <div
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-border/40 ${star.accent}`}
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                      {star.signature}
+                    </span>
+                  </div>
+
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {star.stats.map((stat) => (
+                      <div
+                        key={stat.label}
+                        className="text-center rounded-xl bg-white/[0.03] border border-border/20 py-2.5"
+                      >
+                        <p className={`text-lg font-black ${star.accent}`}>
+                          {stat.value}
+                        </p>
+                        <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Fun fact */}
+                  <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/20 pt-3">
+                    💡 {star.fact}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

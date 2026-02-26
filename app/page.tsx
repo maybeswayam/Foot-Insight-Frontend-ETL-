@@ -7,6 +7,8 @@ import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorState } from '@/components/ErrorState'
 import { TeamLogo } from '@/components/TeamLogo'
 import { LeagueLogo } from '@/components/LeagueLogo'
+import { PlayerPhoto } from '@/components/PlayerPhoto'
+import { CountryFlag } from '@/components/CountryFlag'
 import { apiClient } from '@/lib/api'
 import type { SummaryData, Match } from '@/lib/types'
 
@@ -32,41 +34,6 @@ function AnimatedNumber({ value, duration = 1400 }: { value: number; duration?: 
   }, [value, duration])
 
   return <>{display.toLocaleString()}</>
-}
-
-/** Animated horizontal bar */
-function AnimatedBar({ percent, color, delay = 0 }: { percent: number; color: string; delay?: number }) {
-  const [width, setWidth] = useState(0)
-  useEffect(() => {
-    const timer = setTimeout(() => setWidth(percent), 100 + delay)
-    return () => clearTimeout(timer)
-  }, [percent, delay])
-  return (
-    <div className="h-3 rounded-full bg-white/5 overflow-hidden">
-      <div
-        className={`h-full rounded-full transition-all duration-1000 ease-out ${color}`}
-        style={{ width: `${width}%` }}
-      />
-    </div>
-  )
-}
-
-const LEAGUE_COLORS_TW: Record<string, string> = {
-  'Premier League': 'bg-gradient-to-r from-purple-500 to-purple-700',
-  'La Liga': 'bg-gradient-to-r from-orange-500 to-red-600',
-  'Bundesliga': 'bg-gradient-to-r from-red-500 to-red-700',
-  'Serie A': 'bg-gradient-to-r from-blue-500 to-blue-700',
-  'Ligue 1': 'bg-gradient-to-r from-cyan-400 to-blue-600',
-  'FIFA World Cup': 'bg-gradient-to-r from-amber-400 to-amber-600',
-}
-
-const LEAGUE_ACCENT: Record<string, string> = {
-  'Premier League': 'text-purple-400',
-  'La Liga': 'text-orange-400',
-  'Bundesliga': 'text-red-400',
-  'Serie A': 'text-blue-400',
-  'Ligue 1': 'text-cyan-400',
-  'FIFA World Cup': 'text-amber-400',
 }
 
 const LEAGUE_GRADIENT_FROM: Record<string, string> = {
@@ -118,6 +85,7 @@ const STARS_OF_ERA = [
     name: 'Lionel Messi',
     nickname: 'La Pulga',
     country: '🇦🇷',
+    nationality: 'Argentina',
     position: 'Forward',
     clubs: 'Barcelona · PSG · Inter Miami',
     gradient: 'from-sky-500 via-blue-600 to-indigo-700',
@@ -136,6 +104,7 @@ const STARS_OF_ERA = [
     name: 'Cristiano Ronaldo',
     nickname: 'CR7',
     country: '🇵🇹',
+    nationality: 'Portugal',
     position: 'Forward',
     clubs: 'Man United · Real Madrid · Juventus',
     gradient: 'from-red-500 via-red-600 to-rose-800',
@@ -154,6 +123,7 @@ const STARS_OF_ERA = [
     name: 'Neymar Jr.',
     nickname: 'O Jogo Bonito',
     country: '🇧🇷',
+    nationality: 'Brazil',
     position: 'Forward',
     clubs: 'Santos · Barcelona · PSG',
     gradient: 'from-yellow-400 via-green-500 to-green-700',
@@ -172,6 +142,7 @@ const STARS_OF_ERA = [
     name: 'Luka Modrić',
     nickname: 'The Maestro',
     country: '🇭🇷',
+    nationality: 'Croatia',
     position: 'Midfielder',
     clubs: 'Dinamo Zagreb · Tottenham · Real Madrid',
     gradient: 'from-slate-300 via-white to-blue-400',
@@ -190,6 +161,7 @@ const STARS_OF_ERA = [
     name: 'Luis Suárez',
     nickname: 'El Pistolero',
     country: '🇺🇾',
+    nationality: 'Uruguay',
     position: 'Forward',
     clubs: 'Ajax · Liverpool · Barcelona · Atlético',
     gradient: 'from-sky-400 via-sky-500 to-sky-700',
@@ -208,6 +180,7 @@ const STARS_OF_ERA = [
     name: 'Andrés Iniesta',
     nickname: 'Don Andrés',
     country: '🇪🇸',
+    nationality: 'Spain',
     position: 'Midfielder',
     clubs: 'Barcelona · Vissel Kobe',
     gradient: 'from-red-500 via-yellow-500 to-red-600',
@@ -627,75 +600,6 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* ═══════════════ THE LEAGUE GOAL RACE ═══════════════ */}
-        {leagueStats.length > 0 && (
-          <section className="border-t border-border/30 bg-card/30">
-            <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-2 mb-10">
-                <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                  The League Goal Race
-                </h2>
-                <p className="text-muted-foreground">
-                  How the goals stacked up across every competition in 2022-23.
-                </p>
-              </div>
-
-              <div className="space-y-5">
-                {leagueStats.map((entry, i) => {
-                  const maxGoals = leagueStats[0]?.goals || 1
-                  const pct = Math.round((entry.goals / maxGoals) * 100)
-                  const barColor =
-                    LEAGUE_COLORS_TW[entry.competition] ||
-                    'bg-gradient-to-r from-green-500 to-emerald-600'
-                  const textColor =
-                    LEAGUE_ACCENT[entry.competition] || 'text-green-400'
-
-                  return (
-                    <div
-                      key={entry.competition}
-                      className="rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-5 hover:border-green-500/20 transition-all"
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-white/5 text-xs font-black text-muted-foreground">
-                            {i + 1}
-                          </span>
-                          <span className={`text-sm font-black ${textColor}`}>
-                            {entry.competition}
-                          </span>
-                        </div>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-black text-foreground tabular-nums">
-                            {entry.goals.toLocaleString()}
-                          </span>
-                          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                            goals
-                          </span>
-                        </div>
-                      </div>
-
-                      <AnimatedBar
-                        percent={pct}
-                        color={barColor}
-                        delay={i * 120}
-                      />
-
-                      <div className="flex items-center justify-between mt-2.5">
-                        <span className="text-[11px] text-muted-foreground">
-                          {entry.matches} matches played
-                        </span>
-                        <span className={`text-[11px] font-bold ${textColor}`}>
-                          {entry.avgGoals} goals per match
-                        </span>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* ═══════════════ STARS OF THE ERA ═══════════════ */}
         <section className="border-t border-border/30">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -720,19 +624,29 @@ export default function HomePage() {
                   />
 
                   <div className="p-5 space-y-4">
-                    {/* Header */}
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors">
-                          {star.country} {star.name}
+                    {/* Header with photo */}
+                    <div className="flex items-start gap-4">
+                      <PlayerPhoto
+                        playerName={star.name}
+                        size={72}
+                        rounded
+                        className="border-2 border-border/30 shrink-0 shadow-lg"
+                      />
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors leading-tight">
+                          {star.name}
                         </h3>
+                        <p className="text-xs text-muted-foreground italic">
+                          &quot;{star.nickname}&quot; · {star.position}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <CountryFlag country={star.nationality} size={20} />
+                          <span className="text-xs text-muted-foreground">{star.nationality}</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground tracking-wide">
+                          {star.clubs}
+                        </p>
                       </div>
-                      <p className="text-xs text-muted-foreground italic">
-                        &quot;{star.nickname}&quot; · {star.position}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground tracking-wide">
-                        {star.clubs}
-                      </p>
                     </div>
 
                     {/* Signature badge */}
