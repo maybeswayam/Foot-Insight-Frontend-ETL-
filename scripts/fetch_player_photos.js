@@ -1,14 +1,24 @@
 /**
  * Pre-fetch all player photos from TheSportsDB and save to a static JSON map.
- * Run: node scripts/fetch_player_photos.js
+ * 
+ * USAGE:
+ *   node scripts/fetch_player_photos.js
+ * 
+ * OUTPUT:
+ *   Saves to data/player_photos.json (~612 entries)
+ *   Expected success rate: ~85-90% (some obscure players not in TheSportsDB)
+ *   Takes ~10 minutes due to rate limiting (30s pauses every ~30 requests)
  *
- * Uses the same name normalisation logic as lib/imageService.ts:
- *   1. Original name
- *   2. Stripped Jr./Sr./III/II/IV suffix
- *   3. Accent-removed variant (NFD + strip combining marks)
- *   4. First name only (when the name was shortened)
+ * NAME MATCHING LOGIC (mirrors lib/imageService.ts):
+ *   1. Original name (e.g., "Neymar Jr.")
+ *   2. Stripped Jr./Sr./III/II/IV suffix (e.g., "Neymar")
+ *   3. Accent-removed variant (e.g., "Alvaro Morata" for "Álvaro Morata")
+ *   4. First name only for shortened derived names
  *
- * Delays 500 ms between requests to stay under TheSportsDB rate limits.
+ * RATE LIMITING:
+ *   - 500ms delay between requests
+ *   - Auto-detects HTTP 429 and pauses 30s before retrying
+ *   - TheSportsDB free tier allows ~30 requests before limiting
  */
 
 const fs = require('fs');
