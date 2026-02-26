@@ -58,6 +58,7 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
 class ImageService {
   private cache: Map<string, CacheEntry> = new Map()
   private readonly CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
+  private readonly MISS_CACHE_DURATION = 5 * 60 * 1000  // 5 minutes for failed lookups
 
   public defaultTeamLogo = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" text-anchor="middle" dy=".3em" font-size="40" font-weight="bold" fill="%23999"%3E⚽%3C/text%3E%3C/svg%3E'
 
@@ -95,7 +96,10 @@ class ImageService {
     // Check cache first
     if (this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!
-      if (Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      const maxAge = cached.url === this.defaultPlayerPhoto
+        ? this.MISS_CACHE_DURATION
+        : this.CACHE_DURATION
+      if (Date.now() - cached.timestamp < maxAge) {
         return cached.url
       }
       this.cache.delete(cacheKey)
@@ -110,7 +114,6 @@ class ImageService {
       .trim()
     if (stripped !== playerName) namesToTry.push(stripped)
 
-    // Try first name only for single-name players (e.g. "Neymar Jr." -> try "Neymar")
     const parts = stripped.split(/\s+/)
     if (parts.length >= 2) {
       // Try without accents as a last resort
@@ -145,7 +148,7 @@ class ImageService {
       }
     }
 
-    // Cache the miss so we don't retry immediately
+    // Cache the miss for a SHORT duration so we can retry soon
     this.cache.set(cacheKey, { url: this.defaultPlayerPhoto, timestamp: Date.now() })
     return this.defaultPlayerPhoto
   }
