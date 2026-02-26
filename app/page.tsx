@@ -7,16 +7,6 @@ import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorState } from '@/components/ErrorState'
 import { TeamLogo } from '@/components/TeamLogo'
 import { LeagueLogo } from '@/components/LeagueLogo'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts'
 import { apiClient } from '@/lib/api'
 import type { SummaryData, Match } from '@/lib/types'
 
@@ -44,13 +34,39 @@ function AnimatedNumber({ value, duration = 1400 }: { value: number; duration?: 
   return <>{display.toLocaleString()}</>
 }
 
-const LEAGUE_COLORS: Record<string, string> = {
-  'Premier League': '#3b1f8f',
-  'La Liga': '#ea580c',
-  'Bundesliga': '#dc2626',
-  'Serie A': '#2563eb',
-  'Ligue 1': '#0ea5e9',
-  'FIFA World Cup': '#d97706',
+/** Animated horizontal bar */
+function AnimatedBar({ percent, color, delay = 0 }: { percent: number; color: string; delay?: number }) {
+  const [width, setWidth] = useState(0)
+  useEffect(() => {
+    const timer = setTimeout(() => setWidth(percent), 100 + delay)
+    return () => clearTimeout(timer)
+  }, [percent, delay])
+  return (
+    <div className="h-3 rounded-full bg-white/5 overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all duration-1000 ease-out ${color}`}
+        style={{ width: `${width}%` }}
+      />
+    </div>
+  )
+}
+
+const LEAGUE_COLORS_TW: Record<string, string> = {
+  'Premier League': 'bg-gradient-to-r from-purple-500 to-purple-700',
+  'La Liga': 'bg-gradient-to-r from-orange-500 to-red-600',
+  'Bundesliga': 'bg-gradient-to-r from-red-500 to-red-700',
+  'Serie A': 'bg-gradient-to-r from-blue-500 to-blue-700',
+  'Ligue 1': 'bg-gradient-to-r from-cyan-400 to-blue-600',
+  'FIFA World Cup': 'bg-gradient-to-r from-amber-400 to-amber-600',
+}
+
+const LEAGUE_ACCENT: Record<string, string> = {
+  'Premier League': 'text-purple-400',
+  'La Liga': 'text-orange-400',
+  'Bundesliga': 'text-red-400',
+  'Serie A': 'text-blue-400',
+  'Ligue 1': 'text-cyan-400',
+  'FIFA World Cup': 'text-amber-400',
 }
 
 const LEAGUE_GRADIENT_FROM: Record<string, string> = {
@@ -59,7 +75,6 @@ const LEAGUE_GRADIENT_FROM: Record<string, string> = {
   'Bundesliga': 'from-red-600',
   'Serie A': 'from-blue-600',
   'Ligue 1': 'from-cyan-500',
-  'FIFA World Cup': 'from-amber-500',
 }
 
 const LEAGUE_SLUGS: Record<string, string> = {
@@ -96,6 +111,118 @@ const ICONIC_LABELS: Record<string, string> = {
   '1828': '🌍 World Cup Opener',
   '715': '🇫🇷 Ligue 1 Thriller',
 }
+
+/* ─────── Stars of the ERA ─────── */
+const STARS_OF_ERA = [
+  {
+    name: 'Lionel Messi',
+    nickname: 'La Pulga',
+    country: '🇦🇷',
+    position: 'Forward',
+    clubs: 'Barcelona · PSG · Inter Miami',
+    gradient: 'from-sky-500 via-blue-600 to-indigo-700',
+    accent: 'text-sky-400',
+    borderAccent: 'border-sky-500/30 hover:border-sky-400/50',
+    signature: '8× Ballon d\'Or',
+    stats: [
+      { label: 'Career Goals', value: '838+' },
+      { label: 'Career Assists', value: '374+' },
+      { label: 'Ballon d\'Or', value: '8' },
+      { label: 'Champions League', value: '4' },
+    ],
+    fact: 'Most goals in a calendar year — 91 in 2012. 672 goals for Barcelona alone. World Cup winner 2022.',
+  },
+  {
+    name: 'Cristiano Ronaldo',
+    nickname: 'CR7',
+    country: '🇵🇹',
+    position: 'Forward',
+    clubs: 'Man United · Real Madrid · Juventus',
+    gradient: 'from-red-500 via-red-600 to-rose-800',
+    accent: 'text-red-400',
+    borderAccent: 'border-red-500/30 hover:border-red-400/50',
+    signature: '5× Ballon d\'Or',
+    stats: [
+      { label: 'Career Goals', value: '900+' },
+      { label: 'Intl Goals', value: '130+' },
+      { label: 'Champions League', value: '5' },
+      { label: 'UCL Goals', value: '140' },
+    ],
+    fact: 'All-time top international scorer. Most Champions League goals in history. Scored in 5 different World Cups.',
+  },
+  {
+    name: 'Neymar Jr.',
+    nickname: 'O Jogo Bonito',
+    country: '🇧🇷',
+    position: 'Forward',
+    clubs: 'Santos · Barcelona · PSG',
+    gradient: 'from-yellow-400 via-green-500 to-green-700',
+    accent: 'text-yellow-400',
+    borderAccent: 'border-yellow-500/30 hover:border-yellow-400/50',
+    signature: 'Champions League Winner',
+    stats: [
+      { label: 'Career Goals', value: '439+' },
+      { label: 'Career Assists', value: '278+' },
+      { label: 'Brazil Goals', value: '79' },
+      { label: 'Trophies', value: '30+' },
+    ],
+    fact: 'Part of the legendary MSN trio at Barcelona (2014-17). Olympic Gold medalist. 2nd highest scorer in Brazil history.',
+  },
+  {
+    name: 'Luka Modrić',
+    nickname: 'The Maestro',
+    country: '🇭🇷',
+    position: 'Midfielder',
+    clubs: 'Dinamo Zagreb · Tottenham · Real Madrid',
+    gradient: 'from-slate-300 via-white to-blue-400',
+    accent: 'text-slate-300',
+    borderAccent: 'border-slate-400/30 hover:border-slate-300/50',
+    signature: '2018 Ballon d\'Or',
+    stats: [
+      { label: 'Real Madrid Apps', value: '534+' },
+      { label: 'Champions League', value: '6' },
+      { label: 'La Liga Titles', value: '4' },
+      { label: 'Croatia Caps', value: '175+' },
+    ],
+    fact: 'Won the 2018 Ballon d\'Or — breaking the Messi-Ronaldo duopoly. Led Croatia to their first ever World Cup final.',
+  },
+  {
+    name: 'Luis Suárez',
+    nickname: 'El Pistolero',
+    country: '🇺🇾',
+    position: 'Forward',
+    clubs: 'Ajax · Liverpool · Barcelona · Atlético',
+    gradient: 'from-sky-400 via-sky-500 to-sky-700',
+    accent: 'text-sky-400',
+    borderAccent: 'border-sky-500/30 hover:border-sky-400/50',
+    signature: 'European Golden Shoe',
+    stats: [
+      { label: 'Career Goals', value: '540+' },
+      { label: 'Barcelona Goals', value: '198' },
+      { label: 'Liverpool Goals', value: '82' },
+      { label: 'La Liga Titles', value: '1' },
+    ],
+    fact: 'Part of the MSN trio scoring 364 goals in 3 seasons. Won the PL Golden Boot at Liverpool with 31 goals in 2013-14.',
+  },
+  {
+    name: 'Andrés Iniesta',
+    nickname: 'Don Andrés',
+    country: '🇪🇸',
+    position: 'Midfielder',
+    clubs: 'Barcelona · Vissel Kobe',
+    gradient: 'from-red-500 via-yellow-500 to-red-600',
+    accent: 'text-yellow-400',
+    borderAccent: 'border-yellow-500/30 hover:border-yellow-400/50',
+    signature: 'World Cup Final Goal',
+    stats: [
+      { label: 'Barcelona Apps', value: '674' },
+      { label: 'Champions League', value: '4' },
+      { label: 'La Liga Titles', value: '9' },
+      { label: 'Spain Caps', value: '131' },
+    ],
+    fact: 'Scored Spain\'s winning goal in the 2010 World Cup Final. Named Best Player at Euro 2012. Tiki-taka personified.',
+  },
+]
 
 /* Cool facts from 2022-23 season / 2022 World Cup data */
 const COOL_FACTS = [
@@ -154,7 +281,7 @@ const COOL_FACTS = [
 export default function HomePage() {
   const [summary, setSummary] = useState<SummaryData | null>(null)
   const [matches, setMatches] = useState<Match[]>([])
-  const [chartData, setChartData] = useState<
+  const [leagueStats, setLeagueStats] = useState<
     { competition: string; goals: number; matches: number; avgGoals: number }[]
   >([])
   const [iconicMatches, setIconicMatches] = useState<Match[]>([])
@@ -172,7 +299,7 @@ export default function HomePage() {
         setSummary(summaryData)
         setMatches(matchesData)
 
-        // Chart data by competition
+        // League stats
         const compStats: Record<string, { goals: number; count: number }> = {}
         matchesData.forEach((match) => {
           const c = match.competition
@@ -181,10 +308,10 @@ export default function HomePage() {
           compStats[c].count += 1
         })
 
-        setChartData(
+        setLeagueStats(
           Object.entries(compStats)
             .map(([competition, s]) => ({
-              competition: competition.replace('FIFA ', ''),
+              competition,
               goals: s.goals,
               matches: s.count,
               avgGoals: Math.round((s.goals / s.count) * 100) / 100,
@@ -500,144 +627,143 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* ═══════════════ GOALS BY COMPETITION ═══════════════ */}
-        {chartData.length > 0 && (
+        {/* ═══════════════ THE LEAGUE GOAL RACE ═══════════════ */}
+        {leagueStats.length > 0 && (
           <section className="border-t border-border/30 bg-card/30">
             <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
               <div className="flex flex-col gap-2 mb-10">
                 <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                  Goals by Competition
+                  The League Goal Race
                 </h2>
                 <p className="text-muted-foreground">
-                  Total goals scored across every league and tournament in the dataset.
+                  How the goals stacked up across every competition in 2022-23.
                 </p>
               </div>
 
-              <div className="grid gap-8 lg:grid-cols-5">
-                {/* Main bar chart */}
-                <div className="lg:col-span-3 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-6">
-                  <ResponsiveContainer width="100%" height={360}>
-                    <BarChart data={chartData} barCategoryGap="20%">
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="rgba(255,255,255,0.05)"
-                      />
-                      <XAxis
-                        dataKey="competition"
-                        stroke="rgba(255,255,255,0.5)"
-                        fontSize={11}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        stroke="rgba(255,255,255,0.5)"
-                        fontSize={11}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: 'rgba(15, 15, 25, 0.95)',
-                          border: '1px solid rgba(34, 197, 94, 0.3)',
-                          borderRadius: '12px',
-                          padding: '12px 16px',
-                        }}
-                        labelStyle={{
-                          color: '#fff',
-                          fontWeight: 700,
-                          marginBottom: 4,
-                        }}
-                        formatter={(value: number) => [
-                          `${value.toLocaleString()} goals`,
-                          '',
-                        ]}
-                      />
-                      <Bar dataKey="goals" radius={[10, 10, 0, 0]}>
-                        {chartData.map((entry) => (
-                          <Cell
-                            key={entry.competition}
-                            fill={
-                              LEAGUE_COLORS[entry.competition] ||
-                              LEAGUE_COLORS['FIFA World Cup'] ||
-                              '#22c55e'
-                            }
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+              <div className="space-y-5">
+                {leagueStats.map((entry, i) => {
+                  const maxGoals = leagueStats[0]?.goals || 1
+                  const pct = Math.round((entry.goals / maxGoals) * 100)
+                  const barColor =
+                    LEAGUE_COLORS_TW[entry.competition] ||
+                    'bg-gradient-to-r from-green-500 to-emerald-600'
+                  const textColor =
+                    LEAGUE_ACCENT[entry.competition] || 'text-green-400'
 
-                {/* Side stats */}
-                <div className="lg:col-span-2 space-y-4">
-                  {chartData.map((entry) => {
-                    const color =
-                      LEAGUE_COLORS[entry.competition] || '#22c55e'
-                    return (
-                      <div
-                        key={entry.competition}
-                        className="rounded-xl border border-border/40 bg-card/60 p-4 flex items-center justify-between gap-4 hover:border-green-500/20 transition-colors"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div
-                            className="w-3 h-3 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: color }}
-                          />
-                          <div className="min-w-0">
-                            <p className="text-sm font-bold text-foreground truncate">
-                              {entry.competition}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {entry.matches} matches
-                            </p>
-                          </div>
+                  return (
+                    <div
+                      key={entry.competition}
+                      className="rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-5 hover:border-green-500/20 transition-all"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-white/5 text-xs font-black text-muted-foreground">
+                            {i + 1}
+                          </span>
+                          <span className={`text-sm font-black ${textColor}`}>
+                            {entry.competition}
+                          </span>
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <p className="text-lg font-black text-foreground tabular-nums">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-black text-foreground tabular-nums">
                             {entry.goals.toLocaleString()}
-                          </p>
-                          <p className="text-[10px] text-muted-foreground font-medium">
-                            {entry.avgGoals} avg/match
-                          </p>
+                          </span>
+                          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                            goals
+                          </span>
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
+
+                      <AnimatedBar
+                        percent={pct}
+                        color={barColor}
+                        delay={i * 120}
+                      />
+
+                      <div className="flex items-center justify-between mt-2.5">
+                        <span className="text-[11px] text-muted-foreground">
+                          {entry.matches} matches played
+                        </span>
+                        <span className={`text-[11px] font-bold ${textColor}`}>
+                          {entry.avgGoals} goals per match
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </section>
         )}
 
-        {/* ═══════════════ COOL FACTS & RECORDS ═══════════════ */}
+        {/* ═══════════════ STARS OF THE ERA ═══════════════ */}
         <section className="border-t border-border/30">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-2 mb-10">
               <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                Season Highlights & Records
+                Stars of the ERA
               </h2>
               <p className="text-muted-foreground">
-                The moments that made the 2022-23 season unforgettable.
+                The legends who defined modern football — jaw-dropping career stats.
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {COOL_FACTS.map((fact, i) => (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {STARS_OF_ERA.map((star) => (
                 <div
-                  key={i}
-                  className="group relative rounded-2xl border border-border/40 bg-card/80 p-5 overflow-hidden hover:border-green-500/30 transition-all hover:-translate-y-1"
+                  key={star.name}
+                  className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg`}
                 >
                   {/* gradient accent top */}
                   <div
-                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${fact.color}`}
+                    className={`h-2 bg-gradient-to-r ${star.gradient}`}
                   />
-                  <div className="space-y-3">
-                    <span className="text-2xl">{fact.icon}</span>
-                    <h3 className="text-base font-black text-foreground leading-tight">
-                      {fact.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {fact.text}
+
+                  <div className="p-5 space-y-4">
+                    {/* Header */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors">
+                          {star.country} {star.name}
+                        </h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground italic">
+                        &quot;{star.nickname}&quot; · {star.position}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground tracking-wide">
+                        {star.clubs}
+                      </p>
+                    </div>
+
+                    {/* Signature badge */}
+                    <div
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-border/40 ${star.accent}`}
+                    >
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        {star.signature}
+                      </span>
+                    </div>
+
+                    {/* Stats grid */}
+                    <div className="grid grid-cols-2 gap-2.5">
+                      {star.stats.map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="text-center rounded-xl bg-white/[0.03] border border-border/20 py-2.5"
+                        >
+                          <p className={`text-lg font-black ${star.accent}`}>
+                            {stat.value}
+                          </p>
+                          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                            {stat.label}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Fun fact */}
+                    <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/20 pt-3">
+                      💡 {star.fact}
                     </p>
                   </div>
                 </div>
@@ -660,7 +786,7 @@ export default function HomePage() {
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {Object.entries(LEAGUE_SLUGS).map(([name, slug]) => {
-                const leagueChart = chartData.find(
+                const leagueChart = leagueStats.find(
                   (c) => c.competition === name,
                 )
                 return (
@@ -724,153 +850,38 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ═══════════════ STAR PLAYERS ═══════════════ */}
+        {/* ═══════════════ SEASON HIGHLIGHTS ═══════════════ */}
         <section className="border-t border-border/30">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-2 mb-10">
               <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                World Cup Stars
+                Season Highlights & Records
               </h2>
               <p className="text-muted-foreground">
-                The standout performers from Qatar 2022.
+                The moments that made the 2022-23 season unforgettable.
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  name: 'Kylian Mbappé',
-                  team: 'France',
-                  goals: 8,
-                  assists: 2,
-                  xG: 5.2,
-                  title: '🥇 Golden Boot',
-                  gradient: 'from-blue-600 to-blue-800',
-                  accent: 'text-blue-400',
-                  playerId: 378,
-                },
-                {
-                  name: 'Lionel Messi',
-                  team: 'Argentina',
-                  goals: 7,
-                  assists: 3,
-                  xG: 6.6,
-                  title: '🏆 Golden Ball',
-                  gradient: 'from-sky-500 to-blue-700',
-                  accent: 'text-sky-400',
-                  playerId: 389,
-                },
-                {
-                  name: 'Olivier Giroud',
-                  team: 'France',
-                  goals: 4,
-                  assists: 0,
-                  xG: 3.4,
-                  title: "🇫🇷 France's All-Time Top Scorer",
-                  gradient: 'from-blue-500 to-indigo-700',
-                  accent: 'text-indigo-400',
-                  playerId: 503,
-                },
-                {
-                  name: 'Julián Álvarez',
-                  team: 'Argentina',
-                  goals: 4,
-                  assists: 0,
-                  xG: 2.6,
-                  title: '🇦🇷 Young Gun',
-                  gradient: 'from-sky-400 to-cyan-600',
-                  accent: 'text-cyan-400',
-                  playerId: 331,
-                },
-                {
-                  name: 'Bukayo Saka',
-                  team: 'England',
-                  goals: 3,
-                  assists: 0,
-                  xG: 0.6,
-                  title: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Clinical Finisher',
-                  gradient: 'from-red-500 to-red-700',
-                  accent: 'text-red-400',
-                  playerId: 110,
-                },
-                {
-                  name: 'Cody Gakpo',
-                  team: 'Netherlands',
-                  goals: 3,
-                  assists: 0,
-                  xG: 0.3,
-                  title: '🇳🇱 Breakout Star',
-                  gradient: 'from-orange-500 to-orange-700',
-                  accent: 'text-orange-400',
-                  playerId: 130,
-                },
-              ].map((player) => (
-                <Link
-                  key={player.name}
-                  href={`/players/${player.playerId}`}
-                  className="group relative rounded-2xl border border-border/40 bg-card/80 overflow-hidden hover:border-green-500/40 hover:shadow-lg hover:shadow-green-500/5 transition-all hover:-translate-y-1"
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {COOL_FACTS.map((fact, i) => (
+                <div
+                  key={i}
+                  className="group relative rounded-2xl border border-border/40 bg-card/80 p-5 overflow-hidden hover:border-green-500/30 transition-all hover:-translate-y-1"
                 >
                   <div
-                    className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${player.gradient}`}
+                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${fact.color}`}
                   />
-                  <div className="p-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-black text-foreground text-lg group-hover:text-green-400 transition-colors">
-                          {player.name}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {player.team}
-                        </p>
-                      </div>
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/5 border border-border/40 ${player.accent}`}
-                      >
-                        {player.title}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="text-center rounded-xl bg-green-500/5 border border-green-500/10 py-2.5">
-                        <p className="text-xl font-black text-green-400">
-                          {player.goals}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                          Goals
-                        </p>
-                      </div>
-                      <div className="text-center rounded-xl bg-blue-500/5 border border-blue-500/10 py-2.5">
-                        <p className="text-xl font-black text-blue-400">
-                          {player.assists}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                          Assists
-                        </p>
-                      </div>
-                      <div className="text-center rounded-xl bg-amber-500/5 border border-amber-500/10 py-2.5">
-                        <p className="text-xl font-black text-amber-400">
-                          {player.xG}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                          xG
-                        </p>
-                      </div>
-                    </div>
+                  <div className="space-y-3">
+                    <span className="text-2xl">{fact.icon}</span>
+                    <h3 className="text-base font-black text-foreground leading-tight">
+                      {fact.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {fact.text}
+                    </p>
                   </div>
-                </Link>
+                </div>
               ))}
-            </div>
-
-            <div className="text-center pt-8">
-              <Link
-                href="/players"
-                className="inline-flex items-center gap-2 text-green-400 font-bold hover:text-green-300 transition-colors uppercase tracking-wide text-sm group"
-              >
-                View Full Player Database
-                <span className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
             </div>
           </div>
         </section>
