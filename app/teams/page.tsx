@@ -112,7 +112,14 @@ export default async function TeamsPage() {
           form: (s?.form ?? []).slice(-5).reverse() as ('W' | 'D' | 'L')[],
         }
       })
-      .sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference || b.goalsFor - a.goalsFor)
+      .sort((a, b) => {
+        // For World Cup, Argentina won so they should be first
+        if (comp === 'World Cup') {
+          if (a.name === 'Argentina') return -1
+          if (b.name === 'Argentina') return 1
+        }
+        return b.points - a.points || b.goalDifference - a.goalDifference || b.goalsFor - a.goalsFor
+      })
 
     const meta = LEAGUE_META[comp] ?? { slug: '', emoji: '⚽', color: 'green' }
 
