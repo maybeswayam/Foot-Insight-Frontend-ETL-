@@ -82,6 +82,7 @@ const ICONIC_LABELS: Record<string, string> = {
 /* ─────── Stars of the ERA ─────── */
 const STARS_OF_ERA = [
   {
+    playerId: 389,
     name: 'Lionel Messi',
     nickname: 'La Pulga',
     country: '🇦🇷',
@@ -101,6 +102,7 @@ const STARS_OF_ERA = [
     fact: 'Most goals in a calendar year — 91 in 2012. 672 goals for Barcelona alone. World Cup winner 2022.',
   },
   {
+    playerId: 135,
     name: 'Cristiano Ronaldo',
     nickname: 'CR7',
     country: '🇵🇹',
@@ -120,6 +122,7 @@ const STARS_OF_ERA = [
     fact: 'All-time top international scorer. Most Champions League goals in history. Scored in 5 different World Cups.',
   },
   {
+    playerId: 483,
     name: 'Neymar Jr.',
     nickname: 'O Jogo Bonito',
     country: '🇧🇷',
@@ -129,7 +132,7 @@ const STARS_OF_ERA = [
     gradient: 'from-yellow-400 via-green-500 to-green-700',
     accent: 'text-yellow-400',
     borderAccent: 'border-yellow-500/30 hover:border-yellow-400/50',
-    signature: 'Champions League Winner',
+    signature: 'The best dribbler of our generation',
     stats: [
       { label: 'Career Goals', value: '439+' },
       { label: 'Career Assists', value: '278+' },
@@ -139,6 +142,7 @@ const STARS_OF_ERA = [
     fact: 'Part of the legendary MSN trio at Barcelona (2014-17). Olympic Gold medalist. 2nd highest scorer in Brazil history.',
   },
   {
+    playerId: 547,
     name: 'Robert Lewandowski',
     nickname: 'Lewy',
     country: '🇵🇱',
@@ -158,6 +162,7 @@ const STARS_OF_ERA = [
     fact: 'Scored 41 Bundesliga goals in a single season (2020-21), surpassing Gerd Müller\'s 49-year-old record. FIFA Best Men\'s Player 2020 & 2021.',
   },
   {
+    playerId: 397,
     name: 'Luis Suárez',
     nickname: 'El Pistolero',
     country: '🇺🇾',
@@ -177,6 +182,7 @@ const STARS_OF_ERA = [
     fact: 'Part of the MSN trio scoring 364 goals in 3 seasons. Won the PL Golden Boot at Liverpool with 31 goals in 2013-14.',
   },
   {
+    playerId: null,
     name: 'Andrés Iniesta',
     nickname: 'Don Andrés',
     country: '🇪🇸',
@@ -613,75 +619,91 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {STARS_OF_ERA.map((star) => (
-                <div
-                  key={star.name}
-                  className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg`}
-                >
-                  {/* gradient accent top */}
-                  <div
-                    className={`h-2 bg-gradient-to-r ${star.gradient}`}
-                  />
-
-                  <div className="p-5 space-y-4">
-                    {/* Header with photo */}
-                    <div className="flex items-start gap-4">
-                      <PlayerPhoto
-                        playerName={star.name}
-                        size={72}
-                        rounded
-                        className="border-2 border-border/30 shrink-0 shadow-lg"
-                      />
-                      <div className="flex-1 min-w-0 space-y-1">
-                        <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors leading-tight">
-                          {star.name}
-                        </h3>
-                        <p className="text-xs text-muted-foreground italic">
-                          &quot;{star.nickname}&quot; · {star.position}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <CountryFlag country={star.nationality} size={20} />
-                          <span className="text-xs text-muted-foreground">{star.nationality}</span>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground tracking-wide">
-                          {star.clubs}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Signature badge */}
+              {STARS_OF_ERA.map((star) => {
+                const CardContent = (
+                  <>
+                    {/* gradient accent top */}
                     <div
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-border/40 ${star.accent}`}
-                    >
-                      <span className="text-[10px] font-bold uppercase tracking-wider">
-                        {star.signature}
-                      </span>
-                    </div>
+                      className={`h-2 bg-gradient-to-r ${star.gradient}`}
+                    />
 
-                    {/* Stats grid */}
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {star.stats.map((stat) => (
-                        <div
-                          key={stat.label}
-                          className="text-center rounded-xl bg-white/[0.03] border border-border/20 py-2.5"
-                        >
-                          <p className={`text-lg font-black ${star.accent}`}>
-                            {stat.value}
+                    <div className="p-5 space-y-4">
+                      {/* Header with photo */}
+                      <div className="flex items-start gap-4">
+                        <PlayerPhoto
+                          playerName={star.name}
+                          size={72}
+                          rounded
+                          className="border-2 border-border/30 shrink-0 shadow-lg"
+                        />
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors leading-tight">
+                            {star.name}
+                          </h3>
+                          <p className="text-xs text-muted-foreground italic">
+                            &quot;{star.nickname}&quot; · {star.position}
                           </p>
-                          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
-                            {stat.label}
+                          <div className="flex items-center gap-2">
+                            <CountryFlag country={star.nationality} size={20} />
+                            <span className="text-xs text-muted-foreground">{star.nationality}</span>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground tracking-wide">
+                            {star.clubs}
                           </p>
                         </div>
-                      ))}
-                    </div>
+                      </div>
 
-                    {/* Fun fact */}
-                    <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/20 pt-3">
-                      💡 {star.fact}
-                    </p>
+                      {/* Signature badge */}
+                      <div
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-border/40 ${star.accent}`}
+                      >
+                        <span className="text-[10px] font-bold uppercase tracking-wider">
+                          {star.signature}
+                        </span>
+                      </div>
+
+                      {/* Stats grid */}
+                      <div className="grid grid-cols-2 gap-2.5">
+                        {star.stats.map((stat) => (
+                          <div
+                            key={stat.label}
+                            className="text-center rounded-xl bg-white/[0.03] border border-border/20 py-2.5"
+                          >
+                            <p className={`text-lg font-black ${star.accent}`}>
+                              {stat.value}
+                            </p>
+                            <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                              {stat.label}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Fun fact */}
+                      <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/20 pt-3">
+                        💡 {star.fact}
+                      </p>
+                    </div>
+                  </>
+                )
+
+                return star.playerId ? (
+                  <Link
+                    key={star.name}
+                    href={`/players/${star.playerId}`}
+                    className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-pointer`}
+                  >
+                    {CardContent}
+                  </Link>
+                ) : (
+                  <div
+                    key={star.name}
+                    className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg`}
+                  >
+                    {CardContent}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </section>
