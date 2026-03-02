@@ -33,6 +33,9 @@ export default function MatchDetailPage({ params }: MatchDetailPageProps) {
   useEffect(() => {
     if (!matchId) return
 
+    // Scroll to top when match page loads
+    window.scrollTo(0, 0)
+
     const loadMatch = async () => {
       try {
         const data = await apiClient.getMatchDetail(matchId)

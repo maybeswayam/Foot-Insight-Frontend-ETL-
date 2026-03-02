@@ -47,6 +47,10 @@ export default function PlayerDetailPage({ params }: PlayerDetailPageProps) {
 
   useEffect(() => {
     if (!playerId) return
+    
+    // Scroll to top when player page loads
+    window.scrollTo(0, 0)
+    
     apiClient.getPlayerDetail(playerId)
       .then(setPlayer)
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load player'))
