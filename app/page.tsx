@@ -374,11 +374,14 @@ export default function HomePage() {
 
               {/* Main heading */}
               <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.9]">
-                Foot
+                Foot-
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-400 to-green-500">
-                  Insight
+                  Insights
                 </span>
               </h1>
+              <p className="text-base text-muted-foreground/80 max-w-xl mx-auto">
+                Football Analytics Platform
+              </p>
 
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 Dive into{' '}
