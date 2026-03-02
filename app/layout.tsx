@@ -8,21 +8,24 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Football Analytics | 2022 Season Archive',
-    template: '%s | Football Analytics'
+    default: 'Foot-Insights | Football Analytics Platform (World Cup & Top Leagues)',
+    template: '%s | Foot-Insights'
   },
-  description: 'Premium football analytics platform featuring 2022 season data, World Cup coverage, player statistics, and award winners. Real-time data visualization and advanced match analytics.',
-  keywords: ['football', 'analytics', 'soccer', '2022 season', 'world cup', 'player stats', 'match analysis'],
-  authors: [{ name: 'Football Analytics Team' }],
-  creator: 'v0.app',
-  generator: 'v0.app',
+  description: 'Football analytics platform covering the 2022 World Cup and Europe\'s top leagues with match insights, player stats, team analytics, and interactive dashboards.',
+  keywords: ['football', 'analytics', 'soccer', '2022 season', 'world cup', 'player stats', 'match analysis', 'foot-insights'],
+  authors: [{ name: 'Foot-Insights Team' }],
+  creator: 'Foot-Insights',
+  generator: 'Next.js',
+  icons: {
+    icon: '/logos/favicon.ico',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://football-analytics.app',
-    title: 'Football Analytics | 2022 Season Archive',
-    description: 'Premium football analytics platform with World Cup coverage and player statistics',
-    siteName: 'Football Analytics',
+    url: 'https://foot-insights.vercel.app',
+    title: 'Foot-Insights | Football Analytics Platform',
+    description: 'Football analytics covering the 2022 World Cup and Europe\'s top leagues with match insights, player stats, and interactive dashboards.',
+    siteName: 'Foot-Insights',
   },
 }
 
