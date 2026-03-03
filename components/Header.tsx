@@ -60,10 +60,10 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-green-400 flex items-center justify-center shadow-lg shadow-green-500/30">
-              <span className="text-sm font-black text-slate-900">⚽</span>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-green-400 flex items-center justify-center shadow-lg shadow-green-500/30 overflow-hidden">
+              <img src="/logos/favicon.ico" alt="Foot-Insights" className="h-6 w-6 object-contain" />
             </div>
-            <span className="text-lg font-black text-foreground hidden sm:inline">FOOTBALL</span>
+            <span className="text-lg font-black text-foreground hidden sm:inline">Foot-Insights</span>
           </Link>
 
           {/* Desktop Navigation */}
