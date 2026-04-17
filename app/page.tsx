@@ -359,57 +359,52 @@ export default function HomePage() {
             }}
           />
 
-          <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="text-center space-y-8">
-              {/* Season badge */}
-              <div className="inline-flex items-center gap-3 rounded-full border border-green-500/20 bg-green-500/5 backdrop-blur-sm px-5 py-2.5 shadow-lg shadow-green-500/5">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-                </span>
-                <span className="text-xs font-bold text-green-400 uppercase tracking-[0.2em]">
-                  2022-23 Season · Top 5 Leagues + World Cup
-                </span>
+          <div className="relative mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
+            <div className="text-center space-y-6">
+              {/* Season badge + label */}
+              <div className="flex flex-col items-center gap-4">
+                <div className="inline-flex items-center gap-3 border border-green-500/30 bg-green-500/10 px-4 py-2 rounded-sm">
+                  <span className="text-xs font-bold text-green-400 uppercase tracking-widest">
+                    Football Analytics
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground uppercase tracking-widest">
+                  <div className="w-10 h-px bg-green-600" />
+                  <span>2022–23 Season · Top 5 Leagues · World Cup</span>
+                </div>
               </div>
 
-              {/* Main heading */}
-              <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.9]">
-                Foot-
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-400 to-green-500">
-                  Insights
-                </span>
+              {/* Main heading - split across lines */}
+              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight text-foreground leading-none">
+                <div>Foot</div>
+                <div className="text-green-500">Insights</div>
               </h1>
-              <p className="text-base text-muted-foreground/80 max-w-xl mx-auto">
-                Football Analytics Platform
+              
+              <p className="text-sm text-muted-foreground/70 italic max-w-2xl mx-auto">
+                Where every number tells a story
               </p>
 
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Dive into{' '}
-                <span className="text-green-400 font-semibold">1,890 matches</span>,{' '}
-                <span className="text-green-400 font-semibold">680 players</span>, and{' '}
-                <span className="text-green-400 font-semibold">6 competitions</span> from
-                the 2022-23 season — including the 2022 FIFA World Cup in Qatar.
+              <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                Dive into <span className="text-foreground font-semibold">1,890 matches</span>, <span className="text-foreground font-semibold">680 players</span>, and <span className="text-foreground font-semibold">6 competitions</span> from the 2022-23 season — including the 2022 FIFA World Cup in Qatar.
               </p>
 
               {/* CTA buttons */}
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
                 <Link
                   href="/worldcup"
-                  className="group relative rounded-xl bg-gradient-to-r from-green-500 to-emerald-400 px-8 py-4 text-sm font-bold text-slate-900 transition-all hover:shadow-xl hover:shadow-green-500/30 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-black px-7 py-3 text-sm font-bold rounded-sm transition-colors"
                 >
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    🏆 World Cup 2022
-                  </span>
+                  ⚽ World Cup 2022
                 </Link>
                 <Link
                   href="/matches"
-                  className="rounded-xl border-2 border-green-500/30 bg-green-500/5 backdrop-blur-sm px-8 py-4 text-sm font-bold text-green-400 transition-all hover:border-green-500/50 hover:bg-green-500/10 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center border border-green-500/40 hover:border-green-500/60 bg-transparent hover:bg-green-500/5 text-foreground px-7 py-3 text-sm font-semibold rounded-sm transition-all"
                 >
                   Browse All Matches
                 </Link>
                 <Link
                   href="/players"
-                  className="rounded-xl border-2 border-border/40 bg-card/30 backdrop-blur-sm px-8 py-4 text-sm font-bold text-muted-foreground transition-all hover:border-green-500/30 hover:text-green-400 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center border border-border/40 hover:border-border/60 bg-transparent text-muted-foreground hover:text-foreground px-7 py-3 text-sm font-semibold rounded-sm transition-all"
                 >
                   Player Database
                 </Link>
