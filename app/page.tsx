@@ -346,69 +346,68 @@ export default function HomePage() {
       <main className="min-h-screen bg-background overflow-x-hidden">
         {/* ═══════════════ HERO ═══════════════ */}
         <section className="relative overflow-hidden border-b border-border/30">
-          {/* layered gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/15 via-background to-emerald-900/10" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-500/10 via-transparent to-transparent" />
-          {/* subtle dot pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
+          {/* Football field background pattern */}
+          <div className="absolute inset-0 bg-background" />
+          {/* Center circle - faint */}
+          <svg className="absolute inset-0 w-full h-full opacity-[0.03]" preserveAspectRatio="xMidYMid slice">
+            <circle cx="50%" cy="50%" r="200" fill="none" stroke="currentColor" strokeWidth="2" />
+            <circle cx="50%" cy="50%" r="20" fill="none" stroke="currentColor" strokeWidth="2" />
+            <line x1="50%" y1="0%" x2="50%" y2="100%" stroke="currentColor" strokeWidth="2" />
+            <rect x="20%" y="30%" width="60%" height="40%" fill="none" stroke="currentColor" strokeWidth="2" />
+            <rect x="20%" y="45%" width="15%" height="10%" fill="none" stroke="currentColor" strokeWidth="2" />
+            <rect x="65%" y="45%" width="15%" height="10%" fill="none" stroke="currentColor" strokeWidth="2" />
+          </svg>
 
-          <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 items-start">
               {/* LEFT: Hero Content */}
-              <div className="space-y-6 lg:space-y-8">
+              <div className="space-y-5">
                 {/* Season badge */}
-                <div className="space-y-3">
-                  <div className="inline-flex items-center border border-green-500 px-3 py-1.5 rounded-sm">
-                    <span className="text-xs font-bold text-green-400 uppercase tracking-widest">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center border border-green-500/70 px-3 py-1.5 rounded-sm bg-transparent">
+                    <span className="text-[11px] font-bold text-green-500 uppercase tracking-widest">
                       Football Analytics
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground/70 uppercase tracking-wide">
-                    <div className="w-8 h-px bg-green-600/50" />
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground/60 uppercase tracking-wider">
+                    <div className="w-6 h-px bg-muted-foreground/30" />
                     <span>2022–23 Season · Top 5 Leagues · World Cup</span>
                   </div>
                 </div>
 
                 {/* Main heading */}
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-tight">
+                <h1 className="text-6xl lg:text-6xl font-black tracking-tighter text-foreground leading-none">
                   <div>Foot</div>
-                  <div className="text-green-500">Insights</div>
+                  <div className="text-[#00FF00]">Insights</div>
                 </h1>
                 
                 {/* Subtitle */}
-                <p className="text-sm text-muted-foreground/80 italic">
+                <p className="text-sm text-muted-foreground/70 italic font-normal">
                   Where every number tells a story
                 </p>
 
                 {/* Description */}
-                <p className="text-sm lg:text-base text-muted-foreground/90 leading-relaxed max-w-md">
+                <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-sm">
                   Dive into <span className="text-foreground font-semibold">1,890 matches</span>, <span className="text-foreground font-semibold">680 players</span>, and <span className="text-foreground font-semibold">6 competitions</span> from the 2022-23 season — including the 2022 FIFA World Cup in Qatar.
                 </p>
 
                 {/* CTA buttons */}
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-2 pt-2">
                   <Link
                     href="/worldcup"
-                    className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-black px-6 py-3 text-sm font-bold rounded-sm transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-black px-5 py-2.5 text-xs font-bold rounded-sm transition-colors"
                   >
                     ⚽ World Cup 2022
                   </Link>
                   <Link
                     href="/matches"
-                    className="inline-flex items-center justify-center border border-green-500/40 hover:border-green-500/60 bg-transparent text-foreground px-6 py-3 text-sm font-semibold rounded-sm transition-all"
+                    className="inline-flex items-center justify-center border border-muted-foreground/30 hover:border-muted-foreground/50 bg-transparent text-foreground hover:text-foreground px-5 py-2.5 text-xs font-semibold rounded-sm transition-all"
                   >
                     Browse All Matches
                   </Link>
                   <Link
                     href="/players"
-                    className="inline-flex items-center justify-center border border-border/40 hover:border-border/60 bg-transparent text-muted-foreground hover:text-foreground px-6 py-3 text-sm font-semibold rounded-sm transition-all"
+                    className="inline-flex items-center justify-center border border-muted-foreground/20 hover:border-muted-foreground/40 bg-transparent text-muted-foreground hover:text-foreground px-5 py-2.5 text-xs font-semibold rounded-sm transition-all"
                   >
                     Player Database
                   </Link>
@@ -418,68 +417,68 @@ export default function HomePage() {
               {/* RIGHT: Season At A Glance Panel */}
               {summary && (
                 <div className="hidden lg:block">
-                  <div className="border border-border/40 bg-card/60 backdrop-blur-sm rounded-xl p-6 space-y-6">
+                  <div className="border border-muted-foreground/20 bg-card/40 backdrop-blur-sm rounded-lg p-6 space-y-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-xs font-bold text-muted-foreground/70 uppercase tracking-widest">
+                    <div className="flex items-center justify-between pb-2">
+                      <h3 className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider">
                         Season At A Glance
                       </h3>
                       <div className="flex items-center gap-1.5">
                         <span className="inline-flex h-2 w-2 rounded-full bg-green-500" />
-                        <span className="text-xs font-semibold text-green-400">Live Data</span>
+                        <span className="text-[11px] font-semibold text-green-500">Live Data</span>
                       </div>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-6 border-b border-muted-foreground/10 pb-6">
                       {/* Matches */}
-                      <div className="space-y-1.5">
-                        <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-semibold">
+                      <div className="space-y-2">
+                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
                           Matches
                         </p>
-                        <p className="text-3xl font-black text-green-400">
+                        <p className="text-3xl font-black text-foreground">
                           <AnimatedNumber value={summary.totalMatches} />
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60">
+                        <p className="text-[9px] text-muted-foreground/50">
                           across 6 competitions
                         </p>
                       </div>
 
                       {/* Goals Scored */}
-                      <div className="space-y-1.5">
-                        <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-semibold">
+                      <div className="space-y-2">
+                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
                           Goals Scored
                         </p>
-                        <p className="text-3xl font-black text-green-400">
+                        <p className="text-3xl font-black text-green-500">
                           <AnimatedNumber value={totalGoals} />
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60">
+                        <p className="text-[9px] text-muted-foreground/50">
                           {summary.averageGoalsPerMatch.toFixed(2)} per match
                         </p>
                       </div>
 
                       {/* Teams */}
-                      <div className="space-y-1.5">
-                        <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-semibold">
+                      <div className="space-y-2">
+                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
                           Teams
                         </p>
-                        <p className="text-3xl font-black text-yellow-400">
+                        <p className="text-3xl font-black text-amber-400">
                           <AnimatedNumber value={summary.totalTeams} />
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60">
+                        <p className="text-[9px] text-muted-foreground/50">
                           clubs & national teams
                         </p>
                       </div>
 
                       {/* Players */}
-                      <div className="space-y-1.5">
-                        <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-semibold">
+                      <div className="space-y-2">
+                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
                           Players
                         </p>
-                        <p className="text-3xl font-black text-purple-400">
+                        <p className="text-3xl font-black text-foreground">
                           <AnimatedNumber value={summary.totalPlayers} />
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60">
+                        <p className="text-[9px] text-muted-foreground/50">
                           World Cup squads
                         </p>
                       </div>
@@ -487,35 +486,35 @@ export default function HomePage() {
 
                     {/* Featured Match */}
                     {iconicMatches[0] && (
-                      <div className="space-y-3 pt-4 border-t border-border/20">
+                      <div className="space-y-3 pt-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm">⭐</span>
-                          <span className="text-xs font-bold text-green-400 uppercase tracking-wider">
+                          <span className="text-xs">⭐</span>
+                          <span className="text-[10px] font-bold text-green-500 uppercase tracking-wider">
                             World Cup Final - Dec 18, 2022
                           </span>
                         </div>
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-foreground">
-                              {iconicMatches[0].homeTeam.teamId}
+                          <div className="flex items-center justify-between gap-4">
+                            <span className="text-xs font-semibold text-muted-foreground/80">
+                              AR {iconicMatches[0].homeTeam.teamId}
                             </span>
-                            <span className="text-2xl font-black text-green-400">
+                            <span className="text-3xl font-black text-foreground">
                               {iconicMatches[0].homeTeam.goals}
                             </span>
                           </div>
-                          <div className="text-center text-xs text-muted-foreground/60">
-                            vs
+                          <div className="text-center text-[9px] text-muted-foreground/50 py-1">
+                            -
                           </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-foreground">
-                              {iconicMatches[0].awayTeam.teamId}
+                          <div className="flex items-center justify-between gap-4">
+                            <span className="text-xs font-semibold text-muted-foreground/80">
+                              {iconicMatches[0].awayTeam.teamId} FR
                             </span>
-                            <span className="text-2xl font-black">
+                            <span className="text-3xl font-black text-foreground">
                               {iconicMatches[0].awayTeam.goals}
                             </span>
                           </div>
                         </div>
-                        <p className="text-[10px] text-muted-foreground/60">
+                        <p className="text-[9px] text-muted-foreground/50 pt-1">
                           Argentina won on penalties · Lusail Stadium, Qatar
                         </p>
                       </div>
