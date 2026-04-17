@@ -345,17 +345,27 @@ export default function HomePage() {
       <Header />
       <main className="min-h-screen bg-background overflow-x-hidden">
         {/* ═══════════════ HERO ═══════════════ */}
-        <section className="relative overflow-hidden border-b border-border/30">
+        <section className="relative overflow-hidden border-b border-border/30 min-h-[700px]">
           {/* Football field background pattern */}
           <div className="absolute inset-0 bg-background" />
-          {/* Center circle - faint */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.03]" preserveAspectRatio="xMidYMid slice">
-            <circle cx="50%" cy="50%" r="200" fill="none" stroke="currentColor" strokeWidth="2" />
-            <circle cx="50%" cy="50%" r="20" fill="none" stroke="currentColor" strokeWidth="2" />
-            <line x1="50%" y1="0%" x2="50%" y2="100%" stroke="currentColor" strokeWidth="2" />
-            <rect x="20%" y="30%" width="60%" height="40%" fill="none" stroke="currentColor" strokeWidth="2" />
-            <rect x="20%" y="45%" width="15%" height="10%" fill="none" stroke="currentColor" strokeWidth="2" />
-            <rect x="65%" y="45%" width="15%" height="10%" fill="none" stroke="currentColor" strokeWidth="2" />
+          {/* Center circle and field lines - visible enough but still subtle */}
+          <svg className="absolute inset-0 w-full h-full opacity-[0.08]" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1000 700">
+            {/* Center circle */}
+            <circle cx="500" cy="350" r="80" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            {/* Center spot */}
+            <circle cx="500" cy="350" r="6" fill="currentColor" />
+            {/* Halfway line */}
+            <line x1="500" y1="0" x2="500" y2="700" stroke="currentColor" strokeWidth="1.5" />
+            {/* Field outline */}
+            <rect x="50" y="30" width="900" height="640" fill="none" stroke="currentColor" strokeWidth="2" />
+            {/* Left penalty area */}
+            <rect x="50" y="130" width="180" height="440" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            {/* Left goal area */}
+            <rect x="50" y="240" width="90" height="220" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            {/* Right penalty area */}
+            <rect x="770" y="130" width="180" height="440" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            {/* Right goal area */}
+            <rect x="860" y="240" width="90" height="220" fill="none" stroke="currentColor" strokeWidth="1.5" />
           </svg>
 
           <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -417,104 +427,104 @@ export default function HomePage() {
               {/* RIGHT: Season At A Glance Panel */}
               {summary && (
                 <div className="hidden lg:block">
-                  <div className="border border-muted-foreground/20 bg-card/40 backdrop-blur-sm rounded-lg p-6 space-y-6">
+                  <div className="border border-muted-foreground/30 bg-card/50 backdrop-blur-sm rounded-lg p-8 space-y-5">
                     {/* Header */}
-                    <div className="flex items-center justify-between pb-2">
-                      <h3 className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider">
+                    <div className="flex items-center justify-between pb-4 border-b border-muted-foreground/20">
+                      <h3 className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
                         Season At A Glance
                       </h3>
                       <div className="flex items-center gap-1.5">
                         <span className="inline-flex h-2 w-2 rounded-full bg-green-500" />
-                        <span className="text-[11px] font-semibold text-green-500">Live Data</span>
+                        <span className="text-[10px] font-semibold text-green-500">Live Data</span>
                       </div>
                     </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-6 border-b border-muted-foreground/10 pb-6">
-                      {/* Matches */}
-                      <div className="space-y-2">
-                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
-                          Matches
-                        </p>
-                        <p className="text-3xl font-black text-foreground">
-                          <AnimatedNumber value={summary.totalMatches} />
-                        </p>
-                        <p className="text-[9px] text-muted-foreground/50">
-                          across 6 competitions
-                        </p>
-                      </div>
+                    {/* Stats Grid with borders */}
+                    <div className="border border-muted-foreground/20 rounded-sm">
+                      <div className="grid grid-cols-2 gap-0">
+                        {/* Matches */}
+                        <div className="border-r border-b border-muted-foreground/20 p-4 space-y-1.5">
+                          <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
+                            Matches
+                          </p>
+                          <p className="text-3xl font-black text-foreground">
+                            <AnimatedNumber value={summary.totalMatches} />
+                          </p>
+                          <p className="text-[8px] text-muted-foreground/50">
+                            across 6 competitions
+                          </p>
+                        </div>
 
-                      {/* Goals Scored */}
-                      <div className="space-y-2">
-                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
-                          Goals Scored
-                        </p>
-                        <p className="text-3xl font-black text-green-500">
-                          <AnimatedNumber value={totalGoals} />
-                        </p>
-                        <p className="text-[9px] text-muted-foreground/50">
-                          {summary.averageGoalsPerMatch.toFixed(2)} per match
-                        </p>
-                      </div>
+                        {/* Goals Scored */}
+                        <div className="border-b border-muted-foreground/20 p-4 space-y-1.5">
+                          <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
+                            Goals Scored
+                          </p>
+                          <p className="text-3xl font-black text-green-500">
+                            <AnimatedNumber value={totalGoals} />
+                          </p>
+                          <p className="text-[8px] text-muted-foreground/50">
+                            {summary.averageGoalsPerMatch.toFixed(2)} per match
+                          </p>
+                        </div>
 
-                      {/* Teams */}
-                      <div className="space-y-2">
-                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
-                          Teams
-                        </p>
-                        <p className="text-3xl font-black text-amber-400">
-                          <AnimatedNumber value={summary.totalTeams} />
-                        </p>
-                        <p className="text-[9px] text-muted-foreground/50">
-                          clubs & national teams
-                        </p>
-                      </div>
+                        {/* Teams */}
+                        <div className="border-r border-muted-foreground/20 p-4 space-y-1.5">
+                          <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
+                            Teams
+                          </p>
+                          <p className="text-3xl font-black text-yellow-500">
+                            <AnimatedNumber value={summary.totalTeams} />
+                          </p>
+                          <p className="text-[8px] text-muted-foreground/50">
+                            clubs & national teams
+                          </p>
+                        </div>
 
-                      {/* Players */}
-                      <div className="space-y-2">
-                        <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
-                          Players
-                        </p>
-                        <p className="text-3xl font-black text-foreground">
-                          <AnimatedNumber value={summary.totalPlayers} />
-                        </p>
-                        <p className="text-[9px] text-muted-foreground/50">
-                          World Cup squads
-                        </p>
+                        {/* Players */}
+                        <div className="p-4 space-y-1.5">
+                          <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-semibold">
+                            Players
+                          </p>
+                          <p className="text-3xl font-black text-foreground">
+                            <AnimatedNumber value={summary.totalPlayers} />
+                          </p>
+                          <p className="text-[8px] text-muted-foreground/50">
+                            World Cup squads
+                          </p>
+                        </div>
                       </div>
                     </div>
 
                     {/* Featured Match */}
                     {iconicMatches[0] && (
-                      <div className="space-y-3 pt-2">
-                        <div className="flex items-center gap-2">
+                      <div className="border border-muted-foreground/20 rounded-sm p-4 space-y-3">
+                        <div className="flex items-center gap-2 pb-3 border-b border-muted-foreground/20">
                           <span className="text-xs">⭐</span>
-                          <span className="text-[10px] font-bold text-green-500 uppercase tracking-wider">
-                            World Cup Final - Dec 18, 2022
+                          <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">
+                            World Cup Final · Dec 18, 2022
                           </span>
                         </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-4">
-                            <span className="text-xs font-semibold text-muted-foreground/80">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex-1">
+                            <div className="text-xs font-semibold text-muted-foreground/80 mb-2">
                               AR {iconicMatches[0].homeTeam.teamId}
-                            </span>
-                            <span className="text-3xl font-black text-foreground">
-                              {iconicMatches[0].homeTeam.goals}
-                            </span>
+                            </div>
                           </div>
-                          <div className="text-center text-[9px] text-muted-foreground/50 py-1">
-                            -
+                          <div className="text-4xl font-black text-foreground">
+                            {iconicMatches[0].homeTeam.goals}
                           </div>
-                          <div className="flex items-center justify-between gap-4">
-                            <span className="text-xs font-semibold text-muted-foreground/80">
+                          <div className="px-2 text-muted-foreground/60 font-bold">-</div>
+                          <div className="text-4xl font-black text-foreground">
+                            {iconicMatches[0].awayTeam.goals}
+                          </div>
+                          <div className="flex-1 text-right">
+                            <div className="text-xs font-semibold text-muted-foreground/80">
                               {iconicMatches[0].awayTeam.teamId} FR
-                            </span>
-                            <span className="text-3xl font-black text-foreground">
-                              {iconicMatches[0].awayTeam.goals}
-                            </span>
+                            </div>
                           </div>
                         </div>
-                        <p className="text-[9px] text-muted-foreground/50 pt-1">
+                        <p className="text-[8px] text-muted-foreground/50 text-center pt-2">
                           Argentina won on penalties · Lusail Stadium, Qatar
                         </p>
                       </div>

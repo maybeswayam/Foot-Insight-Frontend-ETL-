@@ -59,23 +59,22 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-green-400 flex items-center justify-center shadow-lg shadow-green-500/30 overflow-hidden">
-              <img src="/logos/favicon.ico" alt="Foot-Insights" className="h-6 w-6 object-contain" />
-            </div>
-            <span className="text-lg font-black text-foreground hidden sm:inline">Foot-Insights</span>
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-sm font-black text-foreground hidden sm:inline">
+              FOOT<span className="text-green-500">INSIGHTS</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex gap-1 ml-auto items-center">
+          <nav className="hidden md:flex gap-6 ml-auto items-center">
             {navigation.slice(0, 2).map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                className={`text-xs font-bold uppercase tracking-wider transition-all ${
                   isActive(item.href)
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    ? 'text-green-500'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {item.name}
@@ -86,14 +85,14 @@ export function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setLeagueDropdownOpen(!leagueDropdownOpen)}
-                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all flex items-center gap-1 ${
+                className={`text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1 ${
                   isLeagueActive
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    ? 'text-green-500'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 Leagues
-                <ChevronDown size={14} className={`transition-transform ${leagueDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={12} className={`transition-transform ${leagueDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {leagueDropdownOpen && (
@@ -120,15 +119,23 @@ export function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
+                className={`text-xs font-bold uppercase tracking-wider transition-all ${
                   isActive(item.href)
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    ? 'text-green-500'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {item.name}
               </Link>
             ))}
+
+            {/* Season Badge */}
+            <Link
+              href="/"
+              className="ml-auto bg-green-500 hover:bg-green-600 text-black px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-sm transition-colors"
+            >
+              2022-23 Season
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
