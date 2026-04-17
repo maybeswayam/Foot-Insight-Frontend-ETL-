@@ -644,98 +644,99 @@ export default function HomePage() {
         )}
 
         {/* ═══════════════ STARS OF THE ERA ═══════════════ */}
-        <section className="border-t border-border/30">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div className="flex flex-col gap-2 mb-10">
-              <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+        <section className="relative overflow-hidden border-t border-border/30">
+          {/* Subtle football field background */}
+          <div className="absolute inset-0 bg-background" />
+          <svg className="absolute inset-0 w-full h-full opacity-[0.05]" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1000 700">
+            <circle cx="500" cy="350" r="80" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="500" cy="350" r="6" fill="currentColor" />
+            <line x1="500" y1="0" x2="500" y2="700" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+
+          <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-2 mb-12">
+              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
                 Stars of the ERA
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-sm text-muted-foreground/80">
                 The legends who defined modern football — jaw-dropping career stats.
               </p>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {STARS_OF_ERA.map((star) => {
                 const CardContent = (
-                  <>
-                    {/* gradient accent top */}
-                    <div
-                      className={`h-2 bg-gradient-to-r ${star.gradient}`}
-                    />
-
-                    <div className="p-5 space-y-4">
-                      {/* Header with photo */}
-                      <div className="flex items-start gap-4">
-                        <PlayerPhoto
-                          playerName={star.name}
-                          size={72}
-                          rounded
-                          className="border-2 border-border/30 shrink-0 shadow-lg"
-                        />
-                        <div className="flex-1 min-w-0 space-y-1">
-                          <h3 className="text-lg font-black text-foreground group-hover:text-green-400 transition-colors leading-tight">
-                            {star.name}
-                          </h3>
-                          <p className="text-xs text-muted-foreground italic">
-                            &quot;{star.nickname}&quot; · {star.position}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <CountryFlag country={star.nationality} size={20} />
-                            <span className="text-xs text-muted-foreground">{star.nationality}</span>
-                          </div>
-                          <p className="text-[10px] text-muted-foreground tracking-wide">
-                            {star.clubs}
-                          </p>
+                  <div className="p-5 space-y-4">
+                    {/* Header with photo */}
+                    <div className="flex items-start gap-4">
+                      <PlayerPhoto
+                        playerName={star.name}
+                        size={80}
+                        rounded
+                        className="border border-muted-foreground/20 shrink-0"
+                      />
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <h3 className="text-base font-black text-foreground leading-tight">
+                          {star.name}
+                        </h3>
+                        <p className="text-[10px] text-muted-foreground/80 italic">
+                          &quot;{star.nickname}&quot; · {star.position}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <CountryFlag country={star.nationality} size={16} />
+                          <span className="text-[9px] text-muted-foreground/70">{star.nationality}</span>
                         </div>
+                        <p className="text-[9px] text-muted-foreground/70">
+                          {star.clubs}
+                        </p>
                       </div>
+                    </div>
 
-                      {/* Signature badge */}
-                      <div
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-border/40 ${star.accent}`}
-                      >
-                        <span className="text-[10px] font-bold uppercase tracking-wider">
-                          {star.signature}
-                        </span>
-                      </div>
+                    {/* Signature badge */}
+                    <div className="inline-flex items-center px-3 py-1.5 border border-muted-foreground/20 rounded-sm bg-transparent">
+                      <span className="text-[9px] font-bold text-green-500 uppercase tracking-widest">
+                        {star.signature}
+                      </span>
+                    </div>
 
-                      {/* Stats grid */}
-                      <div className="grid grid-cols-2 gap-2.5">
-                        {star.stats.map((stat) => (
+                    {/* Stats grid with borders */}
+                    <div className="border border-muted-foreground/15 rounded-sm">
+                      <div className="grid grid-cols-2 gap-0">
+                        {star.stats.map((stat, idx) => (
                           <div
                             key={stat.label}
-                            className="text-center rounded-xl bg-white/[0.03] border border-border/20 py-2.5"
+                            className={`p-3 text-center ${idx % 2 === 0 ? 'border-r border-muted-foreground/15' : ''} ${idx < 2 ? 'border-b border-muted-foreground/15' : ''}`}
                           >
-                            <p className={`text-lg font-black ${star.accent}`}>
+                            <p className="text-xl font-black text-foreground">
                               {stat.value}
                             </p>
-                            <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                            <p className="text-[8px] text-muted-foreground/60 uppercase tracking-widest font-semibold mt-1">
                               {stat.label}
                             </p>
                           </div>
                         ))}
                       </div>
-
-                      {/* Fun fact */}
-                      <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/20 pt-3">
-                        💡 {star.fact}
-                      </p>
                     </div>
-                  </>
+
+                    {/* Fun fact */}
+                    <p className="text-[9px] text-muted-foreground/70 leading-relaxed border-t border-muted-foreground/15 pt-3">
+                      {star.fact}
+                    </p>
+                  </div>
                 )
 
                 return star.playerId ? (
                   <Link
                     key={star.name}
                     href={`/players/${star.playerId}`}
-                    className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10 cursor-pointer`}
+                    className="group relative border border-muted-foreground/20 bg-card/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-muted-foreground/40 hover:bg-card/60 transition-all"
                   >
                     {CardContent}
                   </Link>
                 ) : (
                   <div
                     key={star.name}
-                    className={`group relative rounded-2xl border ${star.borderAccent} bg-card/80 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg`}
+                    className="group relative border border-muted-foreground/20 bg-card/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-muted-foreground/40 transition-all"
                   >
                     {CardContent}
                   </div>
