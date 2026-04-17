@@ -536,173 +536,89 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ═══════════════ KPI CARDS ═══════════════ */}
-        {summary && (
-          <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-              {/* Total Matches */}
-              <div className="group relative rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-6 overflow-hidden hover:border-green-500/30 transition-all">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-green-500/10 to-transparent rounded-bl-full" />
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-green-500/10 text-green-400 text-lg">
-                    ⚽
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground">Matches</p>
-                </div>
-                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
-                  <AnimatedNumber value={summary.totalMatches} />
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">across 6 competitions</p>
-              </div>
 
-              {/* Total Goals */}
-              <div className="group relative rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-6 overflow-hidden hover:border-amber-500/30 transition-all">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-full" />
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 text-lg">
-                    🎯
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground">Goals Scored</p>
-                </div>
-                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-300">
-                  <AnimatedNumber value={totalGoals} />
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {summary.averageGoalsPerMatch.toFixed(2)} per match
-                </p>
-              </div>
-
-              {/* Teams */}
-              <div className="group relative rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-6 overflow-hidden hover:border-blue-500/30 transition-all">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-bl-full" />
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 text-lg">
-                    🏟️
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground">Teams</p>
-                </div>
-                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-                  <AnimatedNumber value={summary.totalTeams} />
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">clubs & national teams</p>
-              </div>
-
-              {/* Players */}
-              <div className="group relative rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-6 overflow-hidden hover:border-purple-500/30 transition-all">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-bl-full" />
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 text-lg">
-                    👤
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground">Players</p>
-                </div>
-                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-300">
-                  <AnimatedNumber value={summary.totalPlayers} />
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  World Cup squads tracked
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* ═══════════════ ICONIC MATCHES ═══════════════ */}
         {iconicMatches.length > 0 && (
-          <section className="border-t border-border/30">
-            <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-2 mb-10">
-                <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+          <section className="relative overflow-hidden border-t border-border/30">
+            {/* Subtle football field background */}
+            <div className="absolute inset-0 bg-background" />
+            <svg className="absolute inset-0 w-full h-full opacity-[0.05]" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1000 700">
+              <circle cx="500" cy="350" r="80" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              <circle cx="500" cy="350" r="6" fill="currentColor" />
+              <line x1="500" y1="0" x2="500" y2="700" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+
+            <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+              <div className="flex flex-col gap-2 mb-12">
+                <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
                   Iconic Matches
                 </h2>
-                <p className="text-muted-foreground">
-                  The derbies, thrillers, and record-breakers that defined the 2022-23
-                  season.
+                <p className="text-sm text-muted-foreground/80">
+                  The derbies, thrillers, and record-breakers that defined the 2022-23 season.
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {iconicMatches.map((match) => {
                   const label = ICONIC_LABELS[match.matchId] || match.competition
                   const isHomeWin = match.stats.result === 'home_win'
                   const isAwayWin = match.stats.result === 'away_win'
-                  const isDraw = match.stats.result === 'draw'
 
                   return (
                     <Link
                       key={match.matchId}
                       href={`/matches/${match.matchId}`}
-                      className="group relative rounded-2xl border border-border/40 bg-card/80 overflow-hidden hover:border-green-500/40 hover:shadow-lg hover:shadow-green-500/5 transition-all"
+                      className="group relative border border-muted-foreground/20 bg-card/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-muted-foreground/40 hover:bg-card/60 transition-all"
                     >
-                      {/* top label strip */}
-                      <div className="px-4 py-2 bg-gradient-to-r from-green-500/10 via-green-500/5 to-transparent border-b border-border/20 flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-green-400">
+                      {/* Match Label Header */}
+                      <div className="px-5 py-3 border-b border-muted-foreground/15 flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">
                           {label}
                         </span>
-                        <span className="text-[10px] text-muted-foreground">
+                        <span className="text-[9px] text-muted-foreground/60">
                           {match.date}
                         </span>
                       </div>
 
-                      <div className="p-4 space-y-3">
-                        {/* Home */}
+                      <div className="p-5 space-y-4">
+                        {/* Home Team */}
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <TeamLogo teamName={match.homeTeam.teamId} size={28} />
-                            <span
-                              className={`font-bold text-sm truncate ${
-                                isHomeWin
-                                  ? 'text-foreground'
-                                  : 'text-muted-foreground'
-                              }`}
-                            >
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <TeamLogo teamName={match.homeTeam.teamId} size={32} />
+                            <span className="font-bold text-sm text-foreground truncate">
                               {match.homeTeam.teamId}
                             </span>
                           </div>
-                          <span
-                            className={`text-xl font-black tabular-nums ${
-                              isHomeWin ? 'text-green-400' : 'text-muted-foreground'
-                            }`}
-                          >
+                          <span className="text-2xl font-black text-foreground">
                             {match.homeTeam.goals}
                           </span>
                         </div>
 
-                        {/* Away */}
+                        {/* vs divider */}
+                        <div className="text-center text-[9px] text-muted-foreground/50 py-1">
+                          -
+                        </div>
+
+                        {/* Away Team */}
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <TeamLogo teamName={match.awayTeam.teamId} size={28} />
-                            <span
-                              className={`font-bold text-sm truncate ${
-                                isAwayWin
-                                  ? 'text-foreground'
-                                  : 'text-muted-foreground'
-                              }`}
-                            >
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <TeamLogo teamName={match.awayTeam.teamId} size={32} />
+                            <span className="font-bold text-sm text-foreground truncate">
                               {match.awayTeam.teamId}
                             </span>
                           </div>
-                          <span
-                            className={`text-xl font-black tabular-nums ${
-                              isAwayWin ? 'text-green-400' : 'text-muted-foreground'
-                            }`}
-                          >
+                          <span className="text-2xl font-black text-foreground">
                             {match.awayTeam.goals}
                           </span>
                         </div>
 
-                        {/* footer */}
-                        <div className="pt-2 border-t border-border/10 flex items-center justify-between">
-                          <span
-                            className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                              isDraw
-                                ? 'bg-yellow-500/15 text-yellow-400'
-                                : 'bg-green-500/15 text-green-400'
-                            }`}
-                          >
+                        {/* Match meta */}
+                        <div className="pt-2 border-t border-muted-foreground/15 flex items-center justify-between text-[9px]">
+                          <span className="text-muted-foreground/60">
                             {match.stats.totalGoals} goals
                           </span>
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="text-muted-foreground/60">
                             {match.competition}
                           </span>
                         </div>
@@ -712,10 +628,10 @@ export default function HomePage() {
                 })}
               </div>
 
-              <div className="text-center pt-8">
+              <div className="text-center pt-10">
                 <Link
                   href="/matches"
-                  className="inline-flex items-center gap-2 text-green-400 font-bold hover:text-green-300 transition-colors uppercase tracking-wide text-sm group"
+                  className="inline-flex items-center gap-2 text-green-500 font-bold hover:text-green-400 transition-colors uppercase tracking-wider text-xs group"
                 >
                   Explore All 1,890 Matches
                   <span className="transition-transform group-hover:translate-x-1">
