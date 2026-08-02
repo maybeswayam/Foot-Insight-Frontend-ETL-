@@ -46,7 +46,7 @@ const tipStyle = {
 }
 const tipLabelStyle = { color: '#F0EDE6', fontWeight: 600 }
 
-/** Pie tooltips don't inherit series colors — render explicitly like the bar charts. */
+/** Single-series / pie tooltips don't inherit colors — render explicitly. */
 function ClubShareTooltip({
   active,
   payload,
@@ -69,6 +69,41 @@ function ClubShareTooltip({
       <div style={{ color: PITCH }}>Goals : {p.goals ?? 0}</div>
       <div style={{ color: GOLD }}>Assists : {p.assists ?? 0}</div>
       <div style={{ color: SKY }}>G+A : {p.value ?? 0}</div>
+    </div>
+  )
+}
+
+function CompRateTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean
+  payload?: {
+    payload?: {
+      name?: string
+      full?: string
+      goals?: number
+      assists?: number
+      ga?: number
+      fill?: string
+    }
+  }[]
+}) {
+  if (!active || !payload?.length) return null
+  const p = payload[0]?.payload
+  if (!p?.name) return null
+  return (
+    <div
+      style={{
+        ...tipStyle,
+        padding: '8px 12px',
+        lineHeight: 1.55,
+      }}
+    >
+      <div style={{ color: '#F0EDE6', fontWeight: 600, marginBottom: 4 }}>{p.full || p.name}</div>
+      <div style={{ color: PITCH }}>Goals : {p.goals ?? 0}</div>
+      <div style={{ color: GOLD }}>Assists : {p.assists ?? 0}</div>
+      <div style={{ color: p.fill || SKY }}>G+A : {p.ga ?? 0}</div>
     </div>
   )
 }
@@ -411,9 +446,8 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                     axisLine={false}
                     tickLine={false}
                   />
-                  <Tooltip contentStyle={tipStyle}
-                  labelStyle={tipLabelStyle} />
-                  <Bar dataKey="ga" name="G+A" radius={[0, 2, 2, 0]}>
+                  <Tooltip content={<CompRateTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+                  <Bar dataKey="ga" name="G+A" radius={[0, 2, 2, 0]} barSize={18}>
                     {compBars.map((r) => (
                       <Cell key={r.full} fill={r.fill} />
                     ))}
