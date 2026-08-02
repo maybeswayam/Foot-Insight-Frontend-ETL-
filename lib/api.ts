@@ -3,6 +3,7 @@ import type {
   Match,
   MatchDetail,
   Player,
+  PlayerDetail,
   TeamStanding,
   LeagueTableRow,
   AccoladesData,
@@ -12,7 +13,10 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || ''
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {
   const url = `${API_BASE}${endpoint}`
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    // Archive data — prefer HTTP cache when the browser/CDN can reuse it.
+    cache: 'force-cache',
+  })
 
   if (!response.ok) {
     throw new Error(`API Error: ${response.status} ${response.statusText}`)
@@ -33,7 +37,7 @@ export const apiClient = {
   // Players
   getPlayers: () => fetchAPI<Player[]>('/api/players'),
   getPlayerDetail: (playerId: string) =>
-    fetchAPI<Player>(`/api/players/${playerId}`),
+    fetchAPI<PlayerDetail>(`/api/players/${playerId}`),
 
   // Standings
   getStandings: () => fetchAPI<TeamStanding[]>('/api/standings'),

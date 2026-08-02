@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { datasetTeamName } from '@/lib/teamResolve'
 
 const DEFAULT_LOGO =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%231a1a2e" width="100" height="100" rx="16"/%3E%3Ctext x="50" y="54" text-anchor="middle" dy=".3em" font-size="36" fill="%2322c55e"%3E⚽%3C/text%3E%3C/svg%3E'
@@ -17,14 +18,16 @@ interface TeamLogoProps {
  */
 export function TeamLogo({ teamName, size = 40, className = '' }: TeamLogoProps) {
   const [errored, setErrored] = useState(false)
+  const resolved = datasetTeamName(teamName) || teamName
 
   const src = errored
     ? DEFAULT_LOGO
-    : `/api/team-logo-proxy?name=${encodeURIComponent(teamName)}`
+    : `/api/team-logo-proxy?name=${encodeURIComponent(resolved)}`
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      key={resolved}
       src={src}
       alt={teamName}
       width={size}

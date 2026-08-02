@@ -44,6 +44,15 @@ desktop.ini
 *.tsbuildinfo
 next-env.d.ts
 
+# ETL scratch / non-runtime assets (keep out of deploy artifacts)
+data/_lineup_progress/
+REf/
+messi/
+downloaded_files/
+verify-*.png
+homepage-redesign.png
+verify-screenshots.cjs
+
 # v0 runtime files (should only exist in preview, not in git)
 __v0_runtime_loader.js
 __v0_devtools.tsx

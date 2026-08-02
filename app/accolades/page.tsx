@@ -3,51 +3,30 @@
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorState } from '@/components/ErrorState'
 import { PlayerPhoto } from '@/components/PlayerPhoto'
 import { TeamLogo } from '@/components/TeamLogo'
 import { LeagueLogo } from '@/components/LeagueLogo'
+import { CountryFlag } from '@/components/CountryFlag'
 import { apiClient } from '@/lib/api'
 import { formatPosition } from '@/lib/utils'
 import type {
   AccoladesData,
   PlayerAwardEntry,
-  TeamAwardEntry,
-  LeagueAccolades,
   MatchHighlight,
+  PlayerAwards,
 } from '@/lib/types'
 import {
   Trophy,
   Target,
-  Footprints,
   Shield,
   Crosshair,
   Timer,
   Flame,
   Zap,
-  Medal,
 } from 'lucide-react'
-
-type Tab = 'world-cup' | string // competition name for league tabs
-
-const LEAGUE_SHORT: Record<string, string> = {
-  'FIFA World Cup': 'World Cup',
-  'Premier League': 'Premier League',
-  'La Liga': 'La Liga',
-  'Serie A': 'Serie A',
-  Bundesliga: 'Bundesliga',
-  'Ligue 1': 'Ligue 1',
-}
-
-const LEAGUE_EMOJI: Record<string, string> = {
-  'FIFA World Cup': '🏆',
-  'Premier League': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-  'La Liga': '🇪🇸',
-  'Serie A': '🇮🇹',
-  Bundesliga: '🇩🇪',
-  'Ligue 1': '🇫🇷',
-}
 
 const LEAGUE_SLUG: Record<string, 'premier-league' | 'la-liga' | 'bundesliga' | 'serie-a' | 'ligue-1' | undefined> = {
   'Premier League': 'premier-league',
@@ -57,77 +36,40 @@ const LEAGUE_SLUG: Record<string, 'premier-league' | 'la-liga' | 'bundesliga' | 
   'Ligue 1': 'ligue-1',
 }
 
-const PLAYER_AWARD_CONFIG = [
-  {
-    key: 'topScorers' as const,
-    title: 'Golden Boot',
-    subtitle: 'Top Goal Scorers',
-    icon: Trophy,
-    accentColor: 'text-yellow-400',
-    bgColor: 'bg-yellow-500/10',
-    borderColor: 'border-yellow-500/20',
-  },
-  {
-    key: 'topAssists' as const,
-    title: 'Playmaker Award',
-    subtitle: 'Most Assists',
-    icon: Target,
-    accentColor: 'text-cyan-400',
-    bgColor: 'bg-cyan-500/10',
-    borderColor: 'border-cyan-500/20',
-  },
-  {
-    key: 'topXG' as const,
-    title: 'Expected Goals Leader',
-    subtitle: 'Highest xG',
-    icon: Flame,
-    accentColor: 'text-orange-400',
-    bgColor: 'bg-orange-500/10',
-    borderColor: 'border-orange-500/20',
-  },
-  {
-    key: 'topXA' as const,
-    title: 'Creative Force',
-    subtitle: 'Highest Expected Assists',
-    icon: Zap,
-    accentColor: 'text-pink-400',
-    bgColor: 'bg-pink-500/10',
-    borderColor: 'border-pink-500/20',
-  },
-  {
-    key: 'bestPassers' as const,
-    title: 'Passing Master',
-    subtitle: 'Best Pass Accuracy (50+ attempts)',
-    icon: Crosshair,
-    accentColor: 'text-sky-400',
-    bgColor: 'bg-sky-500/10',
-    borderColor: 'border-sky-500/20',
-  },
-  {
-    key: 'bestDefenders' as const,
-    title: 'Defensive Wall',
-    subtitle: 'Most Tackles + Interceptions',
-    icon: Shield,
-    accentColor: 'text-emerald-400',
-    bgColor: 'bg-emerald-500/10',
-    borderColor: 'border-emerald-500/20',
-  },
-  {
-    key: 'mostMinutes' as const,
-    title: 'Iron Man',
-    subtitle: 'Most Minutes Played',
-    icon: Timer,
-    accentColor: 'text-indigo-400',
-    bgColor: 'bg-indigo-500/10',
-    borderColor: 'border-indigo-500/20',
-  },
+const COMPETITION_ORDER = [
+  'FIFA World Cup',
+  'Premier League',
+  'La Liga',
+  'Bundesliga',
+  'Serie A',
+  'Ligue 1',
+]
+
+const MEDAL = ['bg-gold text-black', 'bg-[#C0C0C0] text-black', 'bg-[#CD7F32] text-black']
+
+interface AwardCfg {
+  key: keyof PlayerAwards
+  title: string
+  subtitle: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  tone: string
+}
+
+const PLAYER_AWARD_CONFIG: AwardCfg[] = [
+  { key: 'topScorers',    title: 'Golden Boot',           subtitle: 'Top Goal Scorers',                    icon: Trophy,    tone: 'text-gold' },
+  { key: 'topAssists',    title: 'Playmaker Award',       subtitle: 'Most Assists',                        icon: Target,    tone: 'text-[#4BB8E8]' },
+  { key: 'topXG',         title: 'Expected Goals Leader', subtitle: 'Highest xG',                          icon: Flame,     tone: 'text-pitch' },
+  { key: 'topXA',         title: 'Creative Force',        subtitle: 'Highest Expected Assists',            icon: Zap,       tone: 'text-[#9B72FF]' },
+  { key: 'bestPassers',   title: 'Passing Master',        subtitle: 'Best Pass Accuracy (50+ attempts)',   icon: Crosshair, tone: 'text-[#5599EE]' },
+  { key: 'bestDefenders', title: 'Defensive Wall',        subtitle: 'Most Tackles + Interceptions',        icon: Shield,    tone: 'text-[#F07060]' },
+  { key: 'mostMinutes',   title: 'Iron Man',              subtitle: 'Most Minutes Played',                 icon: Timer,     tone: 'text-cream' },
 ]
 
 export default function AccoladesPage() {
   const [data, setData] = useState<AccoladesData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<Tab>('world-cup')
+  const [activeTab, setActiveTab] = useState('FIFA World Cup')
 
   useEffect(() => {
     const load = async () => {
@@ -143,19 +85,31 @@ export default function AccoladesPage() {
     load()
   }, [])
 
-  const activeLeague = useMemo(() => {
-    if (!data || activeTab === 'world-cup') return null
+  const tabs = useMemo(() => {
+    if (!data) return []
+    const present = new Set(data.leagueAccolades.map((l) => l.competition))
+    return COMPETITION_ORDER.filter((c) => present.has(c) || c === 'FIFA World Cup')
+  }, [data])
+
+  const leagueData = useMemo(() => {
+    if (!data) return null
     return data.leagueAccolades.find((l) => l.competition === activeTab) ?? null
   }, [data, activeTab])
+
+  const playerAwards: PlayerAwards | null = useMemo(() => {
+    if (!data) return null
+    if (activeTab === 'FIFA World Cup') return data.playerAwards
+    return leagueData?.playerAwards ?? null
+  }, [data, activeTab, leagueData])
+
+  const isWorldCup = activeTab === 'FIFA World Cup'
 
   if (loading)
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-background">
-          <div className="flex items-center justify-center py-32">
-            <LoadingSpinner />
-          </div>
+        <main className="min-h-screen bg-ink flex items-center justify-center py-32">
+          <LoadingSpinner />
         </main>
       </>
     )
@@ -164,430 +118,281 @@ export default function AccoladesPage() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-background">
-          <div className="flex items-center justify-center py-32">
-            <ErrorState message={error ?? 'No data'} />
-          </div>
+        <main className="min-h-screen bg-ink flex items-center justify-center py-32">
+          <ErrorState message={error ?? 'No data'} />
         </main>
       </>
     )
 
-  const tabs: { value: Tab; label: string; emoji: string; slug?: 'premier-league' | 'la-liga' | 'bundesliga' | 'serie-a' | 'ligue-1' }[] = [
-    { value: 'world-cup', label: 'World Cup', emoji: '🏆' },
-    ...data.leagueAccolades
-      .filter((l) => l.competition !== 'FIFA World Cup')
-      .map((l) => ({
-        value: l.competition as Tab,
-        label: LEAGUE_SHORT[l.competition] ?? l.competition,
-        emoji: LEAGUE_EMOJI[l.competition] ?? '⚽',
-        slug: LEAGUE_SLUG[l.competition],
-      })),
-  ]
-
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background">
-        {/* Hero */}
-        <section className="border-b border-border/40 bg-gradient-to-br from-yellow-500/5 via-transparent to-green-500/5">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3 mb-2">
-              <Trophy size={36} className="text-yellow-400" />
-              <h1 className="text-5xl font-black text-foreground">Accolades</h1>
-            </div>
-            <p className="text-lg text-muted-foreground">
-              Season awards & records across 6 competitions · 2022–23
+      <main className="min-h-screen bg-ink overflow-x-hidden">
+        {/* ═══════ HERO ═══════ */}
+        <section className="border-b border-line relative overflow-hidden">
+          <span className="absolute -bottom-10 right-0 font-display text-[160px] sm:text-[220px] leading-none text-surface-2 select-none pointer-events-none">
+            2022–23
+          </span>
+          <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12 py-16">
+            <div className="section-tag">Season Awards & Records</div>
+            <h1 className="font-display text-[clamp(48px,6vw,84px)] tracking-[1px] leading-[0.9] text-cream">
+              THE <span className="text-gold">ACCOLADES</span>
+            </h1>
+            <p className="font-editorial italic text-base text-fog mt-3">
+              The best outputs from every competition — player by player
             </p>
           </div>
         </section>
 
-        {/* Competition tabs */}
-        <section className="border-b border-border/40 bg-card/30">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-1 overflow-x-auto py-3 scrollbar-hide">
-              {tabs.map((t) => (
-                <button
-                  key={t.value}
-                  onClick={() => setActiveTab(t.value)}
-                  className={`shrink-0 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all flex items-center gap-1.5 ${
-                    activeTab === t.value
-                      ? 'bg-green-500 text-slate-900'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'
-                  }`}
-                >
-                  {t.slug ? (
-                    <LeagueLogo league={t.slug} size={18} />
-                  ) : (
-                    <span>{t.emoji}</span>
-                  )}
-                  {t.label}
-                </button>
-              ))}
+        {/* ═══════ COMPETITION TABS ═══════ */}
+        <section className="border-b border-line bg-ink-2 sticky top-[60px] z-40">
+          <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+            <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
+              {tabs.map((comp) => {
+                const slug = LEAGUE_SLUG[comp]
+                const active = activeTab === comp
+                return (
+                  <button
+                    key={comp}
+                    onClick={() => setActiveTab(comp)}
+                    className={`shrink-0 flex items-center gap-2 px-4 py-2 border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors rounded-[2px] ${
+                      active
+                        ? 'bg-pitch text-black border-pitch'
+                        : 'border-line-strong text-fog hover:text-cream bg-ink'
+                    }`}
+                  >
+                    {slug ? <LeagueLogo league={slug} size={16} /> : <span>🏆</span>}
+                    {comp === 'FIFA World Cup' ? 'World Cup' : comp}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </section>
 
-        {/* Content */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
-          {activeTab === 'world-cup' ? (
-            <WorldCupAwards playerAwards={data.playerAwards} />
-          ) : activeLeague ? (
-            <LeagueAwards league={activeLeague} />
-          ) : null}
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 pb-20">
+          {playerAwards && (
+            <>
+              {/* ═══════ AWARD WINNERS — HERO ROW ═══════ */}
+              <section className="py-12">
+                <div className="flex items-end justify-between gap-6 mb-8 border-b border-line pb-5">
+                  <div>
+                    <div className="section-tag">{isWorldCup ? 'World Cup 2022 · Qatar' : `${activeTab} · 2022–23`}</div>
+                    <h2 className="font-display text-[clamp(28px,4vw,44px)] tracking-[1px] leading-none text-cream">
+                      THE WINNERS
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="grid gap-px sm:grid-cols-2 lg:grid-cols-3 bg-line border border-line">
+                  {PLAYER_AWARD_CONFIG.slice(0, 3).map((cfg) => {
+                    const winner = playerAwards[cfg.key][0]
+                    if (!winner) return null
+                    return (
+                      <div key={`${activeTab}-${cfg.key}`} className="bg-surface p-6 relative overflow-hidden">
+                        <div className="flex items-start justify-between mb-5">
+                          <div>
+                            <cfg.icon size={16} className={`${cfg.tone} mb-2`} />
+                            <h3 className="font-display text-xl tracking-[1px] text-cream leading-none">
+                              {cfg.title.toUpperCase()}
+                            </h3>
+                            <p className="text-[10px] text-faint uppercase tracking-[1.5px] mt-1">{cfg.subtitle}</p>
+                          </div>
+                          <span className={`font-display text-5xl leading-none ${cfg.tone}`}>
+                            {winner.value}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3.5 pt-4 border-t border-line">
+                          <Link href={`/players/${winner.playerId}`} className="h-14 w-14 shrink-0 overflow-hidden rounded-[2px] border-2 border-line-strong bg-surface-2 block">
+                            <PlayerPhoto key={`${activeTab}-${winner.playerId}`} playerName={winner.name} size={52} />
+                          </Link>
+                          <div className="min-w-0">
+                            <Link
+                              href={`/players/${winner.playerId}`}
+                              className="font-display text-lg tracking-[0.5px] text-cream hover:text-pitch transition-colors leading-tight block truncate"
+                            >
+                              {winner.name.toUpperCase()}
+                            </Link>
+                            <Link
+                              href={`/teams/${winner.teamId}`}
+                              className="flex items-center gap-1.5 text-[11px] text-faint hover:text-pitch transition-colors mt-0.5"
+                            >
+                              <TeamBadge team={winner.team} teamId={winner.teamId} isWorldCup={isWorldCup} />
+                              {winner.team}
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+
+              {/* ═══════ FULL LEADERBOARDS ═══════ */}
+              <section>
+                <div className="flex items-end justify-between gap-6 mb-8 border-b border-line pb-5">
+                  <div>
+                    <div className="section-tag">Leaderboards</div>
+                    <h2 className="font-display text-[clamp(28px,4vw,44px)] tracking-[1px] leading-none text-cream">
+                      EVERY CATEGORY · TOP 10
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="grid gap-px lg:grid-cols-2 bg-line border border-line">
+                  {PLAYER_AWARD_CONFIG.map((cfg) => {
+                    const entries = playerAwards[cfg.key]
+                    if (!entries.length) return null
+                    return (
+                      <div key={cfg.key} className="bg-surface">
+                        <div className="flex items-center gap-3 px-5 py-4 border-b border-line">
+                          <div className="w-8 h-8 rounded-[2px] bg-surface-2 border border-line-strong flex items-center justify-center shrink-0">
+                            <cfg.icon size={14} className={cfg.tone} />
+                          </div>
+                          <div>
+                            <h3 className="font-display text-base tracking-[1px] text-cream leading-none">
+                              {cfg.title.toUpperCase()}
+                            </h3>
+                            <p className="text-[9px] text-faint uppercase tracking-[1.5px] mt-0.5">{cfg.subtitle}</p>
+                          </div>
+                        </div>
+                        <div className="divide-y divide-line">
+                          {entries.map((p, idx) => (
+                            <AwardRow
+                              key={`${activeTab}-${cfg.key}-${p.playerId}`}
+                              entry={p}
+                              rank={idx}
+                              tone={cfg.tone}
+                              isWorldCup={isWorldCup}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+            </>
+          )}
+
+          {/* ═══════ COMPETITION RECORDS ═══════ */}
+          {leagueData && (
+            <section className="pt-16">
+              <div className="flex items-end justify-between gap-6 mb-8 border-b border-line pb-5">
+                <div>
+                  <div className="section-tag">Competition Records</div>
+                  <h2 className="font-display text-[clamp(28px,4vw,44px)] tracking-[1px] leading-none text-cream">
+                    {isWorldCup ? 'TOURNAMENT NUMBERS' : 'SEASON NUMBERS'}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Summary strip */}
+              <div className="grid grid-cols-3 gap-px bg-line border border-line mb-px">
+                <SummaryCell label="Matches" value={leagueData.matchCount} />
+                <SummaryCell label="Total Goals" value={leagueData.totalGoals} tone="pitch" />
+                <SummaryCell label="Avg Goals / Match" value={leagueData.avgGoalsPerMatch} tone="gold" />
+              </div>
+
+              {/* Match highlights */}
+              <div className="grid gap-px sm:grid-cols-2 bg-line border border-line">
+                {leagueData.highestScoringMatch && (
+                  <MatchHighlightCard
+                    title="Highest Scoring Match"
+                    match={leagueData.highestScoringMatch}
+                    isWorldCup={isWorldCup}
+                  />
+                )}
+                {leagueData.biggestWin && (
+                  <MatchHighlightCard
+                    title="Biggest Win"
+                    match={leagueData.biggestWin}
+                    isWorldCup={isWorldCup}
+                  />
+                )}
+              </div>
+            </section>
+          )}
         </div>
+
+        <Footer />
       </main>
     </>
   )
 }
 
 /* ══════════════════════════════════════════════
-   World Cup Player Awards
+   Sub-components
    ══════════════════════════════════════════════ */
 
-function WorldCupAwards({ playerAwards }: { playerAwards: AccoladesData['playerAwards'] }) {
-  const previewColumns = [
-    { title: 'Top scorers', entries: playerAwards.topScorers.slice(0, 3), accentColor: 'bg-green-500', key: 'topScorers' },
-    { title: 'Top assists', entries: playerAwards.topAssists.slice(0, 3), accentColor: 'bg-cyan-500', key: 'topAssists' },
-    { title: 'Top xG', entries: playerAwards.topXG.slice(0, 3), accentColor: 'bg-orange-500', key: 'topXG' },
-  ]
-
-  return (
-    <div className="space-y-12 pt-10">
-      {/* Compact Top-3 preview (FotMob-style) */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-        {previewColumns.map((col) => (
-          <div
-            key={col.key}
-            className="rounded-xl border border-border/40 bg-card overflow-hidden"
-          >
-            <div className="px-5 pt-5 pb-3">
-              <h3 className="text-sm font-black text-foreground">{col.title}</h3>
-            </div>
-            <div className="space-y-1 px-3 pb-2">
-              {col.entries.map((p) => (
-                <Link
-                  key={p.playerId}
-                  href={`/players/${p.playerId}`}
-                  className="flex items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-secondary/30 transition-colors group"
-                >
-                  <PlayerPhoto
-                    playerName={p.name}
-                    size={36}
-                    rounded
-                    className="border border-border/20"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground truncate group-hover:text-green-400 transition-colors">
-                      {p.name}
-                    </p>
-                    <div className="flex items-center gap-1">
-                      <TeamLogo teamName={p.team} size={12} />
-                      <span className="text-[11px] text-muted-foreground truncate">
-                        {p.team}
-                      </span>
-                    </div>
-                  </div>
-                  <span
-                    className={`${col.accentColor} text-white text-xs font-black w-9 h-9 rounded-full flex items-center justify-center tabular-nums shrink-0`}
-                  >
-                    {p.value}
-                  </span>
-                </Link>
-              ))}
-            </div>
-            <div className="border-t border-border/20 px-5 py-3 text-center">
-              <button
-                onClick={() => {
-                  const el = document.getElementById(`award-${col.key}`)
-                  el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-                className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
-              >
-                All
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Hero winners row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {PLAYER_AWARD_CONFIG.slice(0, 3).map((cfg) => {
-          const entries = playerAwards[cfg.key]
-          const winner = entries[0]
-          if (!winner) return null
-          return (
-            <div
-              key={cfg.key}
-              className={`rounded-xl border ${cfg.borderColor} ${cfg.bgColor} p-6 relative overflow-hidden`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <cfg.icon size={20} className={cfg.accentColor} />
-                  <h3 className="text-lg font-black text-foreground">
-                    {cfg.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {cfg.subtitle}
-                  </p>
-                </div>
-                <Medal size={28} className={`${cfg.accentColor} opacity-20`} />
-              </div>
-              <div className="flex items-center gap-4 mt-5">
-                <PlayerPhoto
-                  playerName={winner.name}
-                  size={56}
-                  rounded
-                  className="border-2 border-border/20"
-                />
-                <div>
-                  <Link
-                    href={`/players/${winner.playerId}`}
-                    className={`font-black text-foreground hover:${cfg.accentColor} transition-colors`}
-                  >
-                    {winner.name}
-                  </Link>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <TeamLogo teamName={winner.team} size={14} />
-                    <span className="text-xs text-muted-foreground">
-                      {winner.team}
-                    </span>
-                  </div>
-                </div>
-                <div className="ml-auto text-right">
-                  <p className={`text-3xl font-black tabular-nums ${cfg.accentColor}`}>
-                    {winner.value}
-                  </p>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest">
-                    {winner.label}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* All award categories with full leaderboards */}
-      {PLAYER_AWARD_CONFIG.map((cfg) => {
-        const entries = playerAwards[cfg.key]
-        if (!entries.length) return null
-        return (
-          <section key={cfg.key} id={`award-${cfg.key}`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className={`w-8 h-8 rounded-lg ${cfg.bgColor} flex items-center justify-center`}
-              >
-                <cfg.icon size={16} className={cfg.accentColor} />
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-foreground">
-                  {cfg.title}
-                </h2>
-                <p className="text-xs text-muted-foreground">{cfg.subtitle}</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              {entries.map((p, idx) => (
-                <Link
-                  key={p.playerId}
-                  href={`/players/${p.playerId}`}
-                  className="group flex items-center gap-4 rounded-xl border border-border/40 bg-card p-4 hover:border-green-500/40 hover:shadow-lg hover:shadow-green-500/5 transition-all"
-                >
-                  {/* Rank */}
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-                      idx === 0
-                        ? 'bg-yellow-500 text-yellow-950'
-                        : idx === 1
-                          ? 'bg-gray-300 text-gray-800'
-                          : idx === 2
-                            ? 'bg-orange-400 text-orange-950'
-                            : 'bg-secondary/50 text-muted-foreground'
-                    }`}
-                  >
-                    {idx + 1}
-                  </div>
-
-                  {/* Photo */}
-                  <PlayerPhoto
-                    playerName={p.name}
-                    size={40}
-                    rounded
-                    className="border border-border/20"
-                  />
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-foreground truncate group-hover:text-green-400 transition-colors">
-                      {p.name}
-                    </p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-green-400/80">
-                        {formatPosition(p.position)}
-                      </span>
-                      <span className="text-muted-foreground text-[10px]">·</span>
-                      <TeamLogo teamName={p.team} size={12} />
-                      <span className="text-xs text-muted-foreground truncate">
-                        {p.team}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Value */}
-                  <div className="text-right shrink-0">
-                    <p className={`text-xl font-black tabular-nums ${cfg.accentColor}`}>
-                      {p.value}
-                    </p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-widest">
-                      {p.label}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )
-      })}
-    </div>
-  )
+/** Flag for national teams, crest for clubs */
+function TeamBadge({ team, teamId, isWorldCup }: { team: string; teamId: string; isWorldCup: boolean }) {
+  if (isWorldCup) return <CountryFlag country={team} size={14} />
+  return <TeamLogo teamName={team} size={14} />
 }
 
-/* ══════════════════════════════════════════════
-   League Awards (Team-level)
-   ══════════════════════════════════════════════ */
-
-function LeagueAwards({ league }: { league: LeagueAccolades }) {
-  const teamPreview = [
-    { title: 'Top scorers', entries: league.topScoringTeams.slice(0, 3), accentColor: 'bg-green-500' },
-    { title: 'Best defense', entries: league.bestDefense.slice(0, 3), accentColor: 'bg-blue-500' },
-    { title: 'Most wins', entries: league.mostWins.slice(0, 3), accentColor: 'bg-yellow-500' },
-  ]
-
-  return (
-    <div className="space-y-10 pt-10">
-      {/* Compact Top-3 team preview (FotMob-style) */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-        {teamPreview.map((col) => (
-          <div
-            key={col.title}
-            className="rounded-xl border border-border/40 bg-card overflow-hidden"
-          >
-            <div className="px-5 pt-5 pb-3">
-              <h3 className="text-sm font-black text-foreground">{col.title}</h3>
-            </div>
-            <div className="space-y-1 px-3 pb-2">
-              {col.entries.map((t) => (
-                <div
-                  key={t.teamName}
-                  className="flex items-center gap-3 rounded-lg px-2 py-2.5"
-                >
-                  <TeamLogo teamName={t.teamName} size={36} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground truncate">
-                      {t.teamName}
-                    </p>
-                  </div>
-                  <span
-                    className={`${col.accentColor} text-white text-xs font-black w-9 h-9 rounded-full flex items-center justify-center tabular-nums shrink-0`}
-                  >
-                    {t.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="border-t border-border/20 px-5 py-3 text-center">
-              <span className="text-xs font-bold text-muted-foreground">All</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* League summary bar */}
-      <div className="grid grid-cols-3 gap-4">
-        <SummaryTile
-          label="Matches"
-          value={league.matchCount}
-          icon={Footprints}
-        />
-        <SummaryTile label="Total Goals" value={league.totalGoals} icon={Flame} />
-        <SummaryTile
-          label="Avg Goals/Match"
-          value={league.avgGoalsPerMatch}
-          icon={Zap}
-        />
-      </div>
-
-      {/* Match highlights */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {league.highestScoringMatch && (
-          <MatchHighlightCard
-            title="Highest Scoring Match"
-            match={league.highestScoringMatch}
-            accent="text-yellow-400"
-          />
-        )}
-        {league.biggestWin && (
-          <MatchHighlightCard
-            title="Biggest Win"
-            match={league.biggestWin}
-            accent="text-orange-400"
-          />
-        )}
-      </div>
-
-      {/* Team leaderboards */}
-      <div className="grid gap-8 lg:grid-cols-3">
-        <TeamLeaderboard
-          title="Most Goals Scored"
-          subtitle="Best attack"
-          entries={league.topScoringTeams}
-          icon={Target}
-          accentColor="text-green-400"
-        />
-        <TeamLeaderboard
-          title="Best Defense"
-          subtitle="Fewest goals conceded"
-          entries={league.bestDefense}
-          icon={Shield}
-          accentColor="text-blue-400"
-        />
-        <TeamLeaderboard
-          title="Most Wins"
-          subtitle="Dominant force"
-          entries={league.mostWins}
-          icon={Trophy}
-          accentColor="text-yellow-400"
-        />
-      </div>
-    </div>
-  )
-}
-
-/* ── Sub-components ───────────────────────────── */
-
-function SummaryTile({
-  label,
-  value,
-  icon: Icon,
+function AwardRow({
+  entry,
+  rank,
+  tone,
+  isWorldCup,
 }: {
-  label: string
-  value: number
-  icon: React.ComponentType<{ size?: number; className?: string }>
+  entry: PlayerAwardEntry
+  rank: number
+  tone: string
+  isWorldCup: boolean
 }) {
   return (
-    <div className="rounded-xl border border-border/40 bg-card p-5 flex items-center gap-4">
-      <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
-        <Icon size={18} className="text-green-400" />
+    <div className="flex items-center gap-3 px-5 py-3 hover:bg-surface-2 transition-colors">
+      <span
+        className={`w-6 h-6 rounded-[2px] flex items-center justify-center text-[11px] font-bold shrink-0 ${
+          rank < 3 ? MEDAL[rank] : 'bg-surface-3 text-fog'
+        }`}
+      >
+        {rank + 1}
+      </span>
+
+      <Link href={`/players/${entry.playerId}`} className="h-9 w-9 shrink-0 overflow-hidden rounded-[2px] border border-line-strong bg-surface-2 block">
+        <PlayerPhoto playerName={entry.name} size={34} />
+      </Link>
+
+      <div className="flex-1 min-w-0">
+        <Link
+          href={`/players/${entry.playerId}`}
+          className="text-[13px] font-medium text-cream hover:text-pitch transition-colors block truncate"
+        >
+          {entry.name}
+        </Link>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <span className="text-[9px] font-bold uppercase tracking-[1px] text-pitch/70">
+            {formatPosition(entry.position)}
+          </span>
+          <span className="text-faint text-[9px]">·</span>
+          <Link
+            href={`/teams/${entry.teamId}`}
+            className="flex items-center gap-1 text-[10px] text-faint hover:text-pitch transition-colors truncate"
+          >
+            <TeamBadge team={entry.team} teamId={entry.teamId} isWorldCup={isWorldCup} />
+            {entry.team}
+          </Link>
+        </div>
       </div>
-      <div>
-        <p className="text-2xl font-black text-foreground tabular-nums">
-          {value}
-        </p>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-          {label}
-        </p>
+
+      <div className="text-right shrink-0">
+        <span className={`font-display text-2xl leading-none ${tone}`}>{entry.value}</span>
+        <p className="text-[8px] text-faint uppercase tracking-[1px] mt-0.5">{entry.label}</p>
       </div>
+    </div>
+  )
+}
+
+function SummaryCell({ label, value, tone }: { label: string; value: number; tone?: 'pitch' | 'gold' }) {
+  return (
+    <div className="bg-surface px-5 py-6 text-center">
+      <div className={`font-display text-4xl leading-none ${tone === 'pitch' ? 'text-pitch' : tone === 'gold' ? 'text-gold' : 'text-cream'}`}>
+        {value.toLocaleString()}
+      </div>
+      <div className="text-[9px] font-semibold uppercase tracking-[1.5px] text-faint mt-1.5">{label}</div>
     </div>
   )
 }
@@ -595,103 +400,62 @@ function SummaryTile({
 function MatchHighlightCard({
   title,
   match,
-  accent,
+  isWorldCup,
 }: {
   title: string
   match: MatchHighlight
-  accent: string
+  isWorldCup: boolean
 }) {
   return (
-    <div className="rounded-xl border border-border/40 bg-card p-6 space-y-4">
-      <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+    <div className="bg-surface p-6">
+      <h3 className="text-[10px] font-semibold tracking-[2px] uppercase text-pitch mb-5">
         {title}
       </h3>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <TeamLogo teamName={match.homeTeam} size={24} />
-          <span className="text-sm font-bold text-foreground truncate">
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          href={`/teams/${match.homeTeamId}`}
+          className="flex-1 flex items-center gap-2 min-w-0 group"
+        >
+          {isWorldCup ? (
+            <CountryFlag country={match.homeTeam} size={20} />
+          ) : (
+            <TeamLogo teamName={match.homeTeam} size={20} />
+          )}
+          <span className="text-[13px] font-medium text-cream truncate group-hover:text-pitch transition-colors">
             {match.homeTeam}
           </span>
-        </div>
-        <div className="flex items-center gap-2 px-4">
-          <span className={`text-2xl font-black tabular-nums ${accent}`}>
-            {match.homeGoals}
-          </span>
-          <span className="text-xs text-muted-foreground">–</span>
-          <span className={`text-2xl font-black tabular-nums ${accent}`}>
-            {match.awayGoals}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-foreground truncate text-right">
+        </Link>
+
+        <Link
+          href={`/matches/${match.matchId}`}
+          className="font-display text-3xl leading-none text-cream px-4 mx-1 border-x border-line-strong hover:text-pitch transition-colors shrink-0"
+        >
+          {match.homeGoals} – {match.awayGoals}
+        </Link>
+
+        <Link
+          href={`/teams/${match.awayTeamId}`}
+          className="flex-1 flex items-center justify-end gap-2 min-w-0 group"
+        >
+          <span className="text-[13px] font-medium text-cream truncate text-right group-hover:text-pitch transition-colors">
             {match.awayTeam}
           </span>
-          <TeamLogo teamName={match.awayTeam} size={24} />
-        </div>
+          {isWorldCup ? (
+            <CountryFlag country={match.awayTeam} size={20} />
+          ) : (
+            <TeamLogo teamName={match.awayTeam} size={20} />
+          )}
+        </Link>
       </div>
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span>{new Date(match.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-        {match.venue && <span>{match.venue}</span>}
-      </div>
-    </div>
-  )
-}
-
-function TeamLeaderboard({
-  title,
-  subtitle,
-  entries,
-  icon: Icon,
-  accentColor,
-}: {
-  title: string
-  subtitle: string
-  entries: TeamAwardEntry[]
-  icon: React.ComponentType<{ size?: number; className?: string }>
-  accentColor: string
-}) {
-  return (
-    <div className="rounded-xl border border-border/40 bg-card overflow-hidden">
-      <div className="p-5 border-b border-border/20 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-secondary/40 flex items-center justify-center">
-          <Icon size={16} className={accentColor} />
-        </div>
-        <div>
-          <h3 className="text-sm font-black text-foreground">{title}</h3>
-          <p className="text-[10px] text-muted-foreground">{subtitle}</p>
-        </div>
-      </div>
-      <div className="divide-y divide-border/20">
-        {entries.map((e, idx) => (
-          <div
-            key={e.teamName}
-            className="flex items-center gap-3 px-5 py-3.5"
-          >
-            <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
-                idx === 0
-                  ? 'bg-yellow-500 text-yellow-950'
-                  : idx === 1
-                    ? 'bg-gray-300 text-gray-800'
-                    : idx === 2
-                      ? 'bg-orange-400 text-orange-950'
-                      : 'bg-secondary/50 text-muted-foreground'
-              }`}
-            >
-              {idx + 1}
-            </div>
-            <TeamLogo teamName={e.teamName} size={20} />
-            <span className="flex-1 text-sm font-semibold text-foreground truncate">
-              {e.teamName}
-            </span>
-            <span className={`text-lg font-black tabular-nums ${accentColor}`}>
-              {e.value}
-            </span>
-            <span className="text-[9px] text-muted-foreground uppercase tracking-widest w-14 text-right">
-              {e.label}
-            </span>
-          </div>
-        ))}
+      <div className="flex items-center justify-between text-[10px] text-faint mt-4">
+        <span>
+          {new Date(match.date).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </span>
+        {match.venue && <span className="truncate ml-3">{match.venue}</span>}
       </div>
     </div>
   )

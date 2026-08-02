@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { TeamLogo } from '@/components/TeamLogo'
 import { LeagueLogo } from '@/components/LeagueLogo'
+import { resolveTeamHref } from '@/lib/teamResolve'
 
 /* ────────── Types ────────── */
 
@@ -217,23 +218,38 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
             </div>
 
             {/* Right: Champion card */}
-            {champion && (
-              <div className={`sports-card ${theme.primaryBorder} border-2 p-6 text-center space-y-3 w-64`}>
-                <Trophy className={`h-8 w-8 mx-auto ${theme.primary}`} />
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Champions</p>
-                <div className="flex justify-center">
-                  <TeamLogo teamName={champion.teamId} size={56} />
+            {champion && (() => {
+              const champHref = resolveTeamHref(champion.teamId)
+              const card = (
+                <>
+                  <Trophy className={`h-8 w-8 mx-auto ${theme.primary}`} />
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Champions</p>
+                  <div className="flex justify-center">
+                    <TeamLogo teamName={champion.teamId} size={56} />
+                  </div>
+                  <p className="text-xl font-black text-foreground">{champion.teamId}</p>
+                  <div className="flex justify-center gap-4 text-xs">
+                    <span className={`font-bold ${theme.primary}`}>{champion.points} pts</span>
+                    <span className="text-muted-foreground">{champion.won}W {champion.drawn}D {champion.lost}L</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {champion.goalsFor} GF · {champion.goalsAgainst} GA · {champion.goalDifference > 0 ? '+' : ''}{champion.goalDifference} GD
+                  </div>
+                </>
+              )
+              return champHref ? (
+                <Link
+                  href={champHref}
+                  className={`sports-card ${theme.primaryBorder} border-2 p-6 text-center space-y-3 w-64 hover:opacity-95 transition-opacity block`}
+                >
+                  {card}
+                </Link>
+              ) : (
+                <div className={`sports-card ${theme.primaryBorder} border-2 p-6 text-center space-y-3 w-64`}>
+                  {card}
                 </div>
-                <p className="text-xl font-black text-foreground">{champion.teamId}</p>
-                <div className="flex justify-center gap-4 text-xs">
-                  <span className={`font-bold ${theme.primary}`}>{champion.points} pts</span>
-                  <span className="text-muted-foreground">{champion.won}W {champion.drawn}D {champion.lost}L</span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {champion.goalsFor} GF · {champion.goalsAgainst} GA · {champion.goalDifference > 0 ? '+' : ''}{champion.goalDifference} GD
-                </div>
-              </div>
-            )}
+              )
+            })()}
           </div>
         </div>
       </section>
@@ -295,7 +311,7 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border/40 bg-secondary/30">
+                  <tr className="bg-secondary/30">
                     <th className="text-center px-2 py-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider w-10">#</th>
                     <th className="text-left px-3 py-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Club</th>
                     <th className="text-center px-2 py-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">PL</th>
@@ -313,18 +329,30 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
                   {table.map((row) => {
                     const zone = getZoneInfo(row.position, table.length, slug)
                     return (
-                      <tr key={row.teamId} className={`border-b border-border/10 hover:bg-secondary/20 transition-colors border-l-2 ${zone.border}`}>
+                      <tr key={row.teamId} className={`hover:bg-secondary/20 transition-colors border-l-2 ${zone.border}`}>
                         <td className="text-center px-2 py-2.5">
                           <span className={`text-xs font-black ${row.position === 1 ? theme.primary : 'text-muted-foreground'}`}>
                             {row.position}
                           </span>
                         </td>
                         <td className="px-3 py-2.5">
-                          <div className="flex items-center gap-2.5">
-                            <TeamLogo teamName={row.teamId} size={24} />
-                            <span className="font-bold text-foreground text-xs sm:text-sm">{row.teamId}</span>
-                            {row.position === 1 && <Trophy className={`h-3.5 w-3.5 ${theme.primary} hidden sm:block`} />}
-                          </div>
+                          {(() => {
+                            const href = resolveTeamHref(row.teamId)
+                            const content = (
+                              <div className="flex items-center gap-2.5">
+                                <TeamLogo teamName={row.teamId} size={24} />
+                                <span className="font-bold text-foreground text-xs sm:text-sm">{row.teamId}</span>
+                                {row.position === 1 && <Trophy className={`h-3.5 w-3.5 ${theme.primary} hidden sm:block`} />}
+                              </div>
+                            )
+                            return href ? (
+                              <Link href={href} className="hover:opacity-80 transition-opacity inline-flex">
+                                {content}
+                              </Link>
+                            ) : (
+                              content
+                            )
+                          })()}
                         </td>
                         <td className="text-center px-2 py-2.5 text-muted-foreground text-xs">{row.played}</td>
                         <td className="text-center px-2 py-2.5 font-bold text-foreground text-xs">{row.won}</td>
@@ -364,7 +392,7 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
             </div>
 
             {/* Zone legend */}
-            <div className="px-4 py-3 border-t border-border/20 bg-secondary/10 flex flex-wrap gap-4 text-[10px] text-muted-foreground">
+            <div className="px-4 py-3 bg-secondary/10 flex flex-wrap gap-4 text-[10px] text-muted-foreground">
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500/40" /> Champions League</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-orange-500/30" /> Europa League</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-green-500/30" /> Conference League</span>
@@ -385,17 +413,27 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
               <h3 className="text-lg font-black text-foreground">Top Scoring Teams</h3>
             </div>
             <div className="space-y-2">
-              {topScoringTeams.map((t, idx) => (
-                <div key={t.name} className="sports-card p-3.5 flex items-center gap-3 hover:border-primary/20 transition-colors">
-                  <span className={`text-xs font-black w-5 text-center ${idx === 0 ? theme.primary : 'text-muted-foreground'}`}>{idx + 1}</span>
-                  <TeamLogo teamName={t.name} size={22} />
-                  <span className="flex-1 text-sm font-bold text-foreground truncate">{t.name}</span>
-                  <div className="text-right">
-                    <span className={`text-lg font-black ${theme.primary}`}>{t.goalsFor}</span>
-                    <p className="text-[9px] text-muted-foreground">goals</p>
+              {topScoringTeams.map((t, idx) => {
+                const href = resolveTeamHref(t.name)
+                const row = (
+                  <div className="sports-card p-3.5 flex items-center gap-3 hover:border-primary/20 transition-colors">
+                    <span className={`text-xs font-black w-5 text-center ${idx === 0 ? theme.primary : 'text-muted-foreground'}`}>{idx + 1}</span>
+                    <TeamLogo teamName={t.name} size={22} />
+                    <span className="flex-1 text-sm font-bold text-foreground truncate">{t.name}</span>
+                    <div className="text-right">
+                      <span className={`text-lg font-black ${theme.primary}`}>{t.goalsFor}</span>
+                      <p className="text-[9px] text-muted-foreground">goals</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+                return href ? (
+                  <Link key={t.name} href={href} className="block">
+                    {row}
+                  </Link>
+                ) : (
+                  <div key={t.name}>{row}</div>
+                )
+              })}
             </div>
           </div>
 
@@ -406,17 +444,27 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
               <h3 className="text-lg font-black text-foreground">Best Defense</h3>
             </div>
             <div className="space-y-2">
-              {bestDefense.map((t, idx) => (
-                <div key={t.name} className="sports-card p-3.5 flex items-center gap-3 hover:border-primary/20 transition-colors">
-                  <span className={`text-xs font-black w-5 text-center ${idx === 0 ? 'text-green-400' : 'text-muted-foreground'}`}>{idx + 1}</span>
-                  <TeamLogo teamName={t.name} size={22} />
-                  <span className="flex-1 text-sm font-bold text-foreground truncate">{t.name}</span>
-                  <div className="text-right">
-                    <span className="text-lg font-black text-green-400">{t.goalsAgainst}</span>
-                    <p className="text-[9px] text-muted-foreground">conceded</p>
+              {bestDefense.map((t, idx) => {
+                const href = resolveTeamHref(t.name)
+                const row = (
+                  <div className="sports-card p-3.5 flex items-center gap-3 hover:border-primary/20 transition-colors">
+                    <span className={`text-xs font-black w-5 text-center ${idx === 0 ? 'text-green-400' : 'text-muted-foreground'}`}>{idx + 1}</span>
+                    <TeamLogo teamName={t.name} size={22} />
+                    <span className="flex-1 text-sm font-bold text-foreground truncate">{t.name}</span>
+                    <div className="text-right">
+                      <span className="text-lg font-black text-green-400">{t.goalsAgainst}</span>
+                      <p className="text-[9px] text-muted-foreground">conceded</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+                return href ? (
+                  <Link key={t.name} href={href} className="block">
+                    {row}
+                  </Link>
+                ) : (
+                  <div key={t.name}>{row}</div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -432,34 +480,56 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {highScoringMatches.map((m) => (
-              <Link key={m.id} href={`/matches/${m.id}`}>
-                <div className={`sports-card sports-card-hover p-4 space-y-3 h-full`}>
+            {highScoringMatches.map((m) => {
+              const homeHref = resolveTeamHref(m.homeTeam)
+              const awayHref = resolveTeamHref(m.awayTeam)
+              return (
+                <div key={m.id} className={`sports-card p-4 space-y-3 h-full hover:border-primary/30 transition-colors`}>
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                       <Calendar className="h-3 w-3" />{m.date}
                     </span>
-                    <span className={`text-[10px] font-black ${theme.primary} ${theme.primaryBg} px-2 py-0.5 rounded-full`}>
+                    <Link
+                      href={`/matches/${m.id}`}
+                      className={`text-[10px] font-black ${theme.primary} ${theme.primaryBg} px-2 py-0.5 rounded-full hover:opacity-80`}
+                    >
                       {m.totalGoals} Goals
-                    </span>
+                    </Link>
                   </div>
 
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <TeamLogo teamName={m.homeTeam} size={22} />
-                      <span className="text-xs font-bold text-foreground truncate">{m.homeTeam}</span>
-                    </div>
-                    <span className="text-lg font-black text-foreground tabular-nums shrink-0">
+                    {homeHref ? (
+                      <Link href={homeHref} className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80">
+                        <TeamLogo teamName={m.homeTeam} size={22} />
+                        <span className="text-xs font-bold text-foreground truncate">{m.homeTeam}</span>
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <TeamLogo teamName={m.homeTeam} size={22} />
+                        <span className="text-xs font-bold text-foreground truncate">{m.homeTeam}</span>
+                      </div>
+                    )}
+                    <Link
+                      href={`/matches/${m.id}`}
+                      className="text-lg font-black text-foreground tabular-nums shrink-0 hover:opacity-80 px-1"
+                    >
                       {m.homeScore} - {m.awayScore}
-                    </span>
-                    <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                      <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
-                      <TeamLogo teamName={m.awayTeam} size={22} />
-                    </div>
+                    </Link>
+                    {awayHref ? (
+                      <Link href={awayHref} className="flex items-center gap-2 flex-1 min-w-0 justify-end hover:opacity-80">
+                        <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                        <TeamLogo teamName={m.awayTeam} size={22} />
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                        <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                        <TeamLogo teamName={m.awayTeam} size={22} />
+                      </div>
+                    )}
                   </div>
                 </div>
-              </Link>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -473,33 +543,56 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
         </div>
 
         <div className="space-y-2">
-          {recentMatches.map((m) => (
-            <Link key={m.id} href={`/matches/${m.id}`}>
-              <div className="sports-card sports-card-hover px-4 py-3 flex items-center gap-3">
-                <span className="text-[10px] text-muted-foreground w-20 shrink-0">{m.date}</span>
+          {recentMatches.map((m) => {
+            const homeHref = resolveTeamHref(m.homeTeam)
+            const awayHref = resolveTeamHref(m.awayTeam)
+            return (
+              <div key={m.id} className="sports-card px-4 py-3 flex items-center gap-3 hover:border-primary/20 transition-colors">
+                <Link href={`/matches/${m.id}`} className="text-[10px] text-muted-foreground w-20 shrink-0 hover:text-foreground">
+                  {m.date}
+                </Link>
 
-                <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
-                  <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
-                  <TeamLogo teamName={m.homeTeam} size={18} />
-                </div>
+                {homeHref ? (
+                  <Link href={homeHref} className="flex items-center gap-2 flex-1 justify-end min-w-0 hover:opacity-80">
+                    <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
+                    <TeamLogo teamName={m.homeTeam} size={18} />
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
+                    <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
+                    <TeamLogo teamName={m.homeTeam} size={18} />
+                  </div>
+                )}
 
-                <div className={`text-sm font-black tabular-nums px-2 py-0.5 rounded ${
-                  m.result === 'home_win' ? 'text-green-400' :
-                  m.result === 'away_win' ? 'text-blue-400' :
-                  'text-zinc-400'
-                }`}>
+                <Link
+                  href={`/matches/${m.id}`}
+                  className={`text-sm font-black tabular-nums px-2 py-0.5 rounded hover:opacity-80 ${
+                    m.result === 'home_win' ? 'text-green-400' :
+                    m.result === 'away_win' ? 'text-blue-400' :
+                    'text-zinc-400'
+                  }`}
+                >
                   {m.homeScore} - {m.awayScore}
-                </div>
+                </Link>
 
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <TeamLogo teamName={m.awayTeam} size={18} />
-                  <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
-                </div>
+                {awayHref ? (
+                  <Link href={awayHref} className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80">
+                    <TeamLogo teamName={m.awayTeam} size={18} />
+                    <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <TeamLogo teamName={m.awayTeam} size={18} />
+                    <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                  </div>
+                )}
 
-                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 hidden sm:block" />
+                <Link href={`/matches/${m.id}`} className="shrink-0 hidden sm:block hover:opacity-80">
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </Link>
               </div>
-            </Link>
-          ))}
+            )
+          })}
         </div>
       </section>
 

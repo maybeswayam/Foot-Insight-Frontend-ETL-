@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server'
 import { loadPlayers } from '@/lib/dataLoader'
 import type { Player } from '@/lib/types'
 
+const CACHE = 'public, s-maxage=3600, stale-while-revalidate=86400'
+
+/**
+ * Slim list payload — only fields the players browser needs.
+ * Full stats live on /api/players/[id].
+ */
 export async function GET() {
   const rawPlayers = await loadPlayers()
 
@@ -13,37 +19,41 @@ export async function GET() {
     position: p.position,
     age: p.age,
     club: p.club ?? null,
+    competition: p.competition,
+    understatId: p.understatId,
     stats: {
       games: p.stats.games,
       goals: p.stats.goals,
       assists: p.stats.assists,
-      shots: p.stats.shots,
-      shotsOnTarget: p.stats.shotsOnTarget,
+      shots: 0,
+      shotsOnTarget: 0,
       minutes: p.stats.minutes,
-      passesCompleted: p.stats.passesCompleted,
-      passesAttempted: p.stats.passesAttempted,
-      passAccuracy: p.stats.passAccuracy,
-      tackles: p.stats.tackles,
-      interceptions: p.stats.interceptions,
-      touches: p.stats.touches,
+      passesCompleted: 0,
+      passesAttempted: 0,
+      passAccuracy: 0,
+      tackles: 0,
+      interceptions: 0,
+      touches: 0,
       xG: p.stats.xG,
       xA: p.stats.xA,
-      yellowCards: p.stats.yellowCards ?? 0,
-      redCards: p.stats.redCards ?? 0,
-      gamesStarted: p.stats.gamesStarted ?? 0,
-      goalsP90: p.stats.goalsP90 ?? 0,
-      assistsP90: p.stats.assistsP90 ?? 0,
-      xGP90: p.stats.xGP90 ?? 0,
-      xAP90: p.stats.xAP90 ?? 0,
-      pensMade: p.stats.pensMade ?? 0,
-      pensAtt: p.stats.pensAtt ?? 0,
+      yellowCards: 0,
+      redCards: 0,
+      gamesStarted: 0,
+      goalsP90: 0,
+      assistsP90: 0,
+      xGP90: 0,
+      xAP90: 0,
+      pensMade: 0,
+      pensAtt: 0,
     },
     metrics: {
       goalsPerGame: p.metrics.goalsPerGame,
-      shotEfficiency: p.metrics.shotEfficiency,
+      shotEfficiency: 0,
       goalContributions: p.metrics.goalContributions,
     },
   }))
 
-  return NextResponse.json(players)
+  return NextResponse.json(players, {
+    headers: { 'Cache-Control': CACHE },
+  })
 }

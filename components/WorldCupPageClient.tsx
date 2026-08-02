@@ -1,10 +1,20 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Trophy, Target, Shirt, Award, TrendingUp, MapPin, Calendar, Users, Zap, Shield, Star, ChevronRight } from 'lucide-react'
+import {
+  Trophy, Target, Shirt, Award, TrendingUp, MapPin, Calendar, Users, Zap, Shield, Star, ChevronRight,
+} from 'lucide-react'
 import { CountryFlag } from '@/components/CountryFlag'
-import { KnockoutBracket } from '@/components/KnockoutBracket'
+import { PlayerPhoto } from '@/components/PlayerPhoto'
+import MessiCollage from '@/components/MessiCollage'
+import { resolveTeamHref } from '@/lib/teamResolve'
+
+const KnockoutBracket = dynamic(
+  () => import('@/components/KnockoutBracket').then((m) => m.KnockoutBracket),
+  { ssr: false },
+)
 
 /* ────────── Types from server ────────── */
 
@@ -30,6 +40,7 @@ export interface WCPlayer {
 }
 
 export interface WCStanding {
+  teamId: string
   teamName: string
   group: string
   played: number
@@ -75,20 +86,23 @@ interface Props {
 
 function getGroupTeams(standings: WCStanding[], group: string) {
   return standings
-    .filter(s => s.group === group)
+    .filter((s) => s.group === group)
     .sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference || b.goalsFor - a.goalsFor)
 }
 
-const GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+function teamHref(name: string, teamId?: string) {
+  if (teamId) return `/teams/${teamId}`
+  return resolveTeamHref(name)
+}
 
-/* ────────── Official 2022 WC Awards ────────── */
+const GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
 const AWARDS = {
   goldenBoot: { name: 'Kylian Mbappé', team: 'France', detail: '8 Goals', icon: '👟' },
   goldenBall: { name: 'Lionel Messi', team: 'Argentina', detail: 'Best Player', icon: '⚽' },
   goldenGlove: { name: 'Emiliano Martínez', team: 'Argentina', detail: 'Best Goalkeeper', icon: '🧤' },
   youngPlayer: { name: 'Enzo Fernández', team: 'Argentina', detail: 'Best Young Player', icon: '🌟' },
-}
+} as const
 
 /* ────────── Component ────────── */
 
@@ -100,250 +114,512 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
   const topXG = [...players].sort((a, b) => b.xG - a.xG).slice(0, 5)
   const highScoringMatches = [...matches].sort((a, b) => b.totalGoals - a.totalGoals).slice(0, 6)
 
+  const argentinaHref = teamHref('Argentina')
+  const franceHref = teamHref('France')
+  const croatiaHref = teamHref('Croatia')
+  const finalHref = '/matches/1890'
+
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-ink">
+      {/* ═══════════ HERO ═══════════ */}
+      <section className="relative overflow-hidden border-b border-line">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 90% 70% at 20% 0%, rgba(201,162,39,0.18), transparent 55%), radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,200,83,0.08), transparent 50%)',
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(-12deg, transparent, transparent 28px, #fff 28px, #fff 29px)',
+          }}
+        />
+        <span className="absolute -right-4 top-8 font-display text-[140px] sm:text-[220px] leading-none text-surface-2 select-none pointer-events-none tracking-tight">
+          22
+        </span>
 
-      {/* ═══════════ HERO: Champion Banner ═══════════ */}
-      <section className="relative overflow-hidden border-b border-border/40">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-green-500/5 to-background" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yellow-400/10 via-transparent to-transparent" />
+        <div className="relative mx-auto max-w-[1200px] px-6 lg:px-12 pt-14 pb-16 sm:pt-20 sm:pb-20">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+            {/* Left — existing hero content */}
+            <div>
+              <p className="text-[11px] font-semibold tracking-[3px] uppercase text-gold mb-4 animate-slide-up">
+                FIFA World Cup · Qatar 2022
+              </p>
 
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center space-y-8">
-            {/* Trophy */}
-            <div className="flex justify-center">
-              <div className="relative">
-                <div className="text-7xl md:text-9xl animate-pulse">🏆</div>
-                <div className="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs font-black px-2 py-0.5 rounded-full">
-                  2022
+              <h1 className="font-display text-[clamp(42px,8vw,88px)] leading-[0.92] tracking-[1px] text-cream max-w-3xl mb-6 animate-slide-up">
+                <span className="text-[#75AADB]">ARGENTINA</span>{' '}
+                <span className="text-gold">ARE</span>
+                <br />
+                CHAMPIONS
+              </h1>
+
+              <p className="text-[15px] text-fog max-w-md mb-10 leading-relaxed animate-slide-up">
+                Messi’s third World Cup final ends in glory — 3–3 after extra time, Argentina 4–2 on penalties at Lusail.
+              </p>
+
+              <div className="group inline-flex items-stretch border border-line-strong bg-surface/80 backdrop-blur-sm animate-slide-up">
+                <div className="flex items-center gap-4 sm:gap-8 px-5 sm:px-8 py-5">
+                  {argentinaHref ? (
+                    <Link href={argentinaHref} className="text-center space-y-2 hover:opacity-80 transition-opacity">
+                      <CountryFlag country="Argentina" size={44} />
+                      <p className="text-xs font-bold text-cream">Argentina</p>
+                      <p className="text-[10px] text-gold font-semibold uppercase tracking-wider">Champions</p>
+                    </Link>
+                  ) : (
+                    <div className="text-center space-y-2">
+                      <CountryFlag country="Argentina" size={44} />
+                      <p className="text-xs font-bold text-cream">Argentina</p>
+                    </div>
+                  )}
+
+                  <Link href={finalHref} className="text-center px-2 hover:opacity-90 transition-opacity">
+                    <p className="font-display text-[36px] sm:text-[48px] leading-none text-cream tabular-nums">
+                      3 – 3
+                    </p>
+                    <p className="text-[10px] text-faint mt-1 uppercase tracking-wider">AET</p>
+                    <p className="mt-2 text-[11px] font-bold text-gold bg-gold/10 px-2.5 py-1 inline-block">
+                      PEN 4 – 2
+                    </p>
+                  </Link>
+
+                  {franceHref ? (
+                    <Link href={franceHref} className="text-center space-y-2 hover:opacity-80 transition-opacity">
+                      <CountryFlag country="France" size={44} />
+                      <p className="text-xs font-bold text-cream">France</p>
+                      <p className="text-[10px] text-faint uppercase tracking-wider">Runner-up</p>
+                    </Link>
+                  ) : (
+                    <div className="text-center space-y-2">
+                      <CountryFlag country="France" size={44} />
+                      <p className="text-xs font-bold text-cream">France</p>
+                    </div>
+                  )}
                 </div>
+                <Link
+                  href={finalHref}
+                  className="hidden sm:flex flex-col justify-center border-l border-line px-5 text-[11px] text-faint gap-1.5 min-w-[160px] hover:bg-surface-2 transition-colors"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-3 w-3 text-pitch" /> Dec 18, 2022
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-3 w-3 text-pitch" /> Lusail Stadium
+                  </span>
+                  <span className="text-pitch font-semibold uppercase tracking-wider mt-1">
+                    Open final →
+                  </span>
+                </Link>
+              </div>
+
+              <div className="flex flex-wrap items-end gap-3 sm:gap-5 mt-10 animate-slide-up">
+                {[
+                  { place: '3rd', name: 'Croatia', href: croatiaHref, tone: 'text-amber-600 border-amber-700/30 bg-amber-900/10' },
+                  { place: '1st', name: 'Argentina', href: argentinaHref, tone: 'text-gold border-gold/40 bg-gold/10 -translate-y-2' },
+                  { place: '2nd', name: 'France', href: franceHref, tone: 'text-fog border-line bg-surface' },
+                ].map((p) => {
+                  const inner = (
+                    <div className={`border px-4 py-3 w-[100px] sm:w-[120px] text-center ${p.tone}`}>
+                      <CountryFlag country={p.name} size={p.place === '1st' ? 32 : 24} />
+                      <p className="text-xs font-bold text-cream mt-1.5">{p.name}</p>
+                      <p className="text-[10px] uppercase tracking-wider mt-0.5 opacity-80">{p.place}</p>
+                    </div>
+                  )
+                  return p.href ? (
+                    <Link key={p.place} href={p.href} className="hover:opacity-90 transition-opacity">
+                      {inner}
+                    </Link>
+                  ) : (
+                    <div key={p.place}>{inner}</div>
+                  )
+                })}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-sm font-bold text-yellow-400 uppercase tracking-[0.3em]">FIFA World Cup Qatar 2022</p>
-              <h1 className="text-4xl md:text-6xl font-black text-foreground">Argentina Are Champions</h1>
-            </div>
-
-            {/* Final Score */}
-            <div className="inline-flex items-center gap-4 sm:gap-8 bg-card/60 backdrop-blur-sm border border-border/40 rounded-2xl px-6 sm:px-10 py-6">
-              <div className="text-center space-y-2">
-                <CountryFlag country="Argentina" size={48} />
-                <p className="text-sm font-bold text-foreground">Argentina</p>
-                <p className="text-xs text-yellow-400 font-bold">Champions</p>
-              </div>
-
-              <div className="text-center space-y-1">
-                <p className="text-3xl sm:text-5xl font-black text-foreground tabular-nums">3 - 3</p>
-                <p className="text-xs text-muted-foreground">After Extra Time</p>
-                <div className="bg-yellow-500/20 rounded-full px-3 py-1">
-                  <p className="text-xs font-black text-yellow-400">PEN 4 - 2</p>
-                </div>
-              </div>
-
-              <div className="text-center space-y-2">
-                <CountryFlag country="France" size={48} />
-                <p className="text-sm font-bold text-foreground">France</p>
-                <p className="text-xs text-muted-foreground">Runner-up</p>
-              </div>
-            </div>
-
-            <div className="flex justify-center items-center gap-2 text-xs text-muted-foreground">
-              <Calendar className="h-3 w-3" />
-              <span>December 18, 2022</span>
-              <span className="mx-2">•</span>
-              <MapPin className="h-3 w-3" />
-              <span>Lusail Iconic Stadium</span>
-            </div>
-
-            {/* Podium */}
-            <div className="flex justify-center items-end gap-4 sm:gap-6 pt-4">
-              {/* 3rd place */}
-              <div className="text-center space-y-2">
-                <div className="bg-amber-700/20 border border-amber-700/30 rounded-xl px-4 py-3 w-24 sm:w-28">
-                  <CountryFlag country="Croatia" size={28} />
-                  <p className="text-xs font-bold text-foreground mt-1">Croatia</p>
-                  <p className="text-[10px] text-amber-600">3rd Place</p>
-                </div>
-              </div>
-              {/* 1st place */}
-              <div className="text-center space-y-2 -mt-4">
-                <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-xl px-4 py-4 w-28 sm:w-32 shadow-lg shadow-yellow-500/10">
-                  <CountryFlag country="Argentina" size={36} />
-                  <p className="text-sm font-black text-foreground mt-1">Argentina</p>
-                  <p className="text-[10px] text-yellow-400 font-bold">🥇 Champions</p>
-                </div>
-              </div>
-              {/* 2nd place */}
-              <div className="text-center space-y-2">
-                <div className="bg-zinc-400/10 border border-zinc-400/20 rounded-xl px-4 py-3 w-24 sm:w-28">
-                  <CountryFlag country="France" size={28} />
-                  <p className="text-xs font-bold text-foreground mt-1">France</p>
-                  <p className="text-[10px] text-zinc-400">Runner-up</p>
-                </div>
-              </div>
+            {/* Right — Messi collage */}
+            <div className="mt-14 lg:mt-0 flex justify-center lg:block">
+              <MessiCollage />
             </div>
           </div>
         </div>
       </section>
 
+      {/* ═══════════ KNOCKOUT ═══════════ */}
+      <section className="border-b border-line bg-surface">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+          <div className="flex items-center gap-3 mb-10">
+            <Award className="h-6 w-6 text-gold" />
+            <h2 className="font-display text-3xl sm:text-4xl tracking-[1px] text-cream">KNOCKOUT STAGE</h2>
+          </div>
+          <KnockoutBracket />
+        </div>
+      </section>
+
+      {/* ═══════════ GROUP STAGE ═══════════ */}
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+          <div className="flex items-center gap-3 mb-8">
+            <Users className="h-5 w-5 text-pitch" />
+            <h2 className="font-display text-3xl sm:text-4xl tracking-[1px] text-cream">GROUP STAGE</h2>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-6">
+            {GROUPS.map((g) => (
+              <button
+                key={g}
+                type="button"
+                onClick={() => setActiveGroup(g)}
+                className={`px-4 py-2 text-sm font-bold transition-all border ${
+                  activeGroup === g
+                    ? 'bg-pitch/15 text-pitch border-pitch/40'
+                    : 'bg-surface text-faint border-line hover:text-cream hover:border-line-strong'
+                }`}
+              >
+                Group {g}
+              </button>
+            ))}
+          </div>
+
+          <div className="border border-line bg-surface overflow-hidden">
+            <div className="bg-surface-2 px-4 py-3">
+              <p className="text-xs font-bold text-cream uppercase tracking-[2px]">Group {activeGroup}</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left px-4 py-3 text-[10px] font-bold text-faint uppercase tracking-wider w-10">#</th>
+                    <th className="text-left px-4 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">Team</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">P</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">W</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">D</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">L</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider hidden sm:table-cell">GF</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider hidden sm:table-cell">GA</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">GD</th>
+                    <th className="text-center px-2 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">Pts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getGroupTeams(standings, activeGroup).map((team, idx) => {
+                    const qualified = idx < 2
+                    const href = teamHref(team.teamName, team.teamId)
+                    return (
+                      <tr
+                        key={team.teamName}
+                        className={`transition-colors ${qualified ? 'hover:bg-pitch/5' : 'hover:bg-surface-2'}`}
+                      >
+                        <td className="px-4 py-3">
+                          <div
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
+                              qualified ? 'bg-pitch/20 text-pitch' : 'bg-surface-2 text-faint'
+                            }`}
+                          >
+                            {idx + 1}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          {href ? (
+                            <Link href={href} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                              <CountryFlag country={team.teamName} size={24} />
+                              <span className={`font-bold ${qualified ? 'text-cream' : 'text-fog'}`}>{team.teamName}</span>
+                              {qualified && (
+                                <span className="text-[9px] font-bold text-pitch bg-pitch/10 px-1.5 py-0.5 hidden sm:inline">
+                                  Q
+                                </span>
+                              )}
+                            </Link>
+                          ) : (
+                            <div className="flex items-center gap-3">
+                              <CountryFlag country={team.teamName} size={24} />
+                              <span className="font-bold text-fog">{team.teamName}</span>
+                            </div>
+                          )}
+                        </td>
+                        <td className="text-center px-2 py-3 text-faint">{team.played}</td>
+                        <td className="text-center px-2 py-3 font-bold text-cream">{team.won}</td>
+                        <td className="text-center px-2 py-3 text-faint">{team.drawn}</td>
+                        <td className="text-center px-2 py-3 text-faint">{team.lost}</td>
+                        <td className="text-center px-2 py-3 text-faint hidden sm:table-cell">{team.goalsFor}</td>
+                        <td className="text-center px-2 py-3 text-faint hidden sm:table-cell">{team.goalsAgainst}</td>
+                        <td className="text-center px-2 py-3">
+                          <span
+                            className={`font-bold ${
+                              team.goalDifference > 0
+                                ? 'text-pitch'
+                                : team.goalDifference < 0
+                                  ? 'text-redcard'
+                                  : 'text-faint'
+                            }`}
+                          >
+                            {team.goalDifference > 0 ? '+' : ''}
+                            {team.goalDifference}
+                          </span>
+                        </td>
+                        <td className="text-center px-2 py-3">
+                          <span className="text-lg font-black text-cream">{team.points}</span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="px-4 py-2 bg-surface-2">
+              <div className="flex items-center gap-2 text-[10px] text-faint">
+                <span className="inline-block w-2 h-2 rounded-full bg-pitch/50" />
+                <span>Qualified for knockout stage</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-3 mt-8 sm:grid-cols-2 lg:grid-cols-4">
+            {GROUPS.map((g) => {
+              const teams = getGroupTeams(standings, g)
+              return (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => setActiveGroup(g)}
+                  className={`border p-4 text-left transition-all hover:border-pitch/40 ${
+                    activeGroup === g ? 'border-pitch/40 bg-pitch/5' : 'border-line bg-surface'
+                  }`}
+                >
+                  <p className="text-[10px] font-bold text-faint uppercase tracking-[2px] mb-3">Group {g}</p>
+                  <div className="space-y-1.5">
+                    {teams.map((t, i) => {
+                      const href = teamHref(t.teamName, t.teamId)
+                      const row = (
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <CountryFlag country={t.teamName} size={16} />
+                            <span className={`text-xs truncate ${i < 2 ? 'font-bold text-cream' : 'text-faint'}`}>
+                              {t.teamName}
+                            </span>
+                          </div>
+                          <span className={`text-xs font-bold shrink-0 ${i < 2 ? 'text-pitch' : 'text-faint'}`}>
+                            {t.points}
+                          </span>
+                        </div>
+                      )
+                      return href ? (
+                        <Link
+                          key={t.teamName}
+                          href={href}
+                          onClick={(e) => e.stopPropagation()}
+                          className="block hover:opacity-80"
+                        >
+                          {row}
+                        </Link>
+                      ) : (
+                        <div key={t.teamName}>{row}</div>
+                      )
+                    })}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* ═══════════ TOURNAMENT STATS ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { value: stats.totalGoals, label: 'Goals Scored', icon: Target, color: 'text-green-400' },
-            { value: stats.totalMatches, label: 'Matches Played', icon: Calendar, color: 'text-blue-400' },
-            { value: stats.totalTeams, label: 'Nations', icon: Users, color: 'text-purple-400' },
-            { value: stats.avgGoals.toFixed(2), label: 'Goals per Match', icon: TrendingUp, color: 'text-yellow-400' },
+            { value: stats.totalGoals, label: 'Goals Scored', icon: Target, color: 'text-pitch' },
+            { value: stats.totalMatches, label: 'Matches Played', icon: Calendar, color: 'text-[#4BB8E8]' },
+            { value: stats.totalTeams, label: 'Nations', icon: Users, color: 'text-gold' },
+            { value: stats.avgGoals.toFixed(2), label: 'Goals per Match', icon: TrendingUp, color: 'text-pitch' },
             { value: stats.venues, label: 'Stadiums', icon: MapPin, color: 'text-orange-400' },
             { value: stats.totalPlayers, label: 'Players', icon: Shirt, color: 'text-cyan-400' },
             { value: stats.totalYellowCards, label: 'Yellow Cards', icon: Zap, color: 'text-amber-400' },
-            { value: stats.totalRedCards, label: 'Red Cards', icon: Shield, color: 'text-red-400' },
-          ].map(s => (
-            <div key={s.label} className="sports-card p-5 text-center space-y-2 group hover:border-primary/30 transition-all">
-              <s.icon className={`h-5 w-5 mx-auto ${s.color} opacity-60 group-hover:opacity-100 transition-opacity`} />
+            { value: stats.totalRedCards, label: 'Red Cards', icon: Shield, color: 'text-redcard' },
+          ].map((s) => (
+            <div key={s.label} className="border border-line bg-surface p-5 text-center space-y-2 hover:border-line-strong transition-colors">
+              <s.icon className={`h-5 w-5 mx-auto ${s.color} opacity-70`} />
               <p className={`text-2xl sm:text-3xl font-black ${s.color}`}>{s.value}</p>
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">{s.label}</p>
+              <p className="text-[10px] text-faint uppercase tracking-wider font-medium">{s.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-
-      {/* ═══════════ OFFICIAL AWARDS ═══════════ */}
-      <section className="border-y border-border/40 bg-gradient-to-b from-yellow-500/5 to-transparent">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* ═══════════ AWARDS ═══════════ */}
+      <section className="border-y border-line bg-ink-2">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
-            <Trophy className="h-6 w-6 text-yellow-400" />
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground">Tournament Awards</h2>
+            <Trophy className="h-5 w-5 text-gold" />
+            <h2 className="font-display text-3xl tracking-[1px] text-cream">TOURNAMENT AWARDS</h2>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {Object.entries(AWARDS).map(([key, award]) => (
-              <div key={key} className="sports-card p-6 space-y-4 hover:border-yellow-500/30 transition-colors group">
-                <div className="flex items-start justify-between">
-                  <span className="text-4xl">{award.icon}</span>
-                  <span className="text-[10px] font-bold text-yellow-400 uppercase tracking-wider bg-yellow-500/10 px-2 py-1 rounded-full">
-                    {key === 'goldenBoot' ? 'Golden Boot' :
-                     key === 'goldenBall' ? 'Golden Ball' :
-                     key === 'goldenGlove' ? 'Golden Glove' : 'Young Player'}
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <CountryFlag country={award.team} size={20} />
-                    <h3 className="text-lg font-black text-foreground group-hover:text-yellow-400 transition-colors">{award.name}</h3>
+            {Object.entries(AWARDS).map(([key, award]) => {
+              const href = teamHref(award.team)
+              return (
+                <div key={key} className="border border-line bg-surface p-6 space-y-4 hover:border-gold/30 transition-colors">
+                  <div className="flex items-start justify-between">
+                    <PlayerPhoto playerName={award.name} size={56} rounded />
+                    <span className="text-[10px] font-bold text-gold uppercase tracking-wider bg-gold/10 px-2 py-1">
+                      {key === 'goldenBoot'
+                        ? 'Golden Boot'
+                        : key === 'goldenBall'
+                          ? 'Golden Ball'
+                          : key === 'goldenGlove'
+                            ? 'Golden Glove'
+                            : 'Young Player'}
+                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">{award.team}</p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      {href ? (
+                        <Link href={href} className="hover:opacity-80">
+                          <CountryFlag country={award.team} size={18} />
+                        </Link>
+                      ) : (
+                        <CountryFlag country={award.team} size={18} />
+                      )}
+                      <h3 className="text-lg font-black text-cream">{award.name}</h3>
+                    </div>
+                    {href ? (
+                      <Link href={href} className="text-sm text-fog hover:text-pitch transition-colors">
+                        {award.team}
+                      </Link>
+                    ) : (
+                      <p className="text-sm text-fog">{award.team}</p>
+                    )}
+                  </div>
+                  <div className="bg-gold/10 px-3 py-2">
+                    <p className="text-sm font-bold text-gold">{award.detail}</p>
+                  </div>
                 </div>
-                <div className="bg-yellow-500/10 rounded-lg px-3 py-2">
-                  <p className="text-sm font-bold text-yellow-400">{award.detail}</p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
 
-
-      {/* ═══════════ TOP SCORERS TABLE ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* ═══════════ TOP SCORERS ═══════════ */}
+      <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
         <div className="flex items-center gap-3 mb-8">
-          <Target className="h-6 w-6 text-green-400" />
-          <h2 className="text-2xl sm:text-3xl font-black text-foreground">Top Scorers</h2>
+          <Target className="h-5 w-5 text-pitch" />
+          <h2 className="font-display text-3xl tracking-[1px] text-cream">TOP SCORERS</h2>
         </div>
 
-        <div className="sports-card overflow-hidden">
+        <div className="border border-line bg-surface overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/40 bg-secondary/30">
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">#</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Player</th>
-                  <th className="text-center px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-                    <span className="hidden sm:inline">Goals</span>
-                    <span className="sm:hidden">G</span>
-                  </th>
-                  <th className="text-center px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-                    <span className="hidden sm:inline">Assists</span>
-                    <span className="sm:hidden">A</span>
-                  </th>
-                  <th className="text-center px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider hidden sm:table-cell">xG</th>
-                  <th className="text-center px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider hidden md:table-cell">Mins</th>
-                  <th className="text-center px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider hidden md:table-cell">Pens</th>
+                <tr className="bg-surface-2">
+                  <th className="text-left px-4 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">#</th>
+                  <th className="text-left px-4 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">Player</th>
+                  <th className="text-center px-3 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">G</th>
+                  <th className="text-center px-3 py-3 text-[10px] font-bold text-faint uppercase tracking-wider">A</th>
+                  <th className="text-center px-3 py-3 text-[10px] font-bold text-faint uppercase tracking-wider hidden sm:table-cell">xG</th>
+                  <th className="text-center px-3 py-3 text-[10px] font-bold text-faint uppercase tracking-wider hidden md:table-cell">Mins</th>
+                  <th className="text-center px-3 py-3 text-[10px] font-bold text-faint uppercase tracking-wider hidden md:table-cell">Pens</th>
                 </tr>
               </thead>
               <tbody>
-                {topScorers.map((p, idx) => (
-                  <tr key={p.name} className="border-b border-border/20 hover:bg-secondary/20 transition-colors">
-                    <td className="px-4 py-3">
-                      <span className={`text-sm font-black ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-zinc-400' : idx === 2 ? 'text-amber-600' : 'text-muted-foreground'}`}>
-                        {idx + 1}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link href={`/players/${p.playerId}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <CountryFlag country={p.team} size={22} />
-                        <div>
-                          <p className="font-bold text-foreground hover:text-green-400 transition-colors">{p.name}</p>
-                          <p className="text-[11px] text-muted-foreground">{p.team} • {p.position}</p>
+                {topScorers.map((p, idx) => {
+                  const tHref = teamHref(p.team)
+                  return (
+                    <tr key={p.name} className="hover:bg-surface-2 transition-colors">
+                      <td className="px-4 py-3">
+                        <span
+                          className={`text-sm font-black ${
+                            idx === 0 ? 'text-gold' : idx === 1 ? 'text-fog' : idx === 2 ? 'text-amber-600' : 'text-faint'
+                          }`}
+                        >
+                          {idx + 1}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <Link href={`/players/${p.playerId}`} className="shrink-0 hover:opacity-90">
+                            <PlayerPhoto playerName={p.name} size={40} rounded />
+                          </Link>
+                          <div className="min-w-0">
+                            <Link href={`/players/${p.playerId}`} className="font-bold text-cream hover:text-pitch transition-colors">
+                              {p.name}
+                            </Link>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              {tHref ? (
+                                <Link href={tHref} className="hover:opacity-80">
+                                  <CountryFlag country={p.team} size={14} />
+                                </Link>
+                              ) : (
+                                <CountryFlag country={p.team} size={14} />
+                              )}
+                              {tHref ? (
+                                <Link href={tHref} className="text-[11px] text-faint hover:text-pitch">
+                                  {p.team} · {p.position}
+                                </Link>
+                              ) : (
+                                <p className="text-[11px] text-faint">
+                                  {p.team} · {p.position}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </Link>
-                    </td>
-                    <td className="text-center px-3 py-3">
-                      <span className="text-lg font-black text-green-400">{p.goals}</span>
-                    </td>
-                    <td className="text-center px-3 py-3">
-                      <span className="font-bold text-foreground">{p.assists}</span>
-                    </td>
-                    <td className="text-center px-3 py-3 hidden sm:table-cell">
-                      <span className="text-muted-foreground">{p.xG.toFixed(1)}</span>
-                    </td>
-                    <td className="text-center px-3 py-3 hidden md:table-cell">
-                      <span className="text-muted-foreground">{p.minutes}</span>
-                    </td>
-                    <td className="text-center px-3 py-3 hidden md:table-cell">
-                      <span className="text-muted-foreground">{p.pensMade}/{p.pensAtt}</span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="text-center px-3 py-3">
+                        <span className="text-lg font-black text-pitch">{p.goals}</span>
+                      </td>
+                      <td className="text-center px-3 py-3 font-bold text-cream">{p.assists}</td>
+                      <td className="text-center px-3 py-3 text-faint hidden sm:table-cell">{p.xG.toFixed(1)}</td>
+                      <td className="text-center px-3 py-3 text-faint hidden md:table-cell">{p.minutes}</td>
+                      <td className="text-center px-3 py-3 text-faint hidden md:table-cell">
+                        {p.pensMade}/{p.pensAtt}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-
-      {/* ═══════════ TOP ASSIST PROVIDERS ═══════════ */}
-      <section className="border-t border-border/40 bg-secondary/10">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* ═══════════ ASSISTS ═══════════ */}
+      <section className="border-t border-line bg-ink-2">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
-            <Zap className="h-6 w-6 text-blue-400" />
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground">Top Assist Providers</h2>
+            <Zap className="h-5 w-5 text-[#4BB8E8]" />
+            <h2 className="font-display text-3xl tracking-[1px] text-cream">TOP ASSIST PROVIDERS</h2>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {topAssisters.map((p, idx) => (
               <Link key={p.name} href={`/players/${p.playerId}`}>
-                <div className="sports-card p-4 flex items-center gap-3 hover:border-blue-500/30 transition-colors cursor-pointer">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-                    idx === 0 ? 'bg-yellow-500/20 text-yellow-400' :
-                    idx === 1 ? 'bg-zinc-400/20 text-zinc-400' :
-                    idx === 2 ? 'bg-amber-600/20 text-amber-600' :
-                    'bg-secondary text-muted-foreground'
-                  }`}>
+                <div className="border border-line bg-surface p-4 flex items-center gap-3 hover:border-[#4BB8E8]/40 transition-colors h-full">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+                      idx === 0
+                        ? 'bg-gold/20 text-gold'
+                        : idx === 1
+                          ? 'bg-surface-2 text-fog'
+                          : idx === 2
+                            ? 'bg-amber-600/20 text-amber-600'
+                            : 'bg-surface-2 text-faint'
+                    }`}
+                  >
                     {idx + 1}
                   </div>
-                  <CountryFlag country={p.team} size={20} />
+                  <PlayerPhoto playerName={p.name} size={36} rounded />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground truncate hover:text-blue-400 transition-colors">{p.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{p.team}</p>
+                    <p className="text-sm font-bold text-cream truncate">{p.name}</p>
+                    <p className="text-[10px] text-faint flex items-center gap-1">
+                      <CountryFlag country={p.team} size={12} />
+                      {p.team}
+                    </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-lg font-black text-blue-400">{p.assists}</p>
-                    <p className="text-[10px] text-muted-foreground">{p.goals}G</p>
+                    <p className="text-lg font-black text-[#4BB8E8]">{p.assists}</p>
+                    <p className="text-[10px] text-faint">{p.goals}G</p>
                   </div>
                 </div>
               </Link>
@@ -352,234 +628,115 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
         </div>
       </section>
 
-
-      {/* ═══════════ GROUP STAGE ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* ═══════════ HIGH SCORING MATCHES ═══════════ */}
+      <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
         <div className="flex items-center gap-3 mb-8">
-          <Users className="h-6 w-6 text-purple-400" />
-          <h2 className="text-2xl sm:text-3xl font-black text-foreground">Group Stage</h2>
-        </div>
-
-        {/* Group selector tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {GROUPS.map(g => (
-            <button
-              key={g}
-              onClick={() => setActiveGroup(g)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-                activeGroup === g
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/40'
-                  : 'bg-secondary/30 text-muted-foreground border border-border/40 hover:text-foreground hover:border-border'
-              }`}
-            >
-              Group {g}
-            </button>
-          ))}
-        </div>
-
-        {/* Active group table */}
-        <div className="sports-card overflow-hidden">
-          <div className="bg-secondary/30 px-4 py-3 border-b border-border/40">
-            <p className="text-sm font-black text-foreground uppercase tracking-wider">Group {activeGroup}</p>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border/30">
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider w-10">#</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Team</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">P</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">W</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">D</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">L</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider hidden sm:table-cell">GF</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider hidden sm:table-cell">GA</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">GD</th>
-                  <th className="text-center px-2 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {getGroupTeams(standings, activeGroup).map((team, idx) => {
-                  const qualified = idx < 2
-                  return (
-                    <tr key={team.teamName} className={`border-b border-border/20 transition-colors ${qualified ? 'hover:bg-green-500/5' : 'hover:bg-secondary/20'}`}>
-                      <td className="px-4 py-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
-                          qualified ? 'bg-green-500/20 text-green-400' : 'bg-secondary text-muted-foreground'
-                        }`}>
-                          {idx + 1}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <CountryFlag country={team.teamName} size={24} />
-                          <span className={`font-bold ${qualified ? 'text-foreground' : 'text-muted-foreground'}`}>
-                            {team.teamName}
-                          </span>
-                          {qualified && (
-                            <span className="text-[9px] font-bold text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded hidden sm:inline">
-                              Q
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="text-center px-2 py-3 text-muted-foreground">{team.played}</td>
-                      <td className="text-center px-2 py-3 font-bold text-foreground">{team.won}</td>
-                      <td className="text-center px-2 py-3 text-muted-foreground">{team.drawn}</td>
-                      <td className="text-center px-2 py-3 text-muted-foreground">{team.lost}</td>
-                      <td className="text-center px-2 py-3 text-muted-foreground hidden sm:table-cell">{team.goalsFor}</td>
-                      <td className="text-center px-2 py-3 text-muted-foreground hidden sm:table-cell">{team.goalsAgainst}</td>
-                      <td className="text-center px-2 py-3">
-                        <span className={`font-bold ${team.goalDifference > 0 ? 'text-green-400' : team.goalDifference < 0 ? 'text-red-400' : 'text-muted-foreground'}`}>
-                          {team.goalDifference > 0 ? '+' : ''}{team.goalDifference}
-                        </span>
-                      </td>
-                      <td className="text-center px-2 py-3">
-                        <span className="text-lg font-black text-foreground">{team.points}</span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div className="px-4 py-2 border-t border-border/20 bg-secondary/10">
-            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-              <span className="inline-block w-2 h-2 rounded-full bg-green-500/40" />
-              <span>Qualified for knockout stage</span>
-            </div>
-          </div>
-        </div>
-
-        {/* All groups mini view */}
-        <div className="grid gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-4">
-          {GROUPS.map(g => {
-            const teams = getGroupTeams(standings, g)
-            return (
-              <button
-                key={g}
-                onClick={() => setActiveGroup(g)}
-                className={`sports-card p-4 text-left transition-all hover:border-primary/30 ${
-                  activeGroup === g ? 'border-green-500/40 bg-green-500/5' : ''
-                }`}
-              >
-                <p className="text-xs font-black text-muted-foreground uppercase tracking-wider mb-3">Group {g}</p>
-                <div className="space-y-1.5">
-                  {teams.map((t, i) => (
-                    <div key={t.teamName} className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <CountryFlag country={t.teamName} size={16} />
-                        <span className={`text-xs truncate ${i < 2 ? 'font-bold text-foreground' : 'text-muted-foreground'}`}>
-                          {t.teamName}
-                        </span>
-                      </div>
-                      <span className={`text-xs font-bold shrink-0 ${i < 2 ? 'text-green-400' : 'text-muted-foreground'}`}>
-                        {t.points}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-
-      {/* ═══════════ KNOCKOUT BRACKET ═══════════ */}
-      <section className="border-t border-border/40 bg-gradient-to-b from-secondary/20 to-transparent">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-8">
-            <Award className="h-6 w-6 text-yellow-400" />
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground">Knockout Stage</h2>
-          </div>
-          <KnockoutBracket />
-        </div>
-      </section>
-
-
-      {/* ═══════════ HIGHEST SCORING MATCHES ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 mb-8">
-          <Star className="h-6 w-6 text-orange-400" />
-          <h2 className="text-2xl sm:text-3xl font-black text-foreground">Highest Scoring Matches</h2>
+          <Star className="h-5 w-5 text-orange-400" />
+          <h2 className="font-display text-3xl tracking-[1px] text-cream">HIGHEST SCORING MATCHES</h2>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {highScoringMatches.map((m, idx) => (
-            <Link key={m.id} href={`/matches/${m.id}`}>
-              <div className="sports-card sports-card-hover p-5 space-y-4 h-full">
+          {highScoringMatches.map((m) => {
+            const homeHref = teamHref(m.homeTeam)
+            const awayHref = teamHref(m.awayTeam)
+            return (
+              <div key={m.id} className="border border-line bg-surface p-5 space-y-4 hover:border-orange-400/30 transition-colors">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-[10px] text-faint">
                     <Calendar className="h-3 w-3" />
                     <span>{m.date}</span>
                   </div>
-                  <span className="text-xs font-black text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-black text-orange-400 bg-orange-500/10 px-2 py-0.5">
                     {m.totalGoals} Goals
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <CountryFlag country={m.homeTeam} size={24} />
-                    <span className="text-sm font-bold text-foreground truncate">{m.homeTeam}</span>
-                  </div>
-                  <span className="text-xl font-black text-foreground tabular-nums shrink-0">
+                  {homeHref ? (
+                    <Link href={homeHref} className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80">
+                      <CountryFlag country={m.homeTeam} size={24} />
+                      <span className="text-sm font-bold text-cream truncate">{m.homeTeam}</span>
+                    </Link>
+                  ) : (
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <CountryFlag country={m.homeTeam} size={24} />
+                      <span className="text-sm font-bold text-cream truncate">{m.homeTeam}</span>
+                    </div>
+                  )}
+                  <Link
+                    href={`/matches/${m.id}`}
+                    className="text-xl font-black text-cream tabular-nums shrink-0 hover:text-pitch transition-colors px-1"
+                  >
                     {m.homeScore} - {m.awayScore}
-                  </span>
-                  <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                    <span className="text-sm font-bold text-foreground truncate">{m.awayTeam}</span>
-                    <CountryFlag country={m.awayTeam} size={24} />
-                  </div>
+                  </Link>
+                  {awayHref ? (
+                    <Link href={awayHref} className="flex items-center gap-2 flex-1 min-w-0 justify-end hover:opacity-80">
+                      <span className="text-sm font-bold text-cream truncate">{m.awayTeam}</span>
+                      <CountryFlag country={m.awayTeam} size={24} />
+                    </Link>
+                  ) : (
+                    <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                      <span className="text-sm font-bold text-cream truncate">{m.awayTeam}</span>
+                      <CountryFlag country={m.awayTeam} size={24} />
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  <span className="truncate">{m.venue}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-[10px] text-faint min-w-0">
+                    <MapPin className="h-3 w-3 shrink-0" />
+                    <span className="truncate">{m.venue}</span>
+                  </div>
+                  <Link href={`/matches/${m.id}`} className="text-[10px] font-semibold text-pitch uppercase tracking-wider shrink-0">
+                    Match →
+                  </Link>
                 </div>
               </div>
-            </Link>
-          ))}
+            )
+          })}
         </div>
       </section>
 
-
-      {/* ═══════════ xG OVERPERFORMERS ═══════════ */}
-      <section className="border-t border-border/40 bg-secondary/10">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* ═══════════ xG ═══════════ */}
+      <section className="border-t border-line bg-ink-2">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
-            <TrendingUp className="h-6 w-6 text-cyan-400" />
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground">xG Leaders</h2>
-            <span className="text-xs text-muted-foreground">(Expected Goals)</span>
+            <TrendingUp className="h-5 w-5 text-cyan-400" />
+            <h2 className="font-display text-3xl tracking-[1px] text-cream">xG LEADERS</h2>
+            <span className="text-xs text-faint">(Expected Goals)</span>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {topXG.map((p, idx) => {
+            {topXG.map((p) => {
               const diff = p.goals - p.xG
               return (
                 <Link key={p.name} href={`/players/${p.playerId}`}>
-                  <div className="sports-card p-5 space-y-3 hover:border-cyan-500/30 transition-colors cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <CountryFlag country={p.team} size={20} />
+                  <div className="border border-line bg-surface p-5 space-y-3 hover:border-cyan-500/30 transition-colors h-full">
+                    <div className="flex items-center gap-2.5">
+                      <PlayerPhoto playerName={p.name} size={40} rounded />
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-foreground truncate hover:text-cyan-400 transition-colors">{p.name}</p>
-                        <p className="text-[10px] text-muted-foreground">{p.team}</p>
+                        <p className="text-sm font-bold text-cream truncate">{p.name}</p>
+                        <p className="text-[10px] text-faint flex items-center gap-1">
+                          <CountryFlag country={p.team} size={12} />
+                          {p.team}
+                        </p>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div className="text-center">
-                        <p className="text-lg font-black text-green-400">{p.goals}</p>
-                        <p className="text-[9px] text-muted-foreground uppercase">Goals</p>
+                        <p className="text-lg font-black text-pitch">{p.goals}</p>
+                        <p className="text-[9px] text-faint uppercase">Goals</p>
                       </div>
                       <div className="text-center">
                         <p className="text-lg font-black text-cyan-400">{p.xG.toFixed(1)}</p>
-                        <p className="text-[9px] text-muted-foreground uppercase">xG</p>
+                        <p className="text-[9px] text-faint uppercase">xG</p>
                       </div>
                       <div className="text-center">
-                        <p className={`text-lg font-black ${diff >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                          {diff > 0 ? '+' : ''}{diff.toFixed(1)}
+                        <p className={`text-lg font-black ${diff >= 0 ? 'text-pitch' : 'text-redcard'}`}>
+                          {diff > 0 ? '+' : ''}
+                          {diff.toFixed(1)}
                         </p>
-                        <p className="text-[9px] text-muted-foreground uppercase">Diff</p>
+                        <p className="text-[9px] text-faint uppercase">Diff</p>
                       </div>
                     </div>
                   </div>
@@ -590,25 +747,24 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
         </div>
       </section>
 
-
-      {/* ═══════════ EXPLORE MORE ═══════════ */}
-      <section className="border-t border-border/40">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <h3 className="text-xl font-black text-foreground mb-6">Explore More</h3>
+      {/* ═══════════ EXPLORE ═══════════ */}
+      <section className="border-t border-line">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+          <h3 className="font-display text-2xl tracking-[1px] text-cream mb-6">EXPLORE MORE</h3>
           <div className="grid gap-4 sm:grid-cols-3">
             {[
-              { href: '/matches', label: 'All Matches', desc: 'Browse every match result and stat', icon: Calendar },
-              { href: '/players', label: 'Player Database', desc: 'Explore 680+ player profiles and stats', icon: Users },
+              { href: '/teams', label: 'Teams', desc: 'National sides and club pages from the archive', icon: Users },
+              { href: '/players', label: 'Player Database', desc: 'Explore 680+ player profiles and stats', icon: Shirt },
               { href: '/standings', label: 'League Tables', desc: 'Full group and league standings', icon: Trophy },
-            ].map(link => (
+            ].map((link) => (
               <Link key={link.href} href={link.href}>
-                <div className="sports-card sports-card-hover p-6 flex items-center gap-4 h-full">
-                  <link.icon className="h-8 w-8 text-green-400 shrink-0" />
+                <div className="border border-line bg-surface hover:border-pitch/40 p-6 flex items-center gap-4 h-full transition-colors">
+                  <link.icon className="h-8 w-8 text-pitch shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-foreground">{link.label}</p>
-                    <p className="text-xs text-muted-foreground">{link.desc}</p>
+                    <p className="font-bold text-cream">{link.label}</p>
+                    <p className="text-xs text-faint">{link.desc}</p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+                  <ChevronRight className="h-5 w-5 text-faint shrink-0" />
                 </div>
               </Link>
             ))}

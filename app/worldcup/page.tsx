@@ -55,6 +55,7 @@ export default async function WorldCupPage() {
 
   // Standings
   const wcStandings: WCStanding[] = rawStandings.map((s) => ({
+    teamId: String(s.teamId),
     teamName: s.teamName,
     group: s.group,
     played: s.played,

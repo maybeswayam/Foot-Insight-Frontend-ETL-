@@ -10,7 +10,36 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['var(--font-display)', 'Impact', 'sans-serif'],
+        editorial: ['var(--font-editorial)', 'Georgia', 'serif'],
+        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-body)', 'system-ui', 'sans-serif'],
+      },
       colors: {
+        pitch: {
+          DEFAULT: '#00C853',
+          dim: '#00913C',
+          bright: '#00E064',
+        },
+        gold: '#F5C842',
+        redcard: '#E8412C',
+        ink: {
+          DEFAULT: '#0A0A0A',
+          2: '#141414',
+        },
+        surface: {
+          DEFAULT: '#1A1A1A',
+          2: '#222222',
+          3: '#2A2A2A',
+        },
+        line: {
+          DEFAULT: 'rgba(255,255,255,0.07)',
+          strong: 'rgba(255,255,255,0.13)',
+        },
+        cream: '#F0EDE6',
+        fog: '#9A9690',
+        faint: '#5C5855',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -51,16 +80,6 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
-        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -68,26 +87,13 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
-        'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-        },
-        'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
+        'slide-up': {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        'slide-up': 'slide-up 0.6s ease-out both',
       },
     },
   },

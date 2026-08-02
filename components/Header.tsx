@@ -36,7 +36,6 @@ export function Header() {
 
   const isLeagueActive = pathname.startsWith('/leagues')
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -47,37 +46,30 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Close dropdown on route change
   useEffect(() => {
     setLeagueDropdownOpen(false)
     setMobileMenuOpen(false)
     setMobileLeagueOpen(false)
   }, [pathname])
 
+  const linkClass = (active: boolean) =>
+    `text-xs font-medium tracking-[1.5px] uppercase transition-colors ${
+      active ? 'text-pitch' : 'text-fog hover:text-pitch'
+    }`
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-8">
+    <header className="sticky top-0 z-50 border-b border-line-strong bg-[rgba(10,10,10,0.92)] backdrop-blur-[16px]">
+      <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+        <div className="flex h-[60px] items-center justify-between gap-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-green-400 flex items-center justify-center shadow-lg shadow-green-500/30 overflow-hidden">
-              <img src="/logos/favicon.ico" alt="Foot-Insights" className="h-6 w-6 object-contain" />
-            </div>
-            <span className="text-lg font-black text-foreground hidden sm:inline">Foot-Insights</span>
+          <Link href="/" className="flex-shrink-0 font-display text-[22px] tracking-[1px] text-cream leading-none">
+            Foot<span className="text-pitch">-Insights</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex gap-1 ml-auto items-center">
+          <nav className="hidden md:flex items-center gap-8 ml-auto">
             {navigation.slice(0, 2).map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
-                  isActive(item.href)
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                }`}
-              >
+              <Link key={item.name} href={item.href} className={linkClass(isActive(item.href))}>
                 {item.name}
               </Link>
             ))}
@@ -86,29 +78,25 @@ export function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setLeagueDropdownOpen(!leagueDropdownOpen)}
-                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all flex items-center gap-1 ${
-                  isLeagueActive
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                }`}
+                className={`flex items-center gap-1 ${linkClass(isLeagueActive)}`}
               >
                 Leagues
-                <ChevronDown size={14} className={`transition-transform ${leagueDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={12} className={`transition-transform ${leagueDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {leagueDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 rounded-xl border border-border/60 bg-card shadow-xl shadow-black/20 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-56 rounded-[2px] border border-line-strong bg-surface shadow-2xl shadow-black/60 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   {leagues.map((league) => (
                     <Link
                       key={league.href}
                       href={league.href}
-                      className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all ${
+                      className={`flex items-center gap-3 px-4 py-2.5 text-xs font-medium tracking-[1px] uppercase transition-colors ${
                         isActive(league.href)
-                          ? 'text-primary bg-primary/10'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                          ? 'text-pitch bg-pitch/5'
+                          : 'text-fog hover:text-cream hover:bg-surface-2'
                       }`}
                     >
-                      <LeagueLogo league={league.slug} size={20} />
+                      <LeagueLogo league={league.slug} size={18} />
                       {league.name}
                     </Link>
                   ))}
@@ -117,43 +105,36 @@ export function Header() {
             </div>
 
             {navigation.slice(2).map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
-                  isActive(item.href)
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                }`}
-              >
+              <Link key={item.name} href={item.href} className={linkClass(isActive(item.href))}>
                 {item.name}
               </Link>
             ))}
           </nav>
 
+          {/* Season badge */}
+          <span className="hidden lg:inline-block bg-pitch text-black text-[10px] font-semibold tracking-[1px] uppercase px-2.5 py-1 rounded-[2px]">
+            2022–23 Season
+          </span>
+
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
+            className="md:hidden p-2 text-fog hover:text-cream transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="border-t border-border/40 py-3 md:hidden animate-slide-up">
-            <div className="flex flex-col gap-1">
+          <nav className="border-t border-line py-4 md:hidden animate-slide-up">
+            <div className="flex flex-col gap-4">
               {navigation.slice(0, 2).map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`block px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
-                    isActive(item.href)
-                      ? 'text-primary bg-primary/10 border border-primary/30'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                  }`}
+                  className={linkClass(isActive(item.href))}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -163,30 +144,22 @@ export function Header() {
               {/* Mobile Leagues Accordion */}
               <button
                 onClick={() => setMobileLeagueOpen(!mobileLeagueOpen)}
-                className={`flex items-center justify-between px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
-                  isLeagueActive
-                    ? 'text-primary bg-primary/10 border border-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                }`}
+                className={`flex items-center gap-1 ${linkClass(isLeagueActive)}`}
               >
                 Leagues
-                <ChevronDown size={14} className={`transition-transform ${mobileLeagueOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={12} className={`transition-transform ${mobileLeagueOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {mobileLeagueOpen && (
-                <div className="ml-4 flex flex-col gap-1 border-l-2 border-border/40 pl-3">
+                <div className="ml-3 flex flex-col gap-3 border-l border-line-strong pl-4">
                   {leagues.map((league) => (
                     <Link
                       key={league.href}
                       href={league.href}
-                      className={`flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
-                        isActive(league.href)
-                          ? 'text-primary bg-primary/10'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                      }`}
+                      className={`flex items-center gap-2.5 ${linkClass(isActive(league.href))}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <LeagueLogo league={league.slug} size={18} />
+                      <LeagueLogo league={league.slug} size={16} />
                       {league.name}
                     </Link>
                   ))}
@@ -197,11 +170,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`block px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-lg transition-all ${
-                    isActive(item.href)
-                      ? 'text-primary bg-primary/10 border border-primary/30'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                  }`}
+                  className={linkClass(isActive(item.href))}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}

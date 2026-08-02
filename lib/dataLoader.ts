@@ -71,6 +71,8 @@ export interface RawPlayer {
   position: string
   age: number
   club?: string | null
+  competition?: string
+  understatId?: number
   stats: {
     minutes: number
     games: number
@@ -126,8 +128,96 @@ export async function loadAdvancedStats(): Promise<Record<string, RawAdvancedSta
   return loadJSON<Record<string, RawAdvancedStats>>('match_advanced.json')
 }
 
+export interface RawLineupPlayer {
+  name: string
+  jerseyNumber: number | null
+  position: string | null
+  isStarter: boolean
+  minutesPlayed: number | null
+  team: string
+  side: 'home' | 'away' | null
+  nickname?: string | null
+}
+
+export interface RawMatchLineup {
+  matchId: number | null
+  externalMatchId?: string
+  source: string
+  competition: string
+  date: string
+  homeTeam: string
+  awayTeam: string
+  playerCount: number
+  starterCount: number
+  players: RawLineupPlayer[]
+}
+
+export interface RawMatchLineupsFile {
+  meta: Record<string, unknown>
+  matches: Record<string, RawMatchLineup>
+}
+
+export async function loadMatchLineups(): Promise<Record<string, RawMatchLineup>> {
+  try {
+    const data = await loadJSON<RawMatchLineupsFile>('match_lineups.json')
+    return data.matches ?? {}
+  } catch {
+    return {}
+  }
+}
+
 export async function loadPlayers(): Promise<RawPlayer[]> {
   return loadJSON<RawPlayer[]>('players.json')
+}
+
+export interface RawPlayerCareersFile {
+  meta: Record<string, unknown>
+  careers: Record<string, import('./types').PlayerCareer>
+}
+
+export async function loadPlayerCareers(): Promise<
+  Record<string, import('./types').PlayerCareer>
+> {
+  try {
+    const data = await loadJSON<RawPlayerCareersFile>('player_careers.json')
+    return data.careers ?? {}
+  } catch {
+    return {}
+  }
+}
+
+export interface RawPlayerShotsFile {
+  meta: Record<string, unknown>
+  players: Record<string, import('./types').PlayerShotProfile & {
+    playerId?: string
+    name?: string
+    team?: string
+    competition?: string
+    position?: string
+  }>
+}
+
+export async function loadPlayerShots(): Promise<RawPlayerShotsFile['players']> {
+  try {
+    const data = await loadJSON<RawPlayerShotsFile>('player_shots.json')
+    return data.players ?? {}
+  } catch {
+    return {}
+  }
+}
+
+export interface RawPlayerBiosFile {
+  meta: Record<string, unknown>
+  bios: Record<string, import('./types').PlayerBio>
+}
+
+export async function loadPlayerBios(): Promise<Record<string, import('./types').PlayerBio>> {
+  try {
+    const data = await loadJSON<RawPlayerBiosFile>('player_bios.json')
+    return data.bios ?? {}
+  } catch {
+    return {}
+  }
 }
 
 export async function loadStandings(): Promise<RawStanding[]> {

@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
     { name, photo },
     {
       headers: {
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+        // Short browser cache so era-face updates show up without a day-long wait
+        'Cache-Control': 'public, max-age=300, s-maxage=3600',
       },
     },
   )

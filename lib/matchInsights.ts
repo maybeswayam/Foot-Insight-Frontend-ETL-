@@ -127,30 +127,3 @@ function buildNarrative(
   return 'Closely Fought Win'
 }
 
-// ─── Deciding-factor label & icon (for cards) ──────────────────────
-
-export function getFactorLabel(factor: MatchInsight['decidingFactor']): string {
-  switch (factor) {
-    case 'efficiency':
-      return 'Shot Efficiency'
-    case 'volume':
-      return 'Shot Volume'
-    case 'discipline':
-      return 'Discipline'
-    case 'balanced':
-      return 'Balanced'
-  }
-}
-
-export function getFactorIcon(factor: MatchInsight['decidingFactor']): string {
-  switch (factor) {
-    case 'efficiency':
-      return '🎯'
-    case 'volume':
-      return '📊'
-    case 'discipline':
-      return '🟨'
-    case 'balanced':
-      return '⚖️'
-  }
-}
