@@ -196,9 +196,14 @@ export default function HomePage() {
       </>
     )
 
-  const totalGoals = summary?.totalGoals ?? 0
-  const wcFinal = iconicMatches.find((m) => m.matchId === '1890')
-  const totalMatchesLabel = (summary?.totalMatches ?? 1890).toLocaleString()
+  const totalMatches = summary?.totalMatches ?? 1890
+  // Prefer API totalGoals; derive from avg if an old/cached payload omitted it.
+  const totalGoals =
+    summary?.totalGoals ??
+    (summary ? Math.round(summary.averageGoalsPerMatch * summary.totalMatches) : 5237)
+  const totalPlayers = summary?.totalPlayers ?? 3338
+  const wcFinal = iconicMatches.find((m) => String(m.matchId) === '1890')
+  const totalMatchesLabel = totalMatches.toLocaleString()
 
   return (
     <>
@@ -250,7 +255,7 @@ export default function HomePage() {
             <p className="text-[15px] leading-[1.7] text-fog max-w-[420px] mb-10">
               Dive into <strong className="text-cream font-medium">{totalMatchesLabel} matches</strong>,{' '}
               <strong className="text-cream font-medium">
-                {summary ? summary.totalPlayers.toLocaleString() : '680'} players
+                {totalPlayers.toLocaleString()} players
               </strong>
               , and <strong className="text-cream font-medium">6 competitions</strong> from the 2022–23
               season — including the 2022 FIFA World Cup in Qatar.
@@ -297,7 +302,7 @@ export default function HomePage() {
                     Matches
                   </div>
                   <div className="font-display text-[32px] sm:text-[42px] leading-none text-cream">
-                    <AnimatedNumber value={summary?.totalMatches ?? 1890} />
+                    <AnimatedNumber value={totalMatches} />
                   </div>
                   <div className="text-[11px] text-faint mt-1">across 6 competitions</div>
                 </div>
@@ -326,9 +331,9 @@ export default function HomePage() {
                     Players
                   </div>
                   <div className="font-display text-[32px] sm:text-[42px] leading-none text-cream">
-                    <AnimatedNumber value={summary?.totalPlayers ?? 680} />
+                    <AnimatedNumber value={totalPlayers} />
                   </div>
-                  <div className="text-[11px] text-faint mt-1">World Cup squads</div>
+                  <div className="text-[11px] text-faint mt-1">across all competitions</div>
                 </div>
               </div>
 

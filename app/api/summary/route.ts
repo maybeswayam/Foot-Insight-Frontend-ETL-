@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server'
 import { loadMatches, loadPlayers, loadTeams, getTeamLookup } from '@/lib/dataLoader'
 import type { Match, SummaryData } from '@/lib/types'
 
-const CACHE = 'public, s-maxage=3600, stale-while-revalidate=86400'
+// Browsers always revalidate; CDN may cache for an hour. Avoid sticky stale
+// client copies of older summary shapes (missing totalGoals / iconicMatches).
+const CACHE = 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400'
 
 const ICONIC_MATCH_IDS = [
   '1890', // WC Final: Argentina vs France

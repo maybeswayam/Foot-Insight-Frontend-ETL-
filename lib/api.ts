@@ -13,9 +13,11 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || ''
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {
   const url = `${API_BASE}${endpoint}`
+  // Prefer network over sticky browser caches. Archive JSON used to be fetched with
+  // force-cache, which could forever serve pre-enrichment /api/summary payloads
+  // (missing totalGoals / iconicMatches, stale player counts) on Vercel.
   const response = await fetch(url, {
-    // Archive data — prefer HTTP cache when the browser/CDN can reuse it.
-    cache: 'force-cache',
+    cache: 'no-store',
   })
 
   if (!response.ok) {
