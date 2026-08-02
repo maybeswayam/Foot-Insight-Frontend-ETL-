@@ -27,7 +27,7 @@ const SKY = '#4BB8E8'
 const GOLD = '#F5C842'
 const PURPLE = '#9B72FF'
 const GRID = 'rgba(255,255,255,0.08)'
-const MUTED = '#5C5855'
+const MUTED = '#9A9690'
 
 const COMP_COLORS: Record<string, string> = {
   'FIFA World Cup': GOLD,

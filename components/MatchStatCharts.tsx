@@ -19,7 +19,7 @@ import type { AdvancedMatchStats, TeamStats } from '@/lib/types'
 const HOME = '#00C853'
 const AWAY = '#4BB8E8'
 const GRID = 'rgba(255,255,255,0.08)'
-const MUTED = '#5C5855'
+const MUTED = '#9A9690'
 
 interface MatchStatChartsProps {
   home: TeamStats
