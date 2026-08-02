@@ -238,7 +238,7 @@ export function MatchStatCharts({
                     borderRadius: 2,
                     fontSize: 12,
                   }}
-                  labelStyle={{ color: '#F0EDE6' }}
+                  labelStyle={{ color: '#F0EDE6', fontWeight: 600 }}
                 />
                 <Bar dataKey="home" name={homeName} fill={HOME} radius={[0, 1, 1, 0]} barSize={7} />
                 <Bar dataKey="away" name={awayName} fill={AWAY} radius={[0, 1, 1, 0]} barSize={7} />
@@ -270,6 +270,7 @@ export function MatchStatCharts({
                     borderRadius: 2,
                     fontSize: 12,
                   }}
+                  labelStyle={{ color: '#F0EDE6', fontWeight: 600 }}
                   formatter={(value, name, item) => {
                     const payload = item?.payload as {
                       homeRaw?: string | number

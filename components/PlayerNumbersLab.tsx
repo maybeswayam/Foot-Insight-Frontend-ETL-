@@ -44,6 +44,34 @@ const tipStyle = {
   borderRadius: 2,
   fontSize: 12,
 }
+const tipLabelStyle = { color: '#F0EDE6', fontWeight: 600 }
+
+/** Pie tooltips don't inherit series colors — render explicitly like the bar charts. */
+function ClubShareTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean
+  payload?: { payload?: { name?: string; goals?: number; assists?: number; value?: number } }[]
+}) {
+  if (!active || !payload?.length) return null
+  const p = payload[0]?.payload
+  if (!p?.name) return null
+  return (
+    <div
+      style={{
+        ...tipStyle,
+        padding: '8px 12px',
+        lineHeight: 1.55,
+      }}
+    >
+      <div style={{ color: '#F0EDE6', fontWeight: 600, marginBottom: 4 }}>{p.name}</div>
+      <div style={{ color: PITCH }}>Goals : {p.goals ?? 0}</div>
+      <div style={{ color: GOLD }}>Assists : {p.assists ?? 0}</div>
+      <div style={{ color: SKY }}>G+A : {p.value ?? 0}</div>
+    </div>
+  )
+}
 
 interface PlayerNumbersLabProps {
   player: PlayerDetail
@@ -271,12 +299,13 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                       <YAxis tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
                       <Tooltip
                         contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle}
                         labelFormatter={(_, p) => {
                           const row = p?.[0]?.payload
                           return row ? `${row.full} · ${row.club}` : ''
                         }}
                       />
-                      <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
+                      <Legend wrapperStyle={{ fontSize: 11, color: '#F0EDE6' }} />
                       <Bar dataKey="goals" name="Goals" stackId="a" fill={PITCH} />
                       <Bar dataKey="assists" name="Assists" stackId="a" fill={GOLD} radius={[2, 2, 0, 0]} />
                       <Line type="monotone" dataKey="xG" name="xG" stroke={SKY} strokeWidth={2} dot={false} />
@@ -305,14 +334,8 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                             />
                           ))}
                         </Pie>
-                        <Tooltip
-                          contentStyle={tipStyle}
-                          formatter={(v, _n, item) => {
-                            const p = item?.payload
-                            return [`${v} G+A (${p?.goals ?? 0}G ${p?.assists ?? 0}A)`, p?.name]
-                          }}
-                        />
-                        <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
+                        <Tooltip content={<ClubShareTooltip />} />
+                        <Legend wrapperStyle={{ fontSize: 11, color: '#F0EDE6' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -363,8 +386,9 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                   <CartesianGrid stroke={GRID} vertical={false} />
                   <XAxis dataKey="name" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
-                  <Tooltip contentStyle={tipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
+                  <Tooltip contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle} />
+                  <Legend wrapperStyle={{ fontSize: 11, color: '#F0EDE6' }} />
                   <Bar dataKey="goals" name="Goals" fill={PITCH} radius={[2, 2, 0, 0]} />
                   <Bar dataKey="assists" name="Assists" fill={GOLD} radius={[2, 2, 0, 0]} />
                   <Bar dataKey="xG" name="xG" fill={SKY} radius={[2, 2, 0, 0]} />
@@ -387,7 +411,8 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                     axisLine={false}
                     tickLine={false}
                   />
-                  <Tooltip contentStyle={tipStyle} />
+                  <Tooltip contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle} />
                   <Bar dataKey="ga" name="G+A" radius={[0, 2, 2, 0]}>
                     {compBars.map((r) => (
                       <Cell key={r.full} fill={r.fill} />

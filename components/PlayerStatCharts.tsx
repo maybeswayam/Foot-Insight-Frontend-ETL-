@@ -29,6 +29,7 @@ const tipStyle = {
   borderRadius: 2,
   fontSize: 12,
 }
+const tipLabelStyle = { color: '#F0EDE6', fontWeight: 600 }
 
 interface SeasonHighlightsProps {
   player: Player
@@ -99,7 +100,8 @@ export function SeasonHighlights({ player }: SeasonHighlightsProps) {
                 <CartesianGrid stroke={GRID} vertical={false} />
                 <XAxis dataKey="label" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} width={32} />
-                <Tooltip contentStyle={tipStyle} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+                <Tooltip contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
                 <Bar dataKey="value" radius={[2, 2, 0, 0]}>
                   {outputRows.map((r) => (
                     <Cell key={r.label} fill={r.fill} />
@@ -196,13 +198,14 @@ export function CareerCharts({ career }: CareerChartsProps) {
                 <YAxis tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
                 <Tooltip
                   contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle}
                   formatter={(v, name) => [v, name === 'goals' ? 'Goals' : 'Assists']}
                   labelFormatter={(_, payload) => {
                     const row = payload?.[0]?.payload
                     return row ? `${row.full} · ${row.club}` : ''
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
+                <Legend wrapperStyle={{ fontSize: 11, color: '#F0EDE6' }} />
                 <Bar dataKey="goals" name="Goals" stackId="ga" fill={PITCH} />
                 <Bar dataKey="assists" name="Assists" stackId="ga" fill={GOLD} radius={[2, 2, 0, 0]} />
               </BarChart>
@@ -219,12 +222,13 @@ export function CareerCharts({ career }: CareerChartsProps) {
                 <YAxis tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
                 <Tooltip
                   contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle}
                   labelFormatter={(_, payload) => {
                     const row = payload?.[0]?.payload
                     return row ? `${row.full} · ${row.club}` : ''
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
+                <Legend wrapperStyle={{ fontSize: 11, color: '#F0EDE6' }} />
                 <Bar dataKey="npg" name="NPG" fill={PITCH} radius={[2, 2, 0, 0]} />
                 <Line type="monotone" dataKey="npxG" name="npxG" stroke={SKY} strokeWidth={2} dot={{ r: 3, fill: SKY }} />
                 <Line type="monotone" dataKey="keyPasses" name="Key passes" stroke={GOLD} strokeWidth={1.5} dot={false} />
@@ -245,8 +249,9 @@ export function CareerCharts({ career }: CareerChartsProps) {
               <CartesianGrid stroke={GRID} vertical={false} />
               <XAxis dataKey="season" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
-              <Tooltip contentStyle={tipStyle} />
-              <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
+              <Tooltip contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle} />
+              <Legend wrapperStyle={{ fontSize: 11, color: '#F0EDE6' }} />
               <Bar dataKey="xGBuildup" name="xGBuildup" fill={PURPLE} radius={[2, 2, 0, 0]} />
               <Bar dataKey="xGChain" name="xGChain" fill={SKY} radius={[2, 2, 0, 0]} />
             </BarChart>
@@ -434,7 +439,8 @@ function MiniBars({
               axisLine={false}
               tickLine={false}
             />
-            <Tooltip contentStyle={tipStyle} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+            <Tooltip contentStyle={tipStyle}
+                  labelStyle={tipLabelStyle} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
             <Bar dataKey="value" fill={color} radius={[0, 2, 2, 0]} />
           </BarChart>
         </ResponsiveContainer>

@@ -203,3 +203,18 @@ body::-webkit-scrollbar-thumb:active,
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Recharts default tooltip — dark card + cream label.
+   Item rows keep their series colors (green / gold / sky). */
+.recharts-default-tooltip {
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 2px !important;
+}
+.recharts-default-tooltip .recharts-tooltip-label {
+  color: #f0ede6 !important;
+  font-weight: 600;
+}
+.recharts-legend-item-text {
+  color: #f0ede6 !important;
+}
