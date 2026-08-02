@@ -447,7 +447,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                     tickLine={false}
                   />
                   <Tooltip content={<CompRateTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                  <Bar dataKey="ga" name="G+A" radius={[0, 2, 2, 0]} barSize={18}>
+                  <Bar dataKey="ga" name="G+A" radius={[0, 2, 2, 0]}>
                     {compBars.map((r) => (
                       <Cell key={r.full} fill={r.fill} />
                     ))}
