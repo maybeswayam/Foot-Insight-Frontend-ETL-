@@ -52,17 +52,29 @@ export function Header() {
     setMobileLeagueOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [mobileMenuOpen])
+
   const linkClass = (active: boolean) =>
     `text-xs font-medium tracking-[1.5px] uppercase transition-colors ${
       active ? 'text-pitch' : 'text-fog hover:text-pitch'
     }`
 
+  const mobileLinkClass = (active: boolean) =>
+    `${linkClass(active)} flex items-center min-h-[44px] py-2`
+
   return (
     <header className="sticky top-0 z-50 border-b border-line-strong bg-[rgba(10,10,10,0.92)] backdrop-blur-[16px]">
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        <div className="flex h-[60px] items-center justify-between gap-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12">
+        <div className="flex h-[60px] items-center justify-between gap-4 sm:gap-8">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 font-display text-[22px] tracking-[1px] text-cream leading-none">
+          <Link href="/" className="flex-shrink-0 font-display text-[20px] sm:text-[22px] tracking-[1px] text-cream leading-none">
             Foot<span className="text-pitch">-Insights</span>
           </Link>
 
@@ -118,9 +130,11 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-fog hover:text-cream transition-colors"
+            type="button"
+            className="md:hidden inline-flex items-center justify-center min-h-[44px] min-w-[44px] -mr-2 text-fog hover:text-cream transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -128,13 +142,13 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="border-t border-line py-4 md:hidden animate-slide-up">
-            <div className="flex flex-col gap-4">
+          <nav className="border-t border-line py-3 md:hidden animate-slide-up max-h-[calc(100dvh-60px)] overflow-y-auto">
+            <div className="flex flex-col gap-1 pb-4">
               {navigation.slice(0, 2).map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={linkClass(isActive(item.href))}
+                  className={mobileLinkClass(isActive(item.href))}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -143,20 +157,21 @@ export function Header() {
 
               {/* Mobile Leagues Accordion */}
               <button
+                type="button"
                 onClick={() => setMobileLeagueOpen(!mobileLeagueOpen)}
-                className={`flex items-center gap-1 ${linkClass(isLeagueActive)}`}
+                className={`flex items-center gap-1 w-full text-left ${mobileLinkClass(isLeagueActive)}`}
               >
                 Leagues
                 <ChevronDown size={12} className={`transition-transform ${mobileLeagueOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {mobileLeagueOpen && (
-                <div className="ml-3 flex flex-col gap-3 border-l border-line-strong pl-4">
+                <div className="ml-1 flex flex-col border-l border-line-strong pl-4">
                   {leagues.map((league) => (
                     <Link
                       key={league.href}
                       href={league.href}
-                      className={`flex items-center gap-2.5 ${linkClass(isActive(league.href))}`}
+                      className={`flex items-center gap-2.5 ${mobileLinkClass(isActive(league.href))}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <LeagueLogo league={league.slug} size={16} />
@@ -170,7 +185,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={linkClass(isActive(item.href))}
+                  className={mobileLinkClass(isActive(item.href))}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}

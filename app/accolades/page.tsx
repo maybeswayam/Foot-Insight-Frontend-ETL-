@@ -133,7 +133,7 @@ export default function AccoladesPage() {
           <span className="absolute -bottom-10 right-0 font-display text-[160px] sm:text-[220px] leading-none text-surface-2 select-none pointer-events-none">
             2022–23
           </span>
-          <div className="relative mx-auto max-w-[1440px] px-6 lg:px-12 py-16">
+          <div className="relative mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
             <div className="section-tag">Season Awards & Records</div>
             <h1 className="font-display text-[clamp(48px,6vw,84px)] tracking-[1px] leading-[0.9] text-cream">
               THE <span className="text-gold">ACCOLADES</span>
@@ -146,7 +146,7 @@ export default function AccoladesPage() {
 
         {/* ═══════ COMPETITION TABS ═══════ */}
         <section className="border-b border-line bg-ink-2 sticky top-[60px] z-40">
-          <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12">
             <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
               {tabs.map((comp) => {
                 const slug = LEAGUE_SLUG[comp]
@@ -155,7 +155,7 @@ export default function AccoladesPage() {
                   <button
                     key={comp}
                     onClick={() => setActiveTab(comp)}
-                    className={`shrink-0 flex items-center gap-2 px-4 py-2 border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors rounded-[2px] ${
+                    className={`shrink-0 flex items-center gap-2 min-h-[40px] px-4 py-2.5 border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors rounded-[2px] ${
                       active
                         ? 'bg-pitch text-black border-pitch'
                         : 'border-line-strong text-fog hover:text-cream bg-ink'
@@ -170,7 +170,7 @@ export default function AccoladesPage() {
           </div>
         </section>
 
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 pb-20">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12 pb-16 sm:pb-20">
           {playerAwards && (
             <>
               {/* ═══════ AWARD WINNERS — HERO ROW ═══════ */}
@@ -288,10 +288,10 @@ export default function AccoladesPage() {
               </div>
 
               {/* Summary strip */}
-              <div className="grid grid-cols-3 gap-px bg-line border border-line mb-px">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-line border border-line mb-px">
                 <SummaryCell label="Matches" value={leagueData.matchCount} />
                 <SummaryCell label="Total Goals" value={leagueData.totalGoals} tone="pitch" />
-                <SummaryCell label="Avg Goals / Match" value={leagueData.avgGoalsPerMatch} tone="gold" />
+                <SummaryCell label="Avg G/M" value={leagueData.avgGoalsPerMatch} tone="gold" />
               </div>
 
               {/* Match highlights */}
@@ -380,7 +380,7 @@ function AwardRow({
 
       <div className="text-right shrink-0">
         <span className={`font-display text-2xl leading-none ${tone}`}>{entry.value}</span>
-        <p className="text-[8px] text-faint uppercase tracking-[1px] mt-0.5">{entry.label}</p>
+        <p className="text-[10px] text-faint uppercase tracking-[1px] mt-0.5">{entry.label}</p>
       </div>
     </div>
   )

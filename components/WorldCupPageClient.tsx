@@ -141,7 +141,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
           22
         </span>
 
-        <div className="relative mx-auto max-w-[1200px] px-6 lg:px-12 pt-14 pb-16 sm:pt-20 sm:pb-20">
+        <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 pt-14 pb-16 sm:pt-20 sm:pb-20">
           <div className="lg:grid lg:grid-cols-2 lg:gap-6">
             {/* Left — existing hero content */}
             <div>
@@ -248,7 +248,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
 
       {/* ═══════════ KNOCKOUT ═══════════ */}
       <section className="border-b border-line bg-surface">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-10">
             <Award className="h-6 w-6 text-gold" />
             <h2 className="font-display text-3xl sm:text-4xl tracking-[1px] text-cream">KNOCKOUT STAGE</h2>
@@ -259,7 +259,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
 
       {/* ═══════════ GROUP STAGE ═══════════ */}
       <section className="border-b border-line">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
             <Users className="h-5 w-5 text-pitch" />
             <h2 className="font-display text-3xl sm:text-4xl tracking-[1px] text-cream">GROUP STAGE</h2>
@@ -426,7 +426,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
       </section>
 
       {/* ═══════════ TOURNAMENT STATS ═══════════ */}
-      <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { value: stats.totalGoals, label: 'Goals Scored', icon: Target, color: 'text-pitch' },
@@ -449,7 +449,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
 
       {/* ═══════════ AWARDS ═══════════ */}
       <section className="border-y border-line bg-ink-2">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
             <Trophy className="h-5 w-5 text-gold" />
             <h2 className="font-display text-3xl tracking-[1px] text-cream">TOURNAMENT AWARDS</h2>
@@ -502,7 +502,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
       </section>
 
       {/* ═══════════ TOP SCORERS ═══════════ */}
-      <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
         <div className="flex items-center gap-3 mb-8">
           <Target className="h-5 w-5 text-pitch" />
           <h2 className="font-display text-3xl tracking-[1px] text-cream">TOP SCORERS</h2>
@@ -586,7 +586,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
 
       {/* ═══════════ ASSISTS ═══════════ */}
       <section className="border-t border-line bg-ink-2">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
             <Zap className="h-5 w-5 text-[#4BB8E8]" />
             <h2 className="font-display text-3xl tracking-[1px] text-cream">TOP ASSIST PROVIDERS</h2>
@@ -629,7 +629,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
       </section>
 
       {/* ═══════════ HIGH SCORING MATCHES ═══════════ */}
-      <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
         <div className="flex items-center gap-3 mb-8">
           <Star className="h-5 w-5 text-orange-400" />
           <h2 className="font-display text-3xl tracking-[1px] text-cream">HIGHEST SCORING MATCHES</h2>
@@ -699,7 +699,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
 
       {/* ═══════════ xG ═══════════ */}
       <section className="border-t border-line bg-ink-2">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
           <div className="flex items-center gap-3 mb-8">
             <TrendingUp className="h-5 w-5 text-cyan-400" />
             <h2 className="font-display text-3xl tracking-[1px] text-cream">xG LEADERS</h2>
@@ -749,7 +749,7 @@ export function WorldCupPageClient({ players, standings, matches, stats }: Props
 
       {/* ═══════════ EXPLORE ═══════════ */}
       <section className="border-t border-line">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-14">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-14">
           <h3 className="font-display text-2xl tracking-[1px] text-cream mb-6">EXPLORE MORE</h3>
           <div className="grid gap-4 sm:grid-cols-3">
             {[

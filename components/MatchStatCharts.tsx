@@ -218,18 +218,18 @@ export function MatchStatCharts({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="border border-line-strong bg-ink-2 p-5">
           <div className="section-tag mb-1">Head to head</div>
-          <h3 className="font-display text-2xl text-cream tracking-[1px] mb-6">MATCH STATS</h3>
-          <div className="h-[320px] w-full">
+          <h3 className="font-display text-xl sm:text-2xl text-cream tracking-[1px] mb-4 sm:mb-6">MATCH STATS</h3>
+          <div className="h-[240px] sm:h-[280px] lg:h-[320px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barRows} layout="vertical" margin={{ left: 8, right: 12, top: 4, bottom: 4 }}>
+              <BarChart data={barRows} layout="vertical" margin={{ left: 0, right: 8, top: 4, bottom: 4 }}>
                 <CartesianGrid stroke={GRID} horizontal={false} />
                 <XAxis type="number" stroke={MUTED} tick={{ fill: MUTED, fontSize: 10 }} />
                 <YAxis
                   type="category"
                   dataKey="label"
-                  width={64}
+                  width={52}
                   stroke={MUTED}
-                  tick={{ fill: '#9A9690', fontSize: 10 }}
+                  tick={{ fill: '#9A9690', fontSize: 9 }}
                 />
                 <Tooltip
                   contentStyle={{
@@ -257,12 +257,12 @@ export function MatchStatCharts({
 
         <div className="border border-line-strong bg-ink-2 p-5">
           <div className="section-tag mb-1">Style fingerprint</div>
-          <h3 className="font-display text-2xl text-cream tracking-[1px] mb-6">PERFORMANCE RADAR</h3>
-          <div className="h-[320px] w-full">
+          <h3 className="font-display text-xl sm:text-2xl text-cream tracking-[1px] mb-4 sm:mb-6">PERFORMANCE RADAR</h3>
+          <div className="h-[240px] sm:h-[280px] lg:h-[320px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="72%">
+              <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="58%">
                 <PolarGrid stroke={GRID} />
-                <PolarAngleAxis dataKey="metric" tick={{ fill: '#9A9690', fontSize: 10 }} />
+                <PolarAngleAxis dataKey="metric" tick={{ fill: '#9A9690', fontSize: 9 }} />
                 <Tooltip
                   contentStyle={{
                     background: '#141414',

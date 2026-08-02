@@ -48,14 +48,14 @@ function SectionHeader({
   link?: { href: string; label: string }
 }) {
   return (
-    <div className="flex items-end justify-between gap-6 mb-12 border-b border-line pb-5">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6 mb-8 sm:mb-12 border-b border-line pb-5">
       <div>
         <div className="section-tag">{tag}</div>
         <h2 className="section-title">{title}</h2>
         {sub && <p className="text-sm text-faint mt-1.5">{sub}</p>}
       </div>
       {link && (
-        <Link href={link.href} className="section-link hidden sm:inline-block">
+        <Link href={link.href} className="section-link self-start sm:self-auto">
           {link.label} →
         </Link>
       )}
@@ -237,7 +237,7 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="font-display text-[clamp(72px,8vw,120px)] leading-[0.9] tracking-[2px] text-cream mb-2">
+            <h1 className="font-display text-[clamp(52px,14vw,120px)] leading-[0.9] tracking-[2px] text-cream mb-2">
               FOOT
               <br />
               <span className="text-pitch">INSIGHTS</span>
@@ -279,53 +279,53 @@ export default function HomePage() {
           </div>
 
           {/* Right — season data panel */}
-          <div className="relative z-10 flex items-center justify-center px-6 lg:px-12 pb-20 lg:py-16">
-            <div className="bg-surface border border-line-strong rounded p-8 w-full max-w-[420px]">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-line">
+          <div className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-12 pb-16 sm:pb-20 lg:py-16">
+            <div className="bg-surface border border-line-strong rounded p-5 sm:p-8 w-full max-w-[420px]">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-line gap-3">
                 <span className="text-[11px] font-semibold tracking-[2px] uppercase text-faint">
                   Season at a Glance
                 </span>
-                <span className="flex items-center gap-1.5 text-[11px] text-pitch font-medium">
+                <span className="flex items-center gap-1.5 text-[11px] text-pitch font-medium shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-pitch animate-pulse" />
                   Live Data
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-px bg-line border border-line mb-6">
-                <div className="bg-surface-2 px-4 py-5">
+                <div className="bg-surface-2 px-3 sm:px-4 py-4 sm:py-5">
                   <div className="text-[10px] font-semibold tracking-[1.5px] uppercase text-faint mb-1.5">
                     Matches
                   </div>
-                  <div className="font-display text-[42px] leading-none text-cream">
+                  <div className="font-display text-[32px] sm:text-[42px] leading-none text-cream">
                     <AnimatedNumber value={summary?.totalMatches ?? 1890} />
                   </div>
                   <div className="text-[11px] text-faint mt-1">across 6 competitions</div>
                 </div>
-                <div className="bg-surface-2 px-4 py-5">
+                <div className="bg-surface-2 px-3 sm:px-4 py-4 sm:py-5">
                   <div className="text-[10px] font-semibold tracking-[1.5px] uppercase text-faint mb-1.5">
                     Goals Scored
                   </div>
-                  <div className="font-display text-[42px] leading-none text-pitch">
+                  <div className="font-display text-[32px] sm:text-[42px] leading-none text-pitch">
                     <AnimatedNumber value={totalGoals} />
                   </div>
                   <div className="text-[11px] text-faint mt-1">
                     {summary ? summary.averageGoalsPerMatch.toFixed(2) : '2.77'} per match
                   </div>
                 </div>
-                <div className="bg-surface-2 px-4 py-5">
+                <div className="bg-surface-2 px-3 sm:px-4 py-4 sm:py-5">
                   <div className="text-[10px] font-semibold tracking-[1.5px] uppercase text-faint mb-1.5">
                     Teams
                   </div>
-                  <div className="font-display text-[42px] leading-none text-gold">
+                  <div className="font-display text-[32px] sm:text-[42px] leading-none text-gold">
                     <AnimatedNumber value={summary?.totalTeams ?? 130} />
                   </div>
                   <div className="text-[11px] text-faint mt-1">clubs & national teams</div>
                 </div>
-                <div className="bg-surface-2 px-4 py-5">
+                <div className="bg-surface-2 px-3 sm:px-4 py-4 sm:py-5">
                   <div className="text-[10px] font-semibold tracking-[1.5px] uppercase text-faint mb-1.5">
                     Players
                   </div>
-                  <div className="font-display text-[42px] leading-none text-cream">
+                  <div className="font-display text-[32px] sm:text-[42px] leading-none text-cream">
                     <AnimatedNumber value={summary?.totalPlayers ?? 680} />
                   </div>
                   <div className="text-[11px] text-faint mt-1">World Cup squads</div>
@@ -456,13 +456,13 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="bg-surface border border-line border-t-0 px-6 py-5 flex items-center justify-between gap-4">
+              <div className="bg-surface border border-line border-t-0 px-4 sm:px-6 py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <span className="text-xs text-faint tracking-[0.5px]">
                   Showing iconic matches from all 6 competitions
                 </span>
                 <Link
                   href="/worldcup"
-                  className="text-xs font-semibold tracking-[1.5px] uppercase text-pitch whitespace-nowrap"
+                  className="text-xs font-semibold tracking-[1.5px] uppercase text-pitch self-start sm:self-auto"
                 >
                   Open World Cup archive →
                 </Link>
@@ -511,7 +511,7 @@ export default function HomePage() {
                         size={36}
                       />
                     </span>
-                    <div className="font-display text-base tracking-[1px] text-cream mb-1">
+                    <div className="font-display text-sm sm:text-base tracking-[1px] text-cream mb-1">
                       {name.toUpperCase()}
                     </div>
                     {stats && (

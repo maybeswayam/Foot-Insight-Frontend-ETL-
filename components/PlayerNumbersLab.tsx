@@ -316,7 +316,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                 },
               ].map((t) => (
                 <div key={t.label} className="bg-ink-2 px-4 py-4">
-                  <div className="text-[9px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
+                  <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
                   <div className={`mt-1 font-display text-3xl tracking-[1px] tabular-nums ${t.tone}`}>
                     {t.value}
                   </div>
@@ -326,7 +326,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
 
             <div className="grid lg:grid-cols-2 gap-6 mb-6">
               <ChartCard tag="Trend" title="G+A BY SEASON">
-                <div className="h-[280px]">
+                <div className="h-[200px] sm:h-[240px] lg:h-[280px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={allTimeRows} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                       <CartesianGrid stroke={GRID} vertical={false} />
@@ -350,7 +350,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
               </ChartCard>
 
               <ChartCard tag="Share" title="G+A BY CLUB">
-                <div className="h-[280px]">
+                <div className="h-[200px] sm:h-[240px] lg:h-[280px]">
                   {clubPie.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -407,7 +407,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
             { label: 'Comps', value: comps.length },
           ].map((t) => (
             <div key={t.label} className="bg-ink-2 px-4 py-4">
-              <div className="text-[9px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
+              <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
               <div className="mt-1 font-display text-3xl tracking-[1px] tabular-nums text-cream">{t.value}</div>
             </div>
           ))}
@@ -415,7 +415,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
 
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
           <ChartCard tag="Compare" title="GOALS · ASSISTS · xG">
-            <div className="h-[280px]">
+            <div className="h-[200px] sm:h-[240px] lg:h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={compBars} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                   <CartesianGrid stroke={GRID} vertical={false} />
@@ -433,7 +433,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
           </ChartCard>
 
           <ChartCard tag="Rate" title="G+A PER COMPETITION">
-            <div className="h-[280px]">
+            <div className="h-[200px] sm:h-[240px] lg:h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={compBars} layout="vertical" margin={{ top: 8, right: 12, left: 4, bottom: 0 }}>
                   <CartesianGrid stroke={GRID} horizontal={false} />
@@ -441,7 +441,7 @@ export function PlayerNumbersLab({ player }: PlayerNumbersLabProps) {
                   <YAxis
                     type="category"
                     dataKey="name"
-                    width={72}
+                    width={56}
                     tick={{ fill: MUTED, fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
@@ -534,7 +534,7 @@ function ChartCard({
 function InfoCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-ink px-3 py-3">
-      <div className="text-[8px] font-bold uppercase tracking-[1.5px] text-faint">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-faint">{label}</div>
       <div className="mt-0.5 font-display text-lg text-cream tracking-[1px]">{value}</div>
     </div>
   )
@@ -543,7 +543,7 @@ function InfoCell({ label, value }: { label: string; value: string }) {
 function MiniStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="bg-ink px-1 py-2 rounded-[2px]">
-      <div className="text-[8px] font-bold uppercase tracking-[1px] text-faint">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-[1px] text-faint">{label}</div>
       <div className="font-display text-lg text-cream tabular-nums">{value}</div>
     </div>
   )

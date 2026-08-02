@@ -133,7 +133,7 @@ export default function StandingsPage() {
                   <button
                     key={league}
                     onClick={() => setSelectedLeague(league)}
-                    className={`px-4 py-2 rounded-lg font-bold uppercase text-xs transition-all ${
+                    className={`min-h-[40px] px-4 py-2.5 rounded-lg font-bold uppercase text-xs transition-all ${
                       selectedLeague === league
                         ? 'bg-green-500 text-slate-900'
                         : 'border border-border/40 text-muted-foreground hover:text-foreground'

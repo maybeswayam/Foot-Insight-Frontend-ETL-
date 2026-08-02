@@ -271,29 +271,35 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
             <div key={s.label} className="sports-card p-4 text-center space-y-1.5">
               <s.icon className={`h-4 w-4 mx-auto ${s.color} opacity-60`} />
               <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
             </div>
           ))}
         </div>
 
         {/* Result distribution bar */}
-        <div className="mt-6 sports-card p-5">
+        <div className="mt-6 sports-card p-4 sm:p-5">
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Result Distribution</p>
-          <div className="flex rounded-full overflow-hidden h-5">
+          <div className="flex rounded-full overflow-hidden h-6">
             <div className="bg-green-500/70 flex items-center justify-center" style={{ width: `${homeWinPct}%` }}>
-              <span className="text-[9px] font-bold text-white">{homeWinPct}%</span>
+              {Number(homeWinPct) >= 14 && (
+                <span className="text-[10px] font-bold text-white">{homeWinPct}%</span>
+              )}
             </div>
             <div className="bg-zinc-500/50 flex items-center justify-center" style={{ width: `${drawPct}%` }}>
-              <span className="text-[9px] font-bold text-white">{drawPct}%</span>
+              {Number(drawPct) >= 14 && (
+                <span className="text-[10px] font-bold text-white">{drawPct}%</span>
+              )}
             </div>
             <div className="bg-blue-500/70 flex items-center justify-center" style={{ width: `${awayWinPct}%` }}>
-              <span className="text-[9px] font-bold text-white">{awayWinPct}%</span>
+              {Number(awayWinPct) >= 14 && (
+                <span className="text-[10px] font-bold text-white">{awayWinPct}%</span>
+              )}
             </div>
           </div>
-          <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
-            <span className="flex items-center gap-1"><Home className="h-3 w-3 text-green-400" /> Home Wins ({stats.homeWins})</span>
-            <span className="flex items-center gap-1"><Minus className="h-3 w-3 text-zinc-400" /> Draws ({stats.draws})</span>
-            <span className="flex items-center gap-1"><Plane className="h-3 w-3 text-blue-400" /> Away Wins ({stats.awayWins})</span>
+          <div className="flex flex-col gap-1.5 sm:flex-row sm:justify-between mt-3 text-[10px] text-muted-foreground">
+            <span className="flex items-center gap-1"><Home className="h-3 w-3 text-green-400" /> Home ({stats.homeWins}) · {homeWinPct}%</span>
+            <span className="flex items-center gap-1"><Minus className="h-3 w-3 text-zinc-400" /> Draws ({stats.draws}) · {drawPct}%</span>
+            <span className="flex items-center gap-1"><Plane className="h-3 w-3 text-blue-400" /> Away ({stats.awayWins}) · {awayWinPct}%</span>
           </div>
         </div>
       </section>
@@ -547,49 +553,51 @@ export function LeaguePageClient({ slug, competition, table, matches, teamStats,
             const homeHref = resolveTeamHref(m.homeTeam)
             const awayHref = resolveTeamHref(m.awayTeam)
             return (
-              <div key={m.id} className="sports-card px-4 py-3 flex items-center gap-3 hover:border-primary/20 transition-colors">
-                <Link href={`/matches/${m.id}`} className="text-[10px] text-muted-foreground w-20 shrink-0 hover:text-foreground">
+              <div key={m.id} className="sports-card px-3 sm:px-4 py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 hover:border-primary/20 transition-colors">
+                <Link href={`/matches/${m.id}`} className="text-[10px] text-muted-foreground sm:w-20 shrink-0 hover:text-foreground min-h-[20px]">
                   {m.date}
                 </Link>
 
-                {homeHref ? (
-                  <Link href={homeHref} className="flex items-center gap-2 flex-1 justify-end min-w-0 hover:opacity-80">
-                    <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
-                    <TeamLogo teamName={m.homeTeam} size={18} />
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  {homeHref ? (
+                    <Link href={homeHref} className="flex items-center gap-1.5 flex-1 justify-end min-w-0 hover:opacity-80">
+                      <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
+                      <TeamLogo teamName={m.homeTeam} size={18} />
+                    </Link>
+                  ) : (
+                    <div className="flex items-center gap-1.5 flex-1 justify-end min-w-0">
+                      <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
+                      <TeamLogo teamName={m.homeTeam} size={18} />
+                    </div>
+                  )}
+
+                  <Link
+                    href={`/matches/${m.id}`}
+                    className={`text-sm font-black tabular-nums px-2 py-1.5 min-h-[36px] inline-flex items-center rounded hover:opacity-80 shrink-0 ${
+                      m.result === 'home_win' ? 'text-green-400' :
+                      m.result === 'away_win' ? 'text-blue-400' :
+                      'text-zinc-400'
+                    }`}
+                  >
+                    {m.homeScore} - {m.awayScore}
                   </Link>
-                ) : (
-                  <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
-                    <span className="text-xs font-bold text-foreground truncate text-right">{m.homeTeam}</span>
-                    <TeamLogo teamName={m.homeTeam} size={18} />
-                  </div>
-                )}
 
-                <Link
-                  href={`/matches/${m.id}`}
-                  className={`text-sm font-black tabular-nums px-2 py-0.5 rounded hover:opacity-80 ${
-                    m.result === 'home_win' ? 'text-green-400' :
-                    m.result === 'away_win' ? 'text-blue-400' :
-                    'text-zinc-400'
-                  }`}
-                >
-                  {m.homeScore} - {m.awayScore}
-                </Link>
+                  {awayHref ? (
+                    <Link href={awayHref} className="flex items-center gap-1.5 flex-1 min-w-0 hover:opacity-80">
+                      <TeamLogo teamName={m.awayTeam} size={18} />
+                      <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                    </Link>
+                  ) : (
+                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <TeamLogo teamName={m.awayTeam} size={18} />
+                      <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                    </div>
+                  )}
 
-                {awayHref ? (
-                  <Link href={awayHref} className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80">
-                    <TeamLogo teamName={m.awayTeam} size={18} />
-                    <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
+                  <Link href={`/matches/${m.id}`} className="shrink-0 hidden sm:block hover:opacity-80">
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
-                ) : (
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <TeamLogo teamName={m.awayTeam} size={18} />
-                    <span className="text-xs font-bold text-foreground truncate">{m.awayTeam}</span>
-                  </div>
-                )}
-
-                <Link href={`/matches/${m.id}`} className="shrink-0 hidden sm:block hover:opacity-80">
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </Link>
+                </div>
               </div>
             )
           })}

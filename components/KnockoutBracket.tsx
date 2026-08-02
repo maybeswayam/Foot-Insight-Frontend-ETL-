@@ -158,7 +158,7 @@ function MatchCard({ match }: { match: KnockoutMatch }) {
     <div className="group relative w-full rounded-xl border border-line-strong bg-surface backdrop-blur-sm overflow-hidden hover:border-pitch/50 transition-all hover:shadow-lg hover:shadow-pitch/10">
       <Link
         href={`/matches/${match.matchId}`}
-        className="flex px-3 py-1.5 bg-surface-2 border-b border-line items-center justify-between hover:bg-surface-2/80 transition-colors"
+        className="flex min-h-[40px] px-3 py-2.5 bg-surface-2 border-b border-line items-center justify-between hover:bg-surface-2/80 transition-colors"
       >
         <span className="text-[10px] font-bold text-fog uppercase tracking-wider">
           {match.date}
@@ -389,7 +389,7 @@ function BracketMatchCard({ match }: { match: KnockoutMatch }) {
 
   return (
     <div className="rounded-lg border border-line-strong bg-surface overflow-hidden hover:border-pitch/50 transition-all">
-      <div className={`flex items-center justify-between px-2.5 py-1.5 ${homeWin ? '' : 'opacity-70'}`}>
+      <div className={`flex items-center justify-between px-2.5 py-2 min-h-[40px] ${homeWin ? '' : 'opacity-70'}`}>
         {homeHref ? (
           <Link href={homeHref} className="flex items-center gap-1.5 min-w-0 flex-1 hover:opacity-80">
             <CountryFlag country={match.home} size={16} />
@@ -417,7 +417,7 @@ function BracketMatchCard({ match }: { match: KnockoutMatch }) {
 
       <div className="border-t border-line" />
 
-      <div className={`flex items-center justify-between px-2.5 py-1.5 ${awayWin ? '' : 'opacity-70'}`}>
+      <div className={`flex items-center justify-between px-2.5 py-2 min-h-[40px] ${awayWin ? '' : 'opacity-70'}`}>
         {awayHref ? (
           <Link href={awayHref} className="flex items-center gap-1.5 min-w-0 flex-1 hover:opacity-80">
             <CountryFlag country={match.away} size={16} />

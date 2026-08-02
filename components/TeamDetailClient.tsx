@@ -230,12 +230,13 @@ export function TeamDetailClient({
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 mt-8 border-b border-border/40 -mb-px">
+          <div className="flex gap-1 mt-8 border-b border-border/40 -mb-px overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
+                type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-5 py-3 text-sm font-bold uppercase tracking-wide border-b-2 transition-all ${
+                className={`flex items-center gap-2 shrink-0 min-h-[44px] px-4 sm:px-5 py-3 text-sm font-bold uppercase tracking-wide border-b-2 transition-all ${
                   activeTab === tab.key
                     ? 'border-green-500 text-green-400'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -699,23 +700,27 @@ export function TeamDetailClient({
               </h3>
               <div className="space-y-1.5 max-h-[400px] overflow-y-auto pr-1">
                 {recentMatches.map((m, i) => (
-                  <Link key={i} href={`/matches/${m.matchId}`} className="flex items-center gap-2 group text-xs py-1.5 px-2 rounded-lg hover:bg-secondary/30 transition-all">
-                    <span className="text-[10px] text-muted-foreground w-20 flex-shrink-0">{m.date}</span>
-                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                      m.competition === 'FIFA World Cup' ? 'bg-amber-500/20 text-amber-300' : 'bg-secondary text-muted-foreground'
-                    }`}>{m.competition.replace('FIFA ', '')}</span>
-                    <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
-                      <span className={`font-bold truncate ${m.isHome ? 'text-foreground' : 'text-muted-foreground'}`}>{m.homeTeam}</span>
-                      <TeamLogo teamName={m.homeTeam} size={16} />
+                  <Link key={i} href={`/matches/${m.matchId}`} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2 group text-xs py-2.5 px-2 rounded-lg hover:bg-secondary/30 transition-all min-h-[44px]">
+                    <div className="flex items-center gap-2 sm:contents">
+                      <span className="text-[10px] text-muted-foreground sm:w-20 flex-shrink-0">{m.date}</span>
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
+                        m.competition === 'FIFA World Cup' ? 'bg-amber-500/20 text-amber-300' : 'bg-secondary text-muted-foreground'
+                      }`}>{m.competition.replace('FIFA ', '')}</span>
                     </div>
-                    <span className={`font-black px-2 py-0.5 rounded text-[10px] flex-shrink-0 ${
-                      m.result === 'W' ? 'bg-green-500/20 text-green-300' :
-                      m.result === 'D' ? 'bg-yellow-500/20 text-yellow-300' :
-                      'bg-red-500/20 text-red-300'
-                    }`}>{m.homeGoals} - {m.awayGoals}</span>
-                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                      <TeamLogo teamName={m.awayTeam} size={16} />
-                      <span className={`font-bold truncate ${!m.isHome ? 'text-foreground' : 'text-muted-foreground'}`}>{m.awayTeam}</span>
+                    <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                        <span className={`font-bold truncate ${m.isHome ? 'text-foreground' : 'text-muted-foreground'}`}>{m.homeTeam}</span>
+                        <TeamLogo teamName={m.homeTeam} size={16} />
+                      </div>
+                      <span className={`font-black px-2 py-1 rounded text-[10px] flex-shrink-0 ${
+                        m.result === 'W' ? 'bg-green-500/20 text-green-300' :
+                        m.result === 'D' ? 'bg-yellow-500/20 text-yellow-300' :
+                        'bg-red-500/20 text-red-300'
+                      }`}>{m.homeGoals} - {m.awayGoals}</span>
+                      <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                        <TeamLogo teamName={m.awayTeam} size={16} />
+                        <span className={`font-bold truncate ${!m.isHome ? 'text-foreground' : 'text-muted-foreground'}`}>{m.awayTeam}</span>
+                      </div>
                     </div>
                   </Link>
                 ))}

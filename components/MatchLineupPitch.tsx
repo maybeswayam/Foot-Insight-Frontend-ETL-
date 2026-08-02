@@ -113,7 +113,7 @@ export function MatchLineupPitch({ players, homeName, awayName }: MatchLineupPit
         </div>
       </div>
 
-      <div className="relative mx-auto w-full aspect-[16/9] sm:aspect-[2/1] rounded-[2px] overflow-hidden border border-line-strong bg-[#0d3d1f]">
+      <div className="relative mx-auto w-full aspect-[3/4] sm:aspect-[2/1] max-h-[70vh] sm:max-h-none rounded-[2px] overflow-hidden border border-line-strong bg-[#0d3d1f]">
         <div
           className="absolute inset-0"
           style={{
@@ -145,7 +145,7 @@ export function MatchLineupPitch({ players, homeName, awayName }: MatchLineupPit
             <>
               <div className="relative">
                 <div
-                  className={`h-9 w-9 sm:h-11 sm:w-11 overflow-hidden rounded-full border-2 bg-ink shadow-lg shadow-black/40 ${
+                  className={`h-10 w-10 sm:h-11 sm:w-11 overflow-hidden rounded-full border-2 bg-ink shadow-lg shadow-black/40 ${
                     side === 'home' ? 'border-pitch' : 'border-[#4BB8E8]'
                   }`}
                 >
@@ -164,10 +164,10 @@ export function MatchLineupPitch({ players, homeName, awayName }: MatchLineupPit
                   {player.jerseyNumber ?? '·'}
                 </span>
               </div>
-              <span className="mt-1 max-w-[64px] sm:max-w-[78px] truncate rounded-[1px] bg-ink/75 px-1 py-px text-center text-[7px] sm:text-[8px] font-semibold uppercase tracking-wide text-cream backdrop-blur-sm group-hover:text-pitch">
+              <span className="mt-1 max-w-[72px] sm:max-w-[78px] truncate rounded-[1px] bg-ink/75 px-1 py-px text-center text-[9px] sm:text-[8px] font-semibold uppercase tracking-wide text-cream backdrop-blur-sm group-hover:text-pitch">
                 {labelName(player)}
               </span>
-              <span className="text-[6px] sm:text-[7px] uppercase tracking-wide text-white/50">{posCode}</span>
+              <span className="text-[8px] sm:text-[7px] uppercase tracking-wide text-white/55">{posCode}</span>
             </>
           )
 
@@ -270,7 +270,7 @@ function XiSheet({
           return (
             <li key={`xi-${p.side}-${p.jerseyNumber}-${p.name}`}>
               {id ? (
-                <Link href={`/players/${id}`} className="flex items-center gap-2.5 text-xs py-1.5 px-1 rounded-[1px] hover:bg-surface group">
+                <Link href={`/players/${id}`} className="flex items-center gap-2.5 text-xs min-h-[44px] py-2 px-1 rounded-[1px] hover:bg-surface group">
                   {row}
                 </Link>
               ) : (
@@ -334,7 +334,7 @@ function BenchList({
           return (
             <li key={`${p.side}-${p.jerseyNumber}-${p.name}`}>
               {id ? (
-                <Link href={`/players/${id}`} className="flex items-center gap-2.5 text-xs text-fog py-1.5 px-1 rounded-[1px] hover:bg-surface group">
+                <Link href={`/players/${id}`} className="flex items-center gap-2.5 text-xs text-fog min-h-[44px] py-2 px-1 rounded-[1px] hover:bg-surface group">
                   {row}
                 </Link>
               ) : (

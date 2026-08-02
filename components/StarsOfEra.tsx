@@ -202,7 +202,7 @@ export function StarsOfEra() {
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-6 mb-12 border-b border-line pb-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6 mb-8 sm:mb-12 border-b border-line pb-5">
         <div>
           <div className="section-tag">Stars of the Era</div>
           <h2 className="section-title">
@@ -212,7 +212,7 @@ export function StarsOfEra() {
           </h2>
           <p className="text-sm text-faint mt-1.5">Jaw-dropping career stats</p>
         </div>
-        <Link href="/players" className="section-link hidden sm:inline-block">
+        <Link href="/players" className="section-link self-start sm:self-auto">
           Browse all players →
         </Link>
       </div>

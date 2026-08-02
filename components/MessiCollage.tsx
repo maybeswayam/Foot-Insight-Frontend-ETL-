@@ -75,8 +75,10 @@ function ImageCard({
   hovered,
   dimmed,
   stacked,
+  hoverEnabled,
   onEnter,
   onLeave,
+  onToggle,
 }: {
   src: string
   alt: string
@@ -84,8 +86,10 @@ function ImageCard({
   hovered: boolean
   dimmed: boolean
   stacked: boolean
+  hoverEnabled: boolean
   onEnter: () => void
   onLeave: () => void
+  onToggle: () => void
 }) {
   let transform: string | undefined
   let opacity = 1
@@ -94,7 +98,7 @@ function ImageCard({
   let filter = FILTER
 
   if (hovered) {
-    transform = 'scale(1.05) translateY(-8px) translateZ(0)'
+    transform = hoverEnabled ? 'scale(1.05) translateY(-8px) translateZ(0)' : 'scale(1.02)'
     zIndex = 20
     boxShadow = SHADOW_HOVER
     filter = FILTER_HOVER
@@ -107,13 +111,12 @@ function ImageCard({
     ? {
         position: 'relative',
         width: '100%',
-        aspectRatio: ASPECT[role],
-        marginBottom: 14,
+        aspectRatio: role === 'bottom' ? '3 / 2' : '5 / 6',
         transform,
         opacity,
         zIndex,
         boxShadow,
-        borderRadius: 18,
+        borderRadius: 14,
         border: '1px solid rgba(255,255,255,.12)',
         overflow: 'hidden',
         transition: `transform 450ms ${EASE}, opacity 450ms ${EASE}, box-shadow 450ms ${EASE}`,
@@ -135,7 +138,24 @@ function ImageCard({
       }
 
   return (
-    <div style={style} onMouseEnter={onEnter} onMouseLeave={onLeave}>
+    <div
+      style={style}
+      onMouseEnter={hoverEnabled ? onEnter : undefined}
+      onMouseLeave={hoverEnabled ? onLeave : undefined}
+      onClick={hoverEnabled ? undefined : onToggle}
+      role={hoverEnabled ? undefined : 'button'}
+      tabIndex={hoverEnabled ? undefined : 0}
+      onKeyDown={
+        hoverEnabled
+          ? undefined
+          : (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onToggle()
+              }
+            }
+      }
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -156,34 +176,57 @@ function ImageCard({
 export default function MessiCollage() {
   const [hovered, setHovered] = useState<Role | null>(null)
   const [stacked, setStacked] = useState(false)
+  const [hoverEnabled, setHoverEnabled] = useState(true)
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)')
-    const update = () => setStacked(mq.matches)
+    const hoverMq = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const update = () => {
+      setStacked(mq.matches)
+      setHoverEnabled(hoverMq.matches)
+    }
     update()
     mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
+    hoverMq.addEventListener('change', update)
+    return () => {
+      mq.removeEventListener('change', update)
+      hoverMq.removeEventListener('change', update)
+    }
   }, [])
+
+  const portraits = IMAGES.filter((img) => img.role !== 'bottom')
+  const landscape = IMAGES.find((img) => img.role === 'bottom')!
+
+  const renderCard = (img: (typeof IMAGES)[number]) => (
+    <ImageCard
+      key={img.role}
+      src={img.src}
+      alt={img.alt}
+      role={img.role}
+      stacked={stacked}
+      hoverEnabled={hoverEnabled}
+      hovered={hovered === img.role}
+      dimmed={hoverEnabled && hovered !== null && hovered !== img.role}
+      onEnter={() => setHovered(img.role)}
+      onLeave={() => setHovered(null)}
+      onToggle={() => setHovered((h) => (h === img.role ? null : img.role))}
+    />
+  )
 
   return (
     <div
       aria-label="The story of Messi winning the World Cup"
-      className="relative w-full max-w-[320px] md:max-w-[560px] lg:w-[127%] lg:max-w-[700px] lg:ml-auto"
+      className="relative w-full max-w-[360px] md:max-w-[560px] lg:w-[127%] lg:max-w-[700px] lg:ml-auto"
       style={stacked ? undefined : { aspectRatio: STAGE_ASPECT }}
     >
-      {IMAGES.map((img) => (
-        <ImageCard
-          key={img.role}
-          src={img.src}
-          alt={img.alt}
-          role={img.role}
-          stacked={stacked}
-          hovered={hovered === img.role}
-          dimmed={hovered !== null && hovered !== img.role}
-          onEnter={() => setHovered(img.role)}
-          onLeave={() => setHovered(null)}
-        />
-      ))}
+      {stacked ? (
+        <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-3 gap-2">{portraits.map(renderCard)}</div>
+          {renderCard(landscape)}
+        </div>
+      ) : (
+        IMAGES.map(renderCard)
+      )}
     </div>
   )
 }

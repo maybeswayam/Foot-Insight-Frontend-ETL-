@@ -125,7 +125,7 @@ export default function MatchDetailPage({ params }: MatchDetailPageProps) {
             {h.goals}–{a.goals}
           </span>
 
-          <div className="relative mx-auto max-w-[1200px] px-6 lg:px-12 py-10">
+          <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-8 sm:py-10">
             <Link
               href={
                 match.competition === 'FIFA World Cup'
@@ -245,7 +245,7 @@ export default function MatchDetailPage({ params }: MatchDetailPageProps) {
         </section>
 
         <div className="border-b border-line sticky top-[60px] z-30 bg-[rgba(10,10,10,0.92)] backdrop-blur-[16px]">
-          <div className="mx-auto max-w-[1200px] px-6 lg:px-12 flex gap-8">
+          <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 flex gap-6 sm:gap-8 overflow-x-auto scrollbar-hide">
             {(
               [
                 { key: 'stats' as const, label: 'Match lab' },
@@ -257,7 +257,7 @@ export default function MatchDetailPage({ params }: MatchDetailPageProps) {
                 type="button"
                 disabled={'disabled' in t && t.disabled}
                 onClick={() => setTab(t.key)}
-                className={`relative py-4 text-xs font-semibold tracking-[1.5px] uppercase transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                className={`relative shrink-0 min-h-[44px] px-1 py-3 text-xs font-semibold tracking-[1.5px] uppercase transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
                   tab === t.key ? 'text-pitch' : 'text-fog hover:text-cream'
                 }`}
               >
@@ -268,7 +268,7 @@ export default function MatchDetailPage({ params }: MatchDetailPageProps) {
           </div>
         </div>
 
-        <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-12">
+        <section className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
           {tab === 'stats' && (
             <div className="animate-in fade-in duration-300">
               <div className="mb-10">

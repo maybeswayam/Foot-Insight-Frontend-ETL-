@@ -28,14 +28,18 @@ export function PlayerCareerPath({ career }: PlayerCareerPathProps) {
         </span>
       </div>
 
-      <div className="overflow-x-auto pb-2">
+      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1.5px] text-faint sm:hidden">
+        Swipe for career path →
+      </p>
+      <div className="relative overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-ink to-transparent sm:hidden" />
         <div className="flex min-w-min items-stretch gap-0">
           {career.path.map((seg, i) => {
             const href = resolveTeamHref(seg.club)
             const logoName = datasetTeamName(seg.club) || seg.club
             const card = (
               <div
-                className="w-[160px] sm:w-[180px] border border-line-strong bg-ink-2 p-4 animate-slide-up hover:bg-surface transition-colors h-full"
+                className="w-[160px] sm:w-[180px] shrink-0 snap-start border border-line-strong bg-ink-2 p-4 animate-slide-up hover:bg-surface transition-colors h-full"
                 style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
               >
                 <div className="mb-3 flex justify-center">

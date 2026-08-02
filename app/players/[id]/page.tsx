@@ -263,7 +263,7 @@ export default function PlayerDetailPage({ params }: PlayerDetailPageProps) {
 
         {/* Tabs */}
         <div className="border-b border-line sticky top-[60px] z-30 bg-[rgba(10,10,10,0.92)] backdrop-blur-[16px]">
-          <div className="mx-auto max-w-[1200px] px-6 lg:px-12 flex gap-8 overflow-x-auto">
+          <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 flex gap-6 sm:gap-8 overflow-x-auto scrollbar-hide">
             {tabs
               .filter((t) => t.show)
               .map((t) => (
@@ -271,7 +271,7 @@ export default function PlayerDetailPage({ params }: PlayerDetailPageProps) {
                   key={t.key}
                   type="button"
                   onClick={() => setTab(t.key)}
-                  className={`relative shrink-0 py-4 text-xs font-semibold tracking-[1.5px] uppercase transition-colors ${
+                  className={`relative shrink-0 min-h-[44px] px-1 py-3 text-xs font-semibold tracking-[1.5px] uppercase transition-colors ${
                     tab === t.key ? 'text-pitch' : 'text-fog hover:text-cream'
                   }`}
                 >
@@ -282,7 +282,7 @@ export default function PlayerDetailPage({ params }: PlayerDetailPageProps) {
           </div>
         </div>
 
-        <section className="mx-auto max-w-[1200px] px-6 lg:px-12 py-12">
+        <section className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
           {tab === 'season' && (
             <div className="animate-slide-up">
               <div className="mb-10">

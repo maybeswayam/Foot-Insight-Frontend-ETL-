@@ -126,13 +126,14 @@ export default function PlayersPage() {
 
         {/* ═══════ COMPETITION TABS ═══════ */}
         <section className="border-b border-line bg-ink-2">
-          <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12">
             <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
               {COMPETITIONS.map((c) => (
                 <button
                   key={c.value}
+                  type="button"
                   onClick={() => { setCompFilter(c.value); setPosFilter('All') }}
-                  className={`shrink-0 flex items-center gap-2 px-4 py-2 border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors rounded-[2px] ${
+                  className={`shrink-0 flex items-center gap-2 min-h-[40px] px-4 py-2.5 border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors rounded-[2px] ${
                     compFilter === c.value
                       ? 'bg-pitch text-black border-pitch'
                       : 'border-line-strong text-fog hover:text-cream hover:border-line-strong'
@@ -199,8 +200,9 @@ export default function PlayersPage() {
                 return (
                   <button
                     key={pos}
+                    type="button"
                     onClick={() => setPosFilter(pos)}
-                    className={`px-3 py-1.5 rounded-[2px] border text-[10px] font-semibold tracking-[1.5px] uppercase transition-colors ${
+                    className={`min-h-[40px] px-3 py-2 rounded-[2px] border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors ${
                       active
                         ? pos === 'All'
                           ? 'bg-pitch text-black border-pitch'
@@ -230,8 +232,9 @@ export default function PlayersPage() {
                 ] as { value: SortField; label: string }[]).map((opt) => (
                   <button
                     key={opt.value}
+                    type="button"
                     onClick={() => setSortBy(opt.value)}
-                    className={`px-3 py-1.5 rounded-[2px] border text-[10px] font-semibold tracking-[1.5px] uppercase transition-colors ${
+                    className={`min-h-[40px] px-3 py-2 rounded-[2px] border text-[11px] font-semibold tracking-[1.5px] uppercase transition-colors ${
                       sortBy === opt.value
                         ? 'bg-surface-3 text-cream border-line-strong'
                         : 'border-line text-fog hover:text-cream hover:border-line-strong'
@@ -289,11 +292,11 @@ export default function PlayersPage() {
                   </div>
 
                   {/* Stats strip */}
-                  <div className="grid grid-cols-5 gap-px bg-line border border-line">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-px bg-line border border-line">
                     <StatCell label="G" value={player.stats.goals} tone="pitch" />
                     <StatCell label="A" value={player.stats.assists} tone="gold" />
-                    <StatCell label="Mins" value={player.stats.minutes} />
-                    <StatCell label="Games" value={player.stats.games} />
+                    <StatCell label="Mins" value={player.stats.minutes} className="hidden sm:block" />
+                    <StatCell label="Games" value={player.stats.games} className="hidden sm:block" />
                     <StatCell label="xG" value={player.stats.xG.toFixed(1)} />
                   </div>
                 </Link>
@@ -320,13 +323,23 @@ export default function PlayersPage() {
    Sub-components
    ═══════════════════════════════════════════ */
 
-function StatCell({ label, value, tone }: { label: string; value: number | string; tone?: 'pitch' | 'gold' }) {
+function StatCell({
+  label,
+  value,
+  tone,
+  className = '',
+}: {
+  label: string
+  value: number | string
+  tone?: 'pitch' | 'gold'
+  className?: string
+}) {
   return (
-    <div className="bg-surface-2 py-2 text-center">
+    <div className={`bg-surface-2 py-2.5 text-center ${className}`}>
       <div className={`font-display text-base leading-none ${tone === 'pitch' ? 'text-pitch' : tone === 'gold' ? 'text-gold' : 'text-cream'}`}>
         {value}
       </div>
-      <div className="text-[8px] text-faint uppercase tracking-[1px] mt-0.5">{label}</div>
+      <div className="text-[10px] text-faint uppercase tracking-[1px] mt-0.5">{label}</div>
     </div>
   )
 }

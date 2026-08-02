@@ -80,7 +80,7 @@ export function SeasonHighlights({ player }: SeasonHighlightsProps) {
             className="bg-ink-2 px-4 py-4 animate-slide-up"
             style={{ animationDelay: `${i * 40}ms`, animationFillMode: 'both' }}
           >
-            <div className="text-[9px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
+            <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
             <div className={`mt-1 font-display text-3xl tracking-[1px] tabular-nums ${t.tone}`}>
               {t.value}
             </div>
@@ -94,7 +94,7 @@ export function SeasonHighlights({ player }: SeasonHighlightsProps) {
           title="GOALS · ASSISTS · xG"
           note="Season row for this competition. xGΔ above is goals minus xG (finishing luck / clinical edge)."
         >
-          <div className="h-[260px]">
+          <div className="h-[200px] sm:h-[240px] lg:h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={outputRows} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke={GRID} vertical={false} />
@@ -179,7 +179,7 @@ export function CareerCharts({ career }: CareerChartsProps) {
           { label: 'Cards', value: `${t.yellowCards ?? 0}/${t.redCards ?? 0}`, tone: 'text-fog' },
         ].map((x) => (
           <div key={x.label} className="bg-ink-2 px-3 py-4">
-            <div className="text-[9px] font-bold uppercase tracking-[1.5px] text-faint">{x.label}</div>
+            <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-faint">{x.label}</div>
             <div className={`mt-1 font-display text-2xl tracking-[1px] tabular-nums ${x.tone}`}>{x.value}</div>
           </div>
         ))}
@@ -190,7 +190,7 @@ export function CareerCharts({ career }: CareerChartsProps) {
 
       <div className="grid lg:grid-cols-2 gap-6">
         <ChartCard tag="Career" title="GOALS & ASSISTS BY SEASON" note="Each bar is one Big 5 league season row.">
-          <div className="h-[280px]">
+          <div className="h-[200px] sm:h-[240px] lg:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={bySeason} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke={GRID} vertical={false} />
@@ -214,7 +214,7 @@ export function CareerCharts({ career }: CareerChartsProps) {
         </ChartCard>
 
         <ChartCard tag="Finishing" title="NPG VS npxG" note="Open-play finishing honesty — non-penalty goals vs non-penalty xG.">
-          <div className="h-[280px]">
+          <div className="h-[200px] sm:h-[240px] lg:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={bySeason} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke={GRID} vertical={false} />
@@ -243,7 +243,7 @@ export function CareerCharts({ career }: CareerChartsProps) {
         title="xG BUILDUP · xG CHAIN"
         note="Buildup = xG created without the shot/assist touch. Chain = full sequence involvement including shot/assist."
       >
-        <div className="h-[260px]">
+        <div className="h-[200px] sm:h-[240px] lg:h-[260px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={bySeason} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid stroke={GRID} vertical={false} />
@@ -304,7 +304,7 @@ export function ShotBreakdownCharts({ profile }: ShotBreakdownProps) {
           },
         ].map((t) => (
           <div key={t.label} className="bg-ink-2 px-4 py-4">
-            <div className="text-[9px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
+            <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-faint">{t.label}</div>
             <div className="mt-1 font-display text-3xl tracking-[1px] tabular-nums text-cream">{t.value}</div>
           </div>
         ))}
@@ -326,7 +326,7 @@ export function ShotBreakdownCharts({ profile }: ShotBreakdownProps) {
               { label: 'G+A', value: season.goalContributions },
             ].map((t) => (
               <div key={t.label} className="bg-ink px-3 py-3">
-                <div className="text-[8px] font-bold uppercase tracking-[1px] text-faint">{t.label}</div>
+                <div className="text-[10px] font-bold uppercase tracking-[1px] text-faint">{t.label}</div>
                 <div className="font-display text-xl text-cream tabular-nums">{t.value}</div>
               </div>
             ))}
@@ -426,7 +426,7 @@ function MiniBars({
 }) {
   return (
     <ChartCard tag="Mix" title={title}>
-      <div className="h-[220px]">
+      <div className="h-[180px] sm:h-[200px] lg:h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={rows} layout="vertical" margin={{ top: 0, right: 12, left: 4, bottom: 0 }}>
             <CartesianGrid stroke={GRID} horizontal={false} />
