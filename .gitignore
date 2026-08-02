@@ -47,7 +47,8 @@ next-env.d.ts
 # ETL scratch / non-runtime assets (keep out of deploy artifacts)
 data/_lineup_progress/
 REf/
-messi/
+# Root-only scratch copies — do NOT ignore public/messi/ (hero collage assets)
+/messi/
 downloaded_files/
 verify-*.png
 homepage-redesign.png
